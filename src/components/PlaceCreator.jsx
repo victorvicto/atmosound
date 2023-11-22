@@ -3,7 +3,7 @@ import { useState } from 'react';
 import AddedSound from './AddedSound';
 import { func } from 'prop-types';
 
-function PlaceCreator({set_is_visible}){
+function PlaceCreator(){
     const [sounds_list, set_sounds_list] = useState([]);
 
     function addSound(){
@@ -38,36 +38,26 @@ function PlaceCreator({set_is_visible}){
         );
 
     return (
-        <div className="modal"
-            id="place-creator-modal"
-            tabIndex="-1">
-            <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h1 className="modal-title">Create new place</h1>
-                        <button type="button" className="btn-close" onClick={()=>{set_is_visible(false)}}></button>
+        <div className="modal-content">
+            <div className="modal-header">
+                <h5 className="modal-title">Create new place</h5>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body">
+                <form>
+                    <div className="mb-3">
+                        <label className="form-label">Name of the place</label>
+                        <input type="text" className="form-control" id="new-place-name"/>
                     </div>
-                    <div className="modal-body">
-                        <form>
-                            <div class="mb-3">
-                                <label for="new-place-name" class="form-label">Name of the place</label>
-                                <input type="text" class="form-control" id="new-place-name"/>
-                            </div>
-                            <div class="mb-3">
-                                <label for="exampleInputPassword1" class="form-label">Sounds</label>
-                                <div className='d-flex flex-column gap-2'>
-                                    {sounds_list_html}
-                                </div>
-                                <button className="btn btn-outline-primary btn-sm" onClick={addSound}>Add sound</button>
-                            </div>
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1"/>
-                                <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Create place</button>
-                        </form>
+                    <div className="mb-3">
+                        <label className="form-label">Sounds</label>
+                        <div className='d-flex flex-column gap-2'>
+                            {sounds_list_html}
+                        </div>
+                        <button type="button" className="btn btn-outline-primary btn-sm" onClick={addSound}>Add sound</button>
                     </div>
-                </div>
+                    <button type="submit" className="btn btn-primary">Create place</button>
+                </form>
             </div>
         </div>
     )

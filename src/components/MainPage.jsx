@@ -4,7 +4,6 @@ import PlaceBadge from './PlaceBadge.jsx';
 import PlaceCreator from './PlaceCreator.jsx';
 
 function MainPage({places}) {
-    const [modal_is_visible, set_modal_is_visible] = useState(false);
 
     let every_body_off = {}
     for(const [place_name, value] of Object.entries(places)){
@@ -46,17 +45,29 @@ function MainPage({places}) {
                         switchStatus={(new_status)=>{switchStatus(place_name, new_status)}}/>
         );
 
+    console.log("coucou");
+
     return (
         <>
         <div className='d-flex flex-row flex-wrap justify-content-center gap-2'>
             {places_badges}
         </div>
         <div className='d-flex justify-content-center mt-3'>
-            <button className="btn btn-outline-primary btn-lg" onClick={()=>{set_modal_is_visible(true)}}>
+            <button className="btn btn-outline-primary btn-lg"
+                    data-bs-toggle="modal"
+                    data-bs-target="#place-creator-modal">
                 Add place
             </button>
         </div>
-        {modal_is_visible? <PlaceCreator set_is_visible={set_modal_is_visible}/> : null}
+        <div className="modal fade"
+            id="place-creator-modal"
+            tabIndex="-1"
+            aria-labelledby="place-creator-modal"
+            aria-hidden="true">
+            <div className="modal-dialog modal-dialog-centered">
+                <PlaceCreator/>
+            </div>
+        </div>
         </>
     )
 }
