@@ -7,14 +7,13 @@ import MainPage from './components/MainPage.jsx';
 
 function App() {
 
-    const [places, setPlaces] = useState({
-        indoor:{
-            shop:{}
-        },
-        outdoor:{
-            village:{},
-            prairy:{}
-        }
+    const [places, set_places] = useState({
+        shop:{},
+        village:{},
+        prairy:{},
+        cave:{},
+        "castle hall":{},
+        market:{}
     });
     const [sounds, setSounds] = useState({});
 

@@ -1,29 +1,58 @@
+import { useState } from 'react'
+
 import PlaceBadge from './PlaceBadge.jsx';
 
 function MainPage({places}) {
 
-    const indoor_places_badges = Object.entries(places.indoor).map(([place_name, place_info]) => 
-            <PlaceBadge key={place_name} place_name={place_name}/>
-        );
-    const outdoor_places_badges = Object.entries(places.outdoor).map(([place_name, place_info]) => 
-            <PlaceBadge key={place_name} place_name={place_name}/>
+    let every_body_off = {}
+    for(const [place_name, value] of Object.entries(places)){
+        every_body_off[place_name] = "off";
+    }
+    const [places_status, set_places_status] = useState({...every_body_off});
+
+    function switchStatus(place_name, new_status){
+        let final_places_status = {...places_status};
+        if(places_status[place_name]==new_status){
+            final_places_status[place_name] = "off";
+        } else {
+            if(new_status=="on"){
+                final_places_status = {...every_body_off};
+                console.log(final_places_status);
+                if("muffled" in places[place_name]){
+                    for(const [muffled_place_name, muffle_amount] of Object.entries(places[place_name].muffled)){
+                        final_places_status[muffled_place_name] = "muffled";
+                        document.getElementById("place-badge-"+muffled_place_name+"-muffle-amount").value = muffle_amount;
+                    }
+                }
+                if("distant" in places[place_name]){
+                    for(const [distant_place_name, distance] of Object.entries(places[place_name].distant)){
+                        final_places_status[distant_place_name] = "distant";
+                        document.getElementById("place-badge-"+distant_place_name+"-distance").value = distance;
+                    }
+                }
+            }
+            final_places_status[place_name] = new_status;
+        }
+        console.log(final_places_status);
+        set_places_status(final_places_status);
+    }
+
+    const places_badges = Object.entries(places).map(([place_name, place_info]) => 
+            <PlaceBadge key={place_name}
+                        place_name={place_name}
+                        place_status={places_status[place_name]}
+                        switchStatus={(new_status)=>{switchStatus(place_name, new_status)}}/>
         );
 
     return (
-        <div className="row" id="places-buttons">
-            <div className="col d-flex align-items-end flex-column gap-1">
-                <h2>Indoor</h2>
-                {indoor_places_badges}
-                <button className="btn btn-outline-primary">Add place</button>
-            </div>
-            <div className="col d-flex align-items-start flex-column border-start gap-1">
-                <div className="row">
-                    <h2>Outdoor</h2>
-                </div>
-                {outdoor_places_badges}
-                <button className="btn btn-outline-primary">Add place</button>
-            </div>
+        <>
+        <div className='d-flex flex-row flex-wrap justify-content-center gap-2'>
+            {places_badges}
         </div>
+        <div className='d-flex justify-content-center mt-3'>
+            <button className="btn btn-outline-primary btn-lg">Add place</button>
+        </div>
+        </>
     )
 }
 
