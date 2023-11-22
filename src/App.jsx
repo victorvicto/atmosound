@@ -15,7 +15,10 @@ function App() {
         "castle hall":{},
         market:{}
     });
-    const [sounds, setSounds] = useState({});
+    const [sounds, setSounds] = useState({
+        "bell":{},
+        "birds":{}
+    });
 
     return (
         <>
@@ -45,7 +48,7 @@ function App() {
         </nav>
         <div className="tab-content">
             <div className="tab-pane fade show active p-5" id="main-page" role="tabpanel">
-                <MainPage places={places}/>
+                <MainPage places={places} sounds={sounds}/>
             </div>
             <div className="tab-pane fade p-5" id="sounds-lib-page" role="tabpanel">
                 <h1>Sounds</h1>

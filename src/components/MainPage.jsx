@@ -3,7 +3,7 @@ import { useState } from 'react'
 import PlaceBadge from './PlaceBadge.jsx';
 import PlaceCreator from './PlaceCreator.jsx';
 
-function MainPage({places}) {
+function MainPage({places, sounds}) {
 
     let every_body_off = {}
     for(const [place_name, value] of Object.entries(places)){
@@ -45,8 +45,6 @@ function MainPage({places}) {
                         switchStatus={(new_status)=>{switchStatus(place_name, new_status)}}/>
         );
 
-    console.log("coucou");
-
     return (
         <>
         <div className='d-flex flex-row flex-wrap justify-content-center gap-2'>
@@ -59,15 +57,7 @@ function MainPage({places}) {
                 Add place
             </button>
         </div>
-        <div className="modal fade"
-            id="place-creator-modal"
-            tabIndex="-1"
-            aria-labelledby="place-creator-modal"
-            aria-hidden="true">
-            <div className="modal-dialog modal-dialog-centered">
-                <PlaceCreator/>
-            </div>
-        </div>
+        <PlaceCreator sounds={sounds}/>
         </>
     )
 }

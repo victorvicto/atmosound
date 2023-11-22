@@ -1,14 +1,15 @@
-function AddedSound({sound_name, name_change, average_time, average_time_change, volume, volume_change, delete_sound}) {
+function AddedSound({sound_name, sound_name_correct, name_change, average_time, average_time_change, volume, volume_change, delete_sound}) {
   return (
-    <div className='card'>
+    <div className='card text-sm'>
         <div className='card-body'>
             <div className='row'>
                 <div className='col'>
-                    <input type='text' value={sound_name} onChange={name_change}/>
+                    <input type='text' className={"form-control form-control-sm "+(sound_name_correct?"is-valid":"is-invalid")}
+                        value={sound_name} onChange={name_change} placeholder="Sound name"/>
                 </div>
                 <div className='col'>
                     <p className='card-text'>Average time between triggers</p>
-                    <input type='number' value={average_time} onChange={average_time_change} min={0} max={1200}/>
+                    <input type='number' className="form-control form-control-sm" value={average_time} onChange={average_time_change} min={0} max={1200}/>
                 </div>
                 <div className='col border-start'>
                     <p className='card-text'>Volume</p>
