@@ -1,8 +1,10 @@
 import { useState } from 'react'
 
 import PlaceBadge from './PlaceBadge.jsx';
+import PlaceCreator from './PlaceCreator.jsx';
 
 function MainPage({places}) {
+    const [modal_is_visible, set_modal_is_visible] = useState(false);
 
     let every_body_off = {}
     for(const [place_name, value] of Object.entries(places)){
@@ -50,8 +52,11 @@ function MainPage({places}) {
             {places_badges}
         </div>
         <div className='d-flex justify-content-center mt-3'>
-            <button className="btn btn-outline-primary btn-lg">Add place</button>
+            <button className="btn btn-outline-primary btn-lg" onClick={()=>{set_modal_is_visible(true)}}>
+                Add place
+            </button>
         </div>
+        {modal_is_visible? <PlaceCreator set_is_visible={set_modal_is_visible}/> : null}
         </>
     )
 }
