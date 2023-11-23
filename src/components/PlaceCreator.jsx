@@ -23,7 +23,7 @@ function PlaceCreator({places, sounds, add_place}){
         set_sounds_list(new_sounds_list);
     }
 
-    function changeSound(index, property, event){
+    function changeSound(event, index, property){
         let new_sounds_list = [...sounds_list];
         new_sounds_list[index][property] = event.target.value.toLowerCase();
         if("max" in event.target){
@@ -38,7 +38,7 @@ function PlaceCreator({places, sounds, add_place}){
     function addMuffled(){
         set_muffled_list(muffled_list.concat([{
             name:"",
-            muffled_amount:0.5
+            muffle_amount:0.5
         }]));
     }
 
@@ -48,7 +48,7 @@ function PlaceCreator({places, sounds, add_place}){
         set_muffled_list(new_muffled_list);
     }
 
-    function changeMuffled(index, property, event){
+    function changeMuffled(event, index, property){
         let new_muffled_list = [...muffled_list];
         new_muffled_list[index][property] = event.target.value.toLowerCase();
         if("max" in event.target){
@@ -66,12 +66,10 @@ function PlaceCreator({places, sounds, add_place}){
             <AddedSound key={"added-sound-"+i}
                         sound_name={sound.name}
                         sound_name_correct={sounds[sound.name]!==undefined}
-                        name_change={(event) => {changeSound(i, "name", event)}}
                         average_time={sound.average_time}
-                        average_time_change={(event) => {changeSound(i, "average_time", event)}}
                         volume={sound.volume}
-                        volume_change={(event) => {changeSound(i, "volume", event)}}
-                        delete_sound={()=> {deleteSound(i)}}/>
+                        changeSound={(event, property) => {changeSound(event, i, property)}}
+                        deleteSound={()=> {deleteSound(i)}}/>
         );
     }
 
@@ -81,10 +79,9 @@ function PlaceCreator({places, sounds, add_place}){
             <AddedMuffled key={"added-muffled-"+i}
                         muffled_name={muffled.name}
                         muffled_name_correct={places[muffled.name]!==undefined}
-                        name_change={(event) => {changeMuffled(i, "name", event)}}
-                        muffled_amount={muffled.muffled_amount}
-                        muffled_amount_change={(event) => {changeMuffled(i, "muffled_amount", event)}}
-                        delete_muffled={()=> {deleteMuffled(i)}}/>
+                        muffle_amount={muffled.muffle_amount}
+                        changeMuffled={(event, property) => {changeMuffled(event, i, property)}}
+                        deleteMuffled={()=> {deleteMuffled(i)}}/>
         );
     }
 
@@ -129,7 +126,7 @@ function PlaceCreator({places, sounds, add_place}){
                                 </div>
                                 <button type="button" className="btn btn-outline-primary btn-sm mt-2" onClick={addMuffled}>Add muffled place</button>
                             </div>
-                            <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
+                            <button type="button" className="btn btn-primary" onClick={()=>{
                                 add_place(place_name, sounds_list, muffled_list);
                                 reset_form();}}>Create place</button>
                         </form>

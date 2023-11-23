@@ -16,6 +16,16 @@ function App() {
         "castle hall":{},
         market:{}
     });
+    const base_places_status = {};
+    for(let place_name in places){
+        base_places_status[place_name] = {
+            "state": "off",
+            "muffle_amount": 0.5,
+            "distance": 50
+        }
+    }
+    const [places_status, set_places_status] = useState(base_places_status);
+
     const [sounds, setSounds] = useState({
         "bell":{},
         "birds":{}
@@ -47,6 +57,14 @@ function App() {
             [new_place_name]:{
                 "sounds_list": sounds_list,
                 "muffled_list": muffled_list
+            }
+        });
+        set_places_status({
+            ...places_status,
+            [new_place_name]:{
+                "state": "off",
+                "muffle_amount": 0.5,
+                "distance": 50
             }
         });
     }
@@ -91,7 +109,7 @@ function App() {
         </nav>
         <div className="tab-content">
             <div className="tab-pane fade show active p-5" id="main-page" role="tabpanel">
-                <MainPage places={places} sounds={sounds} add_place={addPlace}/>
+                <MainPage places={places} sounds={sounds} add_place={addPlace} places_status={places_status} set_places_status={set_places_status}/>
             </div>
             <div className="tab-pane fade p-5" id="sounds-lib-page" role="tabpanel">
                 <h1>Sounds</h1>
