@@ -6,6 +6,7 @@ import 'bootstrap/dist/js/bootstrap.min.js'
 import MainPage from './components/MainPage.jsx';
 
 function App() {
+    const[error_message, set_error_message] = useState("");
 
     const [places, set_places] = useState({
         shop:{},
@@ -19,6 +20,48 @@ function App() {
         "bell":{},
         "birds":{}
     });
+
+    function addPlace(new_place_name, sounds_list, muffled_list){
+        if(places[new_place_name]!==undefined){
+            set_error_message("Tried to create a place with a name that already exists");
+            return;
+        }
+        if(new_place_name.length==0){
+            set_error_message("Tried to create a place with an empty name");
+            return;
+        }
+        for(let sound of sounds_list){
+            if(sounds[sound.name]==undefined){
+                set_error_message("Tried to create a place containing a sound that doesn't exist");
+                return;
+            }
+        }
+        for(let muffled of muffled_list){
+            if(places[muffled.name]==undefined){
+                set_error_message("Tried to create a place containing a muffled place that doesn't exist");
+                return;
+            }
+        }
+        set_places({
+            ...places,
+            [new_place_name]:{
+                "sounds_list": sounds_list,
+                "muffled_list": muffled_list
+            }
+        });
+    }
+
+    let error_toast = null;
+    if(error_message.length>0){
+        error_toast = (
+            <div className="position-fixed bottom-0 w-100 p-4" style={{"zIndex": 1056}}>
+                <div className="alert alert-danger d-flex justify-content-between mb-0">
+                    {error_message}
+                    <button type="button" className="btn-close" onClick={()=>set_error_message("")}></button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -41,19 +84,20 @@ function App() {
                             </button>
                         </li>
                     </ul>
-                    <button className="btn btn-outline-success">Upload setup</button>
-                    <button className="btn btn-outline-success ms-2">Save my setup</button>
+                    <button type="button" className="btn btn-outline-success" onClick={()=>{set_error_message("coucou")}}>Upload setup</button>
+                    <button type="button" className="btn btn-outline-success ms-2">Save my setup</button>
                 </div>
             </div>
         </nav>
         <div className="tab-content">
             <div className="tab-pane fade show active p-5" id="main-page" role="tabpanel">
-                <MainPage places={places} sounds={sounds}/>
+                <MainPage places={places} sounds={sounds} add_place={addPlace}/>
             </div>
             <div className="tab-pane fade p-5" id="sounds-lib-page" role="tabpanel">
                 <h1>Sounds</h1>
             </div>
         </div>
+        {error_toast}
         </>
     )
 }

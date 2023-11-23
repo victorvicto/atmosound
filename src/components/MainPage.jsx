@@ -3,7 +3,7 @@ import { useState } from 'react'
 import PlaceBadge from './PlaceBadge.jsx';
 import PlaceCreator from './PlaceCreator.jsx';
 
-function MainPage({places, sounds}) {
+function MainPage({places, sounds, add_place}) {
 
     let every_body_off = {}
     for(const [place_name, value] of Object.entries(places)){
@@ -57,7 +57,7 @@ function MainPage({places, sounds}) {
                 Add place
             </button>
         </div>
-        <PlaceCreator places={places} sounds={sounds}/>
+        <PlaceCreator places={places} sounds={sounds} add_place={add_place}/>
         </>
     )
 }

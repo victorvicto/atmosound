@@ -28,7 +28,7 @@ function PlaceBadge({place_name, place_status, switchStatus}){
     }
 
     return (
-        <div className={'card border-'+scheme+(place_status=="off"?' shadow-sm':' border-3 shadow')}>
+        <div className={'card border-'+scheme+(place_status=="off" || place_status==undefined?' shadow-sm':' border-3 shadow')}>
             <div className='card-body d-flex flex-row gap-2 align-items-center'>
                 <h5 className={"card-title mb-0 text-capitalize text-"+scheme}>{place_name}</h5>
                 <button onClick={()=>{switchStatus("on")}}

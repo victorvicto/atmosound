@@ -4,7 +4,7 @@ import AddedSound from './AddedSound';
 import AddedMuffled from './AddedMuffled';
 import { func } from 'prop-types';
 
-function PlaceCreator({places, sounds}){
+function PlaceCreator({places, sounds, add_place}){
     const [sounds_list, set_sounds_list] = useState([]);
     const [muffled_list, set_muffled_list] = useState([]);
     const [place_name, set_place_name] = useState("");
@@ -25,7 +25,7 @@ function PlaceCreator({places, sounds}){
 
     function changeSound(index, property, event){
         let new_sounds_list = [...sounds_list];
-        new_sounds_list[index][property] = event.target.value;
+        new_sounds_list[index][property] = event.target.value.toLowerCase();
         if("max" in event.target){
             if(parseFloat(event.target.value)>parseFloat(event.target.max)) new_sounds_list[index][property] = event.target.max;
         }
@@ -50,7 +50,7 @@ function PlaceCreator({places, sounds}){
 
     function changeMuffled(index, property, event){
         let new_muffled_list = [...muffled_list];
-        new_muffled_list[index][property] = event.target.value;
+        new_muffled_list[index][property] = event.target.value.toLowerCase();
         if("max" in event.target){
             if(parseFloat(event.target.value)>parseFloat(event.target.max)) new_muffled_list[index][property] = event.target.max;
         }
@@ -65,7 +65,7 @@ function PlaceCreator({places, sounds}){
         sounds_list_html = sounds_list.map((sound, i) => 
             <AddedSound key={"added-sound-"+i}
                         sound_name={sound.name}
-                        sound_name_correct={sounds[sound.name.toLowerCase()]!==undefined}
+                        sound_name_correct={sounds[sound.name]!==undefined}
                         name_change={(event) => {changeSound(i, "name", event)}}
                         average_time={sound.average_time}
                         average_time_change={(event) => {changeSound(i, "average_time", event)}}
@@ -80,12 +80,18 @@ function PlaceCreator({places, sounds}){
         muffled_list_html = muffled_list.map((muffled, i) => 
             <AddedMuffled key={"added-muffled-"+i}
                         muffled_name={muffled.name}
-                        muffled_name_correct={places[muffled.name.toLowerCase()]!==undefined}
+                        muffled_name_correct={places[muffled.name]!==undefined}
                         name_change={(event) => {changeMuffled(i, "name", event)}}
                         muffled_amount={muffled.muffled_amount}
                         muffled_amount_change={(event) => {changeMuffled(i, "muffled_amount", event)}}
                         delete_muffled={()=> {deleteMuffled(i)}}/>
         );
+    }
+
+    function reset_form(){
+        set_sounds_list([]);
+        set_muffled_list([]);
+        set_place_name("");
     }
 
     return (
@@ -106,8 +112,8 @@ function PlaceCreator({places, sounds}){
                                 <label className="form-label">Name of the place</label>
                                 <input type="text"
                                     value={place_name}
-                                    onChange={(e)=>{set_place_name(e.target.value)}}
-                                    className={"form-control "+(places[place_name.toLowerCase()]!==undefined || place_name.length==0?"is-invalid":"is-valid")}/>
+                                    onChange={(e)=>{set_place_name(e.target.value.toLowerCase())}}
+                                    className={"form-control "+(places[place_name]!==undefined || place_name.length==0?"is-invalid":"is-valid")}/>
                             </div>
                             <div className="mb-3">
                                 <label className="form-label">Sounds</label>
@@ -123,7 +129,9 @@ function PlaceCreator({places, sounds}){
                                 </div>
                                 <button type="button" className="btn btn-outline-primary btn-sm mt-2" onClick={addMuffled}>Add muffled place</button>
                             </div>
-                            <button type="button" className="btn btn-primary">Create place</button>
+                            <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
+                                add_place(place_name, sounds_list, muffled_list);
+                                reset_form();}}>Create place</button>
                         </form>
                     </div>
                 </div>
