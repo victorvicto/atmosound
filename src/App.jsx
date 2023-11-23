@@ -8,23 +8,28 @@ import MainPage from './components/MainPage.jsx';
 function App() {
     const[error_message, set_error_message] = useState("");
 
-    const [places, set_places] = useState({
-        shop:{},
-        village:{},
-        prairy:{},
-        cave:{},
-        "castle hall":{},
-        market:{}
-    });
-    const base_places_status = {};
-    for(let place_name in places){
-        base_places_status[place_name] = {
-            "state": "off",
-            "muffle_amount": 0.5,
-            "distance": 50
+    function initialisePlaces(){
+        let start_places = JSON.parse(localStorage.getItem("places"));
+        if (start_places === null) {
+            start_places = {}
         }
+        return start_places;
     }
-    const [places_status, set_places_status] = useState(base_places_status);
+
+    function initialisePlacesStatus(){
+        const base_places_status = {};
+        for(let place_name in places){
+            base_places_status[place_name] = {
+                "state": "off",
+                "muffle_amount": 0.5,
+                "distance": 50
+            }
+        }
+        return base_places_status;
+    }
+
+    const [places, set_places] = useState(initialisePlaces);
+    const [places_status, set_places_status] = useState(initialisePlacesStatus);
 
     const [sounds, setSounds] = useState({
         "bell":{},
@@ -52,13 +57,17 @@ function App() {
                 return;
             }
         }
-        set_places({
+        
+        let new_places = {
             ...places,
             [new_place_name]:{
                 "sounds_list": sounds_list,
                 "muffled_list": muffled_list
             }
-        });
+        };
+        set_places(new_places);
+        localStorage.setItem("places", JSON.stringify(new_places));
+
         set_places_status({
             ...places_status,
             [new_place_name]:{
