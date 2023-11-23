@@ -57,7 +57,7 @@ function MainPage({places, sounds}) {
                 Add place
             </button>
         </div>
-        <PlaceCreator sounds={sounds}/>
+        <PlaceCreator places={places} sounds={sounds}/>
         </>
     )
 }
