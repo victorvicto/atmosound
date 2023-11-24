@@ -4,6 +4,7 @@ import 'jquery/dist/jquery.min.js'
 import 'bootstrap/dist/js/bootstrap.min.js'
 
 import MainPage from './components/MainPage.jsx';
+import SoundsLibPage from './components/SoundsLibPage.jsx';
 
 function App() {
     const[error_message, set_error_message] = useState("");
@@ -28,13 +29,17 @@ function App() {
         return base_places_status;
     }
 
+    function initialiseSounds(){
+        let start_sounds = JSON.parse(localStorage.getItem("sounds"));
+        if (start_sounds === null) {
+            start_sounds = {}
+        }
+        return start_sounds;
+    }
+
     const [places, set_places] = useState(initialisePlaces);
     const [places_status, set_places_status] = useState(initialisePlacesStatus);
-
-    const [sounds, setSounds] = useState({
-        "bell":{},
-        "birds":{}
-    });
+    const [sounds, setSounds] = useState(initialiseSounds);
 
     function addPlace(new_place_name, sounds_list, muffled_list){
         if(places[new_place_name]!==undefined){
@@ -57,7 +62,7 @@ function App() {
                 return;
             }
         }
-        
+
         let new_places = {
             ...places,
             [new_place_name]:{
@@ -121,7 +126,7 @@ function App() {
                 <MainPage places={places} sounds={sounds} add_place={addPlace} places_status={places_status} set_places_status={set_places_status}/>
             </div>
             <div className="tab-pane fade p-5" id="sounds-lib-page" role="tabpanel">
-                <h1>Sounds</h1>
+                <SoundsLibPage sounds={sounds}/>
             </div>
         </div>
         {error_toast}
