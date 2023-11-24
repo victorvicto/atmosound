@@ -32,7 +32,10 @@ function App() {
     function initialiseSounds(){
         let start_sounds = JSON.parse(localStorage.getItem("sounds"));
         if (start_sounds === null) {
-            start_sounds = {}
+            start_sounds = {
+                "bell":{},
+                "birds":{}
+            }
         }
         return start_sounds;
     }
