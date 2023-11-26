@@ -13,7 +13,11 @@ function PlaceCreator({places, sounds, add_place}){
         set_sounds_list(sounds_list.concat([{
             name:"",
             average_time:0,
-            volume:1
+            volume:1,
+            morning: true,
+            day: true,
+            evening: true,
+            night: true
         }]));
     }
 
@@ -25,12 +29,16 @@ function PlaceCreator({places, sounds, add_place}){
 
     function changeSound(event, index, property){
         let new_sounds_list = [...sounds_list];
-        new_sounds_list[index][property] = event.target.value.toLowerCase();
-        if("max" in event.target){
-            if(parseFloat(event.target.value)>parseFloat(event.target.max)) new_sounds_list[index][property] = event.target.max;
-        }
-        if("min" in event.target){
-            if(parseFloat(event.target.value)<parseFloat(event.target.min)) new_sounds_list[index][property] = event.target.min;
+        console.log(event.target);
+        if(event.target.type=="checkbox") new_sounds_list[index][property] = event.target.checked;
+        else {
+            new_sounds_list[index][property] = event.target.value.toLowerCase();
+            if("max" in event.target){
+                if(parseFloat(event.target.value)>parseFloat(event.target.max)) new_sounds_list[index][property] = event.target.max;
+            }
+            if("min" in event.target){
+                if(parseFloat(event.target.value)<parseFloat(event.target.min)) new_sounds_list[index][property] = event.target.min;
+            }
         }
         set_sounds_list(new_sounds_list);
     }
@@ -64,10 +72,8 @@ function PlaceCreator({places, sounds, add_place}){
     if(sounds_list.length>0){
         sounds_list_html = sounds_list.map((sound, i) => 
             <AddedSound key={"added-sound-"+i}
-                        sound_name={sound.name}
+                        sound={sound}
                         sound_name_correct={sounds[sound.name]!==undefined}
-                        average_time={sound.average_time}
-                        volume={sound.volume}
                         changeSound={(event, property) => {changeSound(event, i, property)}}
                         deleteSound={()=> {deleteSound(i)}}/>
         );
