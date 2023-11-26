@@ -4,10 +4,14 @@ import AddedSound from './AddedSound';
 import AddedMuffled from './AddedMuffled';
 import { func } from 'prop-types';
 
-function PlaceCreator({places, sounds, add_place}){
+function PlaceEditor({edited_place_name, places, sounds, save_place}){
     const [sounds_list, set_sounds_list] = useState([]);
     const [muffled_list, set_muffled_list] = useState([]);
     const [place_name, set_place_name] = useState("");
+
+    if(place_name=="" && edited_place_name!==""){
+        set_place_name(edited_place_name);
+    }
 
     function addSound(){
         set_sounds_list(sounds_list.concat([{
@@ -133,7 +137,7 @@ function PlaceCreator({places, sounds, add_place}){
                                 <button type="button" className="btn btn-outline-primary btn-sm mt-2" onClick={addMuffled}>Add muffled place</button>
                             </div>
                             <button type="button" className="btn btn-primary" onClick={()=>{
-                                add_place(place_name, sounds_list, muffled_list);
+                                save_place(place_name, sounds_list, muffled_list);
                                 reset_form();}}>Create place</button>
                         </form>
                     </div>
@@ -143,4 +147,4 @@ function PlaceCreator({places, sounds, add_place}){
     )
 }
 
-export default PlaceCreator
+export default PlaceEditor;

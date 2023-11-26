@@ -1,9 +1,11 @@
 import { useState } from 'react'
 
 import PlaceBadge from './PlaceBadge.jsx';
-import PlaceCreator from './PlaceCreator.jsx';
+import PlaceEditor from './PlaceEditor.jsx';
 
 function MainPage({places, sounds, add_place, places_status, set_places_status}) {
+
+    const [edited_place_name, set_edited_place_name] = useState(""); // -1 means no place is being edited
     
     function turnOffAllPlaces(final_places_status){
         for(let place_name in final_places_status){
@@ -56,7 +58,7 @@ function MainPage({places, sounds, add_place, places_status, set_places_status})
                 Add place
             </button>
         </div>
-        <PlaceCreator places={places} sounds={sounds} add_place={add_place}/>
+        <PlaceEditor edited_place_name={""} places={places} sounds={sounds} save_place={add_place}/>
         </>
     )
 }
