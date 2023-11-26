@@ -58,7 +58,7 @@ function MainPage({places, sounds, add_place, places_status, set_places_status})
                 Add place
             </button>
         </div>
-        <PlaceEditor edited_place_name={""} places={places} sounds={sounds} save_place={add_place}/>
+        <PlaceEditor edited_place_name={edited_place_name} places={places} sounds={sounds} save_place={add_place}/>
         </>
     )
 }
