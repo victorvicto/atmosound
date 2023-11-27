@@ -5,9 +5,15 @@ import SoundPack from './SoundPack'
 function SoundCard({sound_name, sound_info, changeSound}){
     const [is_open, set_is_open] = useState(false);
 
+    function changeSoundPack(sound_pack_name, new_sound_pack){
+        let new_sound_info = {...sound_info};
+        new_sound_info.sound_packs[sound_pack_name] = new_sound_pack;
+        changeSound(sound_name, sound_name, new_sound_info);
+    }
+
     const sound_packs_html = sound_info.sound_packs.map((sound_pack, i) => 
             <li key={sound_name+"-sound-pack-"+i} className="list-group-item d-flex flex-column gap-2 p-2">
-                <SoundPack sound_pack_name={"Sound pack "+i} sound_pack={sound_pack}/>     
+                <SoundPack sound_pack_name={"Sound pack "+i} sound_pack={sound_pack} changeSoundPack={changeSoundPack}/>     
             </li>
         );
 
