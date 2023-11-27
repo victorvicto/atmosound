@@ -7,7 +7,7 @@ function SoundsLibPage({sounds, addSound}){
 
     return (
         <>
-        <div className='d-flex flex-column gap-2'>
+        <div className='d-flex flex-column gap-3'>
             {sound_cards}
         </div>
         <div className='d-flex justify-content-center mt-3'>
