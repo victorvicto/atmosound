@@ -6,12 +6,15 @@ import { useEffect } from 'react';
 
 function PlaceEditor({edited_place_name, places, sounds, savePlace, deletePlace, closeEditor}){
 
-    const [temp_place_info, set_temp_place_info] = useState(places[edited_place_name]);
+    function clone_place(){
+        return structuredClone(places[edited_place_name])
+    }
+    const [temp_place_info, set_temp_place_info] = useState(clone_place);
     const [temp_place_name, set_temp_place_name] = useState(edited_place_name);
 
     useEffect(()=>{
         set_temp_place_name(edited_place_name);
-        set_temp_place_info({...places[edited_place_name]});
+        set_temp_place_info(clone_place());
     }, [edited_place_name])
 
     function addSound(){
