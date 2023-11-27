@@ -22,7 +22,7 @@ function PlaceBadge({place_name, place_status, modify_status, switchStatus, open
         <div className={'card border-'+scheme+(place_status.state=="off"?' shadow-sm':' border-3 shadow')}>
             <div className='card-body d-flex flex-row gap-2 align-items-center'>
                 <h5 className={"card-title mb-0 text-capitalize text-"+scheme}>
-                    <a onClick={open_place_editor}>{place_name}</a>
+                    <a onClick={open_place_editor} href="#" className='text-reset'>{place_name}</a>
                 </h5>
                 <button onClick={()=>{switchStatus("on")}}
                     className={'btn btn'+(place_status.state=='on'?'':'-outline')+'-danger btn-sm border-2'}>

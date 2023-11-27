@@ -113,6 +113,16 @@ function App() {
         return true;
     }
 
+    function deletePlace(place_name){
+        let new_places = {...places};
+        let new_places_status = {...places_status};
+        delete new_places[place_name];
+        delete new_places_status[place_name];
+        set_places(new_places);
+        set_places_status(new_places_status);
+        localStorage.setItem("places", JSON.stringify(new_places));
+    }
+
     let error_toast = null;
     if(error_message.length>0){
         error_toast = (
@@ -153,7 +163,13 @@ function App() {
         </nav>
         <div className="tab-content">
             <div className="tab-pane fade show active p-5" id="main-page" role="tabpanel">
-                <MainPage places={places} sounds={sounds} addPlace={addPlace} savePlace={savePlace} places_status={places_status} set_places_status={set_places_status}/>
+                <MainPage places={places}
+                            sounds={sounds} 
+                            addPlace={addPlace} 
+                            savePlace={savePlace} 
+                            deletePlace={deletePlace} 
+                            places_status={places_status} 
+                            set_places_status={set_places_status}/>
             </div>
             <div className="tab-pane fade p-5" id="sounds-lib-page" role="tabpanel">
                 <SoundsLibPage sounds={sounds}/>

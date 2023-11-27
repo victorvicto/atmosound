@@ -17,30 +17,30 @@ function AddedSound({sound, sound_name_correct, changeSound, deleteSound}) {
                     <input type='number' className="form-control form-control-sm w-50" value={sound.volume} onChange={(e)=>changeSound(e, "volume")} min={0} max={2} step={0.05}/>
                 </div>
             </li>
-            <li className="list-group-item d-flex flex-row gap-3 flex-wrap">
-                <div className="d-flex flex-row align-items-center gap-2">
-                    <input className="form-check-input" type="checkbox" checked={sound.morning} onChange={(e)=>changeSound(e, "morning")}/>
-                    <label className="form-check-label">
+            <li className="list-group-item d-flex flex-row justify-content-between gap-3 flex-wrap">
+                <div className="d-flex flex-row align-items-center gap-1">
+                    <input type="checkbox" checked={sound.morning} onChange={(e)=>changeSound(e, "morning")}/>
+                    <small>
                         Morning
-                    </label>
+                    </small>
                 </div>
-                <div className="d-flex flex-row align-items-center gap-2">
-                    <input className="form-check-input" type="checkbox" checked={sound.day} onChange={(e)=>changeSound(e, "day")}/>
-                    <label className="form-check-label">
+                <div className="d-flex flex-row align-items-center gap-1">
+                    <input type="checkbox" checked={sound.day} onChange={(e)=>changeSound(e, "day")}/>
+                    <small>
                         Day
-                    </label>
+                    </small>
                 </div>
-                <div className="d-flex flex-row align-items-center gap-2">
-                    <input className="form-check-input" type="checkbox" checked={sound.evening} onChange={(e)=>changeSound(e, "evening")}/>
-                    <label className="form-check-label">
+                <div className="d-flex flex-row align-items-center gap-1">
+                    <input type="checkbox" checked={sound.evening} onChange={(e)=>changeSound(e, "evening")}/>
+                    <small>
                         Evening
-                    </label>
+                    </small>
                 </div>
-                <div className="d-flex flex-row align-items-center gap-2">
-                    <input className="form-check-input" type="checkbox" checked={sound.night} onChange={(e)=>changeSound(e, "night")}/>
-                    <label className="form-check-label">
+                <div className="d-flex flex-row align-items-center gap-1">
+                    <input type="checkbox" checked={sound.night} onChange={(e)=>changeSound(e, "night")}/>
+                    <small>
                         Night
-                    </label>
+                    </small>
                 </div>
             </li>
         </ul>

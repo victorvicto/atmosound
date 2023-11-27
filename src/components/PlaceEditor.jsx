@@ -4,7 +4,7 @@ import AddedSound from './AddedSound';
 import AddedMuffled from './AddedMuffled';
 import { func } from 'prop-types';
 
-function PlaceEditor({edited_place_name, places, sounds, savePlace, closeEditor}){
+function PlaceEditor({edited_place_name, places, sounds, savePlace, deletePlace, closeEditor}){
     const [sounds_list, set_sounds_list] = useState(places[edited_place_name].sounds_list);
     const [muffled_list, set_muffled_list] = useState(places[edited_place_name].muffled_list);
     const [place_name, set_place_name] = useState(edited_place_name);
@@ -93,42 +93,44 @@ function PlaceEditor({edited_place_name, places, sounds, savePlace, closeEditor}
 
     return (
         <div className="offcanvas offcanvas-start show"
-            tabIndex="-1"
-            // aria-labelledby="place-creator-modal"
-            // aria-hidden="true"
-            >
+            tabIndex="-1">
             <div className="offcanvas-header">
                 <h5 className="offcanvas-title">Place Editor</h5>
                 <button type="button" className="btn-close" aria-label="Close" onClick={closeEditor}></button>
             </div>
             <div className="offcanvas-body">
-                <form>
-                    <div className="mb-3">
-                        <label className="form-label">Name of the place</label>
-                        <input type="text"
-                            value={place_name}
-                            onChange={(e)=>{set_place_name(e.target.value.toLowerCase())}}
-                            className={"form-control "+((places[place_name]!==undefined && place_name!=edited_place_name) || place_name.length==0?"is-invalid":"is-valid")}/>
+                <div className="mb-3">
+                    <label className="form-label">Name of the place</label>
+                    <input type="text"
+                        value={place_name}
+                        onChange={(e)=>{set_place_name(e.target.value.toLowerCase())}}
+                        className={"form-control "+((places[place_name]!==undefined && place_name!=edited_place_name) || place_name.length==0?"is-invalid":"is-valid")}/>
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Sounds</label>
+                    <div className='d-flex flex-column gap-2'>
+                        {sounds_list_html}
                     </div>
-                    <div className="mb-3">
-                        <label className="form-label">Sounds</label>
-                        <div className='d-flex flex-column gap-2'>
-                            {sounds_list_html}
-                        </div>
-                        <button type="button" className="btn btn-outline-primary btn-sm mt-2" onClick={addSound}>Add sound</button>
+                    <button type="button" className="btn btn-outline-primary btn-sm mt-2" onClick={addSound}>Add sound</button>
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Muffled places</label>
+                    <div className='d-flex flex-column gap-2'>
+                        {muffled_list_html}
                     </div>
-                    <div className="mb-3">
-                        <label className="form-label">Muffled places</label>
-                        <div className='d-flex flex-column gap-2'>
-                            {muffled_list_html}
-                        </div>
-                        <button type="button" className="btn btn-outline-primary btn-sm mt-2" onClick={addMuffled}>Add muffled place</button>
-                    </div>
-                    <button type="button" className="btn btn-primary" onClick={()=>{
+                    <button type="button" className="btn btn-outline-primary btn-sm mt-2" onClick={addMuffled}>Add muffled place</button>
+                </div>
+                <div className='d-flex flex-column gap-2'>
+                    <button type="button" className="btn btn-primary btn-lg" onClick={()=>{
                         if(savePlace(edited_place_name, place_name, {sounds_list: sounds_list, muffled_list: muffled_list})){
                             closeEditor();
                         }}}>Save place</button>
-                </form>
+                    <button type="button" className="btn btn-outline-danger" onClick={()=>{
+                        if(confirm("Are you sure you want to delete the place called: "+edited_place_name)){
+                            deletePlace(edited_place_name);
+                            closeEditor();
+                        }}}>Delete place <i className="fa-solid fa-trash"></i></button>
+                </div>
             </div>
         </div>
     )

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import PlaceBadge from './PlaceBadge.jsx';
 import PlaceEditor from './PlaceEditor.jsx';
 
-function MainPage({places, sounds, addPlace, savePlace, places_status, set_places_status}) {
+function MainPage({places, sounds, addPlace, savePlace, deletePlace, places_status, set_places_status}) {
 
     const [edited_place_name, set_edited_place_name] = useState(""); // "" means no place is being edited
     
@@ -62,6 +62,7 @@ function MainPage({places, sounds, addPlace, savePlace, places_status, set_place
                                                 places={places}
                                                 sounds={sounds}
                                                 savePlace={savePlace}
+                                                deletePlace={deletePlace}
                                                 closeEditor={()=>set_edited_place_name("")}/>}
         </>
     )
