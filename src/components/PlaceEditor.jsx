@@ -4,14 +4,10 @@ import AddedSound from './AddedSound';
 import AddedMuffled from './AddedMuffled';
 import { func } from 'prop-types';
 
-function PlaceEditor({edited_place_name, places, sounds, save_place}){
-    const [sounds_list, set_sounds_list] = useState([]);
-    const [muffled_list, set_muffled_list] = useState([]);
-    const [place_name, set_place_name] = useState("");
-
-    if(place_name=="" && edited_place_name!==""){
-        set_place_name(edited_place_name);
-    }
+function PlaceEditor({edited_place_name, places, sounds, savePlace, closeEditor}){
+    const [sounds_list, set_sounds_list] = useState(places[edited_place_name].sounds_list);
+    const [muffled_list, set_muffled_list] = useState(places[edited_place_name].muffled_list);
+    const [place_name, set_place_name] = useState(edited_place_name);
 
     function addSound(){
         set_sounds_list(sounds_list.concat([{
@@ -88,60 +84,51 @@ function PlaceEditor({edited_place_name, places, sounds, save_place}){
         muffled_list_html = muffled_list.map((muffled, i) => 
             <AddedMuffled key={"added-muffled-"+i}
                         muffled_name={muffled.name}
-                        muffled_name_correct={places[muffled.name]!==undefined}
+                        muffled_name_correct={places[muffled.name]!==undefined && muffled.name!=edited_place_name && muffled.name!=place_name}
                         muffle_amount={muffled.muffle_amount}
                         changeMuffled={(event, property) => {changeMuffled(event, i, property)}}
                         deleteMuffled={()=> {deleteMuffled(i)}}/>
         );
     }
 
-    function reset_form(){
-        set_sounds_list([]);
-        set_muffled_list([]);
-        set_place_name("");
-    }
-
     return (
-        <div className="modal fade"
-            id="place-creator-modal"
+        <div className="offcanvas offcanvas-start show"
             tabIndex="-1"
-            aria-labelledby="place-creator-modal"
-            aria-hidden="true">
-            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title">Create new place</h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            // aria-labelledby="place-creator-modal"
+            // aria-hidden="true"
+            >
+            <div className="offcanvas-header">
+                <h5 className="offcanvas-title">Place Editor</h5>
+                <button type="button" className="btn-close" aria-label="Close" onClick={closeEditor}></button>
+            </div>
+            <div className="offcanvas-body">
+                <form>
+                    <div className="mb-3">
+                        <label className="form-label">Name of the place</label>
+                        <input type="text"
+                            value={place_name}
+                            onChange={(e)=>{set_place_name(e.target.value.toLowerCase())}}
+                            className={"form-control "+((places[place_name]!==undefined && place_name!=edited_place_name) || place_name.length==0?"is-invalid":"is-valid")}/>
                     </div>
-                    <div className="modal-body">
-                        <form>
-                            <div className="mb-3">
-                                <label className="form-label">Name of the place</label>
-                                <input type="text"
-                                    value={place_name}
-                                    onChange={(e)=>{set_place_name(e.target.value.toLowerCase())}}
-                                    className={"form-control "+(places[place_name]!==undefined || place_name.length==0?"is-invalid":"is-valid")}/>
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label">Sounds</label>
-                                <div className='d-flex flex-column gap-2'>
-                                    {sounds_list_html}
-                                </div>
-                                <button type="button" className="btn btn-outline-primary btn-sm mt-2" onClick={addSound}>Add sound</button>
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label">Muffled places</label>
-                                <div className='d-flex flex-column gap-2'>
-                                    {muffled_list_html}
-                                </div>
-                                <button type="button" className="btn btn-outline-primary btn-sm mt-2" onClick={addMuffled}>Add muffled place</button>
-                            </div>
-                            <button type="button" className="btn btn-primary" onClick={()=>{
-                                save_place(place_name, sounds_list, muffled_list);
-                                reset_form();}}>Create place</button>
-                        </form>
+                    <div className="mb-3">
+                        <label className="form-label">Sounds</label>
+                        <div className='d-flex flex-column gap-2'>
+                            {sounds_list_html}
+                        </div>
+                        <button type="button" className="btn btn-outline-primary btn-sm mt-2" onClick={addSound}>Add sound</button>
                     </div>
-                </div>
+                    <div className="mb-3">
+                        <label className="form-label">Muffled places</label>
+                        <div className='d-flex flex-column gap-2'>
+                            {muffled_list_html}
+                        </div>
+                        <button type="button" className="btn btn-outline-primary btn-sm mt-2" onClick={addMuffled}>Add muffled place</button>
+                    </div>
+                    <button type="button" className="btn btn-primary" onClick={()=>{
+                        if(savePlace(edited_place_name, place_name, {sounds_list: sounds_list, muffled_list: muffled_list})){
+                            closeEditor();
+                        }}}>Save place</button>
+                </form>
             </div>
         </div>
     )

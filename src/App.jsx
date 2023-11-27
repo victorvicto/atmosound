@@ -44,46 +44,73 @@ function App() {
     const [places_status, set_places_status] = useState(initialisePlacesStatus);
     const [sounds, setSounds] = useState(initialiseSounds);
 
-    function addPlace(new_place_name, sounds_list, muffled_list){
-        if(places[new_place_name]!==undefined){
-            set_error_message("Tried to create a place with a name that already exists");
-            return;
+    function addPlace(){
+        let new_place_name = "new";
+        let i = 0;
+        while(new_place_name in places){
+            new_place_name = "new" + i;
+            i++;
         }
-        if(new_place_name.length==0){
-            set_error_message("Tried to create a place with an empty name");
-            return;
-        }
-        for(let sound of sounds_list){
-            if(sounds[sound.name]==undefined){
-                set_error_message("Tried to create a place containing a sound that doesn't exist");
-                return;
-            }
-        }
-        for(let muffled of muffled_list){
-            if(places[muffled.name]==undefined){
-                set_error_message("Tried to create a place containing a muffled place that doesn't exist");
-                return;
-            }
-        }
-
         let new_places = {
             ...places,
             [new_place_name]:{
-                "sounds_list": sounds_list,
-                "muffled_list": muffled_list
+                "sounds_list": [],
+                "muffled_list": []
             }
         };
         set_places(new_places);
-        localStorage.setItem("places", JSON.stringify(new_places));
-
         set_places_status({
             ...places_status,
             [new_place_name]:{
                 "state": "off",
-                "muffle_amount": 0.5,
-                "distance": 50
+                "muffle_amount": 0.5
             }
         });
+        localStorage.setItem("places", JSON.stringify(new_places));
+        return new_place_name;
+    }
+
+    function savePlace(place_name, new_place_name, new_content){
+        if(new_place_name!=place_name){
+            if(places[new_place_name]!==undefined){
+                set_error_message("Tried to create a place with a name that already exists");
+                return false;
+            }
+        }
+        if(new_place_name.length==0){
+            set_error_message("Tried to create a place with an empty name");
+            return false;
+        }
+        for(let sound of new_content.sounds_list){
+            if(sounds[sound.name]==undefined){
+                set_error_message("Tried to create a place containing a sound that doesn't exist");
+                return false;
+            }
+        }
+        for(let muffled of new_content.muffled_list){
+            if(places[muffled.name]==undefined){
+                set_error_message("Tried to create a place containing a muffled place that doesn't exist");
+                return false;
+            }
+            if(muffled.name==place_name || muffled.name==new_place_name){
+                set_error_message("Tried to create a place containing itself as a muffled place");
+                return false;
+            }
+        }
+
+        let new_places = {...places};
+        new_places[new_place_name] = new_content;
+        if(new_place_name!=place_name){
+            delete new_places[place_name];
+
+            let new_places_status = {...places_status};
+            new_places_status[new_place_name] = {...new_places_status[place_name]};
+            delete new_places_status[place_name];
+            set_places_status(new_places_status);
+        }
+        set_places(new_places);
+        localStorage.setItem("places", JSON.stringify(new_places));
+        return true;
     }
 
     let error_toast = null;
@@ -126,7 +153,7 @@ function App() {
         </nav>
         <div className="tab-content">
             <div className="tab-pane fade show active p-5" id="main-page" role="tabpanel">
-                <MainPage places={places} sounds={sounds} add_place={addPlace} places_status={places_status} set_places_status={set_places_status}/>
+                <MainPage places={places} sounds={sounds} addPlace={addPlace} savePlace={savePlace} places_status={places_status} set_places_status={set_places_status}/>
             </div>
             <div className="tab-pane fade p-5" id="sounds-lib-page" role="tabpanel">
                 <SoundsLibPage sounds={sounds}/>

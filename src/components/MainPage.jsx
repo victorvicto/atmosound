@@ -3,9 +3,9 @@ import { useState } from 'react'
 import PlaceBadge from './PlaceBadge.jsx';
 import PlaceEditor from './PlaceEditor.jsx';
 
-function MainPage({places, sounds, add_place, places_status, set_places_status}) {
+function MainPage({places, sounds, addPlace, savePlace, places_status, set_places_status}) {
 
-    const [edited_place_name, set_edited_place_name] = useState(""); // -1 means no place is being edited
+    const [edited_place_name, set_edited_place_name] = useState(""); // "" means no place is being edited
     
     function turnOffAllPlaces(final_places_status){
         for(let place_name in final_places_status){
@@ -43,7 +43,8 @@ function MainPage({places, sounds, add_place, places_status, set_places_status})
                         place_name={place_name}
                         place_status={places_status[place_name]}
                         modify_status={(e, property)=>modifyPlacesStatus(e, place_name, property)}
-                        switchStatus={(new_status)=>{switchState(place_name, new_status)}}/>
+                        switchStatus={(new_status)=>{switchState(place_name, new_status)}}
+                        open_place_editor={()=>set_edited_place_name(place_name)}/>
         );
 
     return (
@@ -53,12 +54,15 @@ function MainPage({places, sounds, add_place, places_status, set_places_status})
         </div>
         <div className='d-flex justify-content-center mt-3'>
             <button className="btn btn-outline-primary btn-lg"
-                    data-bs-toggle="modal"
-                    data-bs-target="#place-creator-modal">
+                    onClick={()=>set_edited_place_name(addPlace())}>
                 Add place
             </button>
         </div>
-        <PlaceEditor edited_place_name={edited_place_name} places={places} sounds={sounds} save_place={add_place}/>
+        {edited_place_name!="" && <PlaceEditor edited_place_name={edited_place_name}
+                                                places={places}
+                                                sounds={sounds}
+                                                savePlace={savePlace}
+                                                closeEditor={()=>set_edited_place_name("")}/>}
         </>
     )
 }
