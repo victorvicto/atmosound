@@ -1,8 +1,11 @@
 import SoundCard from './SoundCard'
 
-function SoundsLibPage({sounds, addSound}){
+function SoundsLibPage({sounds, addSound, changeSound}){
     const sound_cards = Object.entries(sounds).map(([sound_name, sound_info]) => 
-            <SoundCard key={sound_name+'-soundcard'} sound_name={sound_name} sound_info={sound_info}/>
+            <SoundCard key={sound_name+'-soundcard'}
+                        sound_name={sound_name}
+                        sound_info={sound_info}
+                        changeSound={changeSound}/>
         );
 
     return (

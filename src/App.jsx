@@ -113,6 +113,14 @@ function App() {
         if(new_place_name!=place_name){
             delete new_places[place_name];
 
+            // modifying all places that were using this place
+            for(let other_place_name in new_places){
+                let index = new_places[other_place_name].muffled_list.indexOf(place_name);
+                if (index !== -1) {
+                    new_places[other_place_name].muffled_list[index] = new_place_name;
+                }
+            }
+
             let new_places_status = {...places_status};
             new_places_status[new_place_name] = {...new_places_status[place_name]};
             delete new_places_status[place_name];
@@ -164,6 +172,38 @@ function App() {
         localStorage.setItem("sounds", JSON.stringify(new_sounds));
     }
 
+    function changeSound(sound_name, new_sound_name, new_content){
+        if(new_sound_name!=sound_name){
+            if(sounds[new_sound_name]!==undefined){
+                set_error_message("Tried to rename sound to already existing name");
+                return false;
+            }
+        }
+        if(new_sound_name.length==0){
+            set_error_message("Tried to set sound name to empty");
+            return false;
+        }
+
+        let new_sounds = {...sounds};
+        new_sounds[new_sound_name] = new_content;
+        if(new_sound_name!=sound_name){
+            delete new_sounds[sound_name];
+
+            // modifying all places that use this sound
+            let new_places = {...places};
+            for(let place_name in places){
+                let index = new_places[place_name].sounds_list.indexOf(sound_name);
+                if (index !== -1) {
+                    new_places[place_name].sounds_list[index] = new_sound_name;
+                }
+            }
+            set_places(new_places);
+        }
+        set_sounds(new_sounds);
+        localStorage.setItem("sounds", JSON.stringify(new_sounds));
+        return true;
+    }
+
     let error_toast = null;
     if(error_message.length>0){
         error_toast = (
@@ -213,7 +253,7 @@ function App() {
                             set_places_status={set_places_status}/>
             </div>
             <div className="tab-pane fade p-2 p-md-5" id="sounds-lib-page" role="tabpanel">
-                <SoundsLibPage sounds={sounds} addSound={addSound}/>
+                <SoundsLibPage sounds={sounds} addSound={addSound} changeSound={changeSound}/>
             </div>
         </div>
         {error_toast}
