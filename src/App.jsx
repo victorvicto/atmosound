@@ -32,17 +32,27 @@ function App() {
     function initialiseSounds(){
         let start_sounds = JSON.parse(localStorage.getItem("sounds"));
         if (start_sounds === null) {
-            start_sounds = {
-                "bell":{},
-                "birds":{}
-            }
+            start_sounds = {}
         }
         return start_sounds;
     }
 
+    function initialiseBiomes(){
+        let start_biomes = JSON.parse(localStorage.getItem("biomes"));
+        if (start_biomes === null) {
+            start_biomes = {
+                "default":{},
+                "icelands":{},
+                "oriental":{}
+            }
+        }
+        return start_biomes;
+    }
+
     const [places, set_places] = useState(initialisePlaces);
     const [places_status, set_places_status] = useState(initialisePlacesStatus);
-    const [sounds, setSounds] = useState(initialiseSounds);
+    const [sounds, set_sounds] = useState(initialiseSounds);
+    const [biomes, set_biomes] = useState(initialiseBiomes);
 
     function addPlace(){
         let new_place_name = "new";
@@ -123,6 +133,37 @@ function App() {
         localStorage.setItem("places", JSON.stringify(new_places));
     }
 
+    function addSound(){
+        let new_sound_name = "new sound";
+        let i = 0;
+        while(new_sound_name in sounds){
+            new_sound_name = "new sound " + i;
+            i++;
+        }
+        let biomes_presence = {};
+        for(let biome in biomes){
+            biomes_presence[biome] = true;
+        }
+        let new_sounds = {
+            ...sounds,
+            [new_sound_name]:{
+                "sound_packs":[
+                    {
+                        "sound_files": [
+                            {
+                                "url": "https://your-sound.url/here",
+                                "volume_mul": 1
+                            }
+                        ],
+                        "biome_presences": biomes_presence
+                    }
+                ]
+            }
+        };
+        set_sounds(new_sounds);
+        localStorage.setItem("sounds", JSON.stringify(new_sounds));
+    }
+
     let error_toast = null;
     if(error_message.length>0){
         error_toast = (
@@ -172,7 +213,7 @@ function App() {
                             set_places_status={set_places_status}/>
             </div>
             <div className="tab-pane fade p-5" id="sounds-lib-page" role="tabpanel">
-                <SoundsLibPage sounds={sounds}/>
+                <SoundsLibPage sounds={sounds} addSound={addSound}/>
             </div>
         </div>
         {error_toast}
