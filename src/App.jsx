@@ -115,9 +115,8 @@ function App() {
 
             // modifying all places that were using this place
             for(let other_place_name in new_places){
-                let index = new_places[other_place_name].muffled_list.indexOf(place_name);
-                if (index !== -1) {
-                    new_places[other_place_name].muffled_list[index] = new_place_name;
+                for(let muffled of new_places[other_place_name].muffled_list){
+                    if(muffled.name==place_name) muffled.name = new_place_name;
                 }
             }
 
@@ -136,6 +135,16 @@ function App() {
         let new_places_status = {...places_status};
         delete new_places[place_name];
         delete new_places_status[place_name];
+
+        // modifying all places that were using this place
+        for(let other_place_name in new_places){
+            let new_muffled_list = []
+            for(let muffled of new_places[other_place_name].muffled_list){
+                if(muffled.name!=place_name) new_muffled_list.push(muffled);
+            }
+            new_places[other_place_name].muffled_list = new_muffled_list;
+        }
+
         set_places(new_places);
         set_places_status(new_places_status);
         localStorage.setItem("places", JSON.stringify(new_places));
@@ -191,10 +200,9 @@ function App() {
 
             // modifying all places that use this sound
             let new_places = {...places};
-            for(let place_name in places){
-                let index = new_places[place_name].sounds_list.indexOf(sound_name);
-                if (index !== -1) {
-                    new_places[place_name].sounds_list[index] = new_sound_name;
+            for(let place_name in new_places){
+                for(let sound of new_places[place_name].sounds_list){
+                    if(sound.name==sound_name) sound.name = new_sound_name;
                 }
             }
             set_places(new_places);

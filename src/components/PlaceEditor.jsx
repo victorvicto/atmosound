@@ -2,15 +2,21 @@ import { useState } from 'react';
 
 import AddedSound from './AddedSound';
 import AddedMuffled from './AddedMuffled';
-import { func } from 'prop-types';
+import { useEffect } from 'react';
 
 function PlaceEditor({edited_place_name, places, sounds, savePlace, deletePlace, closeEditor}){
-    const [sounds_list, set_sounds_list] = useState(places[edited_place_name].sounds_list);
-    const [muffled_list, set_muffled_list] = useState(places[edited_place_name].muffled_list);
-    const [place_name, set_place_name] = useState(edited_place_name);
+
+    const [temp_place_info, set_temp_place_info] = useState(places[edited_place_name]);
+    const [temp_place_name, set_temp_place_name] = useState(edited_place_name);
+
+    useEffect(()=>{
+        set_temp_place_name(edited_place_name);
+        set_temp_place_info({...places[edited_place_name]});
+    }, [edited_place_name])
 
     function addSound(){
-        set_sounds_list(sounds_list.concat([{
+        let new_temp_place_info = {...temp_place_info};
+        new_temp_place_info.sounds_list.push({
             name:"",
             average_time:0,
             volume:1,
@@ -18,59 +24,61 @@ function PlaceEditor({edited_place_name, places, sounds, savePlace, deletePlace,
             day: true,
             evening: true,
             night: true
-        }]));
+        });
+        set_temp_place_info(new_temp_place_info);
     }
 
     function deleteSound(index){
-        let new_sounds_list = [...sounds_list];
-        new_sounds_list.splice(index, 1);
-        set_sounds_list(new_sounds_list);
+        let new_temp_place_info = {...temp_place_info};
+        new_temp_place_info.sounds_list.splice(index, 1);
+        set_temp_place_info(new_temp_place_info);
     }
 
     function changeSound(event, index, property){
-        let new_sounds_list = [...sounds_list];
-        console.log(event.target);
-        if(event.target.type=="checkbox") new_sounds_list[index][property] = event.target.checked;
+        let new_temp_place_info = {...temp_place_info};
+        if(event.target.type=="checkbox") new_temp_place_info.sounds_list[index][property] = event.target.checked;
         else {
-            new_sounds_list[index][property] = event.target.value.toLowerCase();
+            new_temp_place_info.sounds_list[index][property] = event.target.value.toLowerCase();
             if("max" in event.target){
-                if(parseFloat(event.target.value)>parseFloat(event.target.max)) new_sounds_list[index][property] = event.target.max;
+                if(parseFloat(event.target.value)>parseFloat(event.target.max)) new_temp_place_info.sounds_list[index][property] = event.target.max;
             }
             if("min" in event.target){
-                if(parseFloat(event.target.value)<parseFloat(event.target.min)) new_sounds_list[index][property] = event.target.min;
+                if(parseFloat(event.target.value)<parseFloat(event.target.min)) new_temp_place_info.sounds_list[index][property] = event.target.min;
             }
         }
-        set_sounds_list(new_sounds_list);
+        set_temp_place_info(new_temp_place_info);
     }
 
     function addMuffled(){
-        set_muffled_list(muffled_list.concat([{
+        let new_temp_place_info = {...temp_place_info};
+        new_temp_place_info.muffled_list.push({
             name:"",
             muffle_amount:0.5
-        }]));
+        });
+        set_temp_place_info(new_temp_place_info);
     }
 
     function deleteMuffled(index){
-        let new_muffled_list = [...muffled_list];
-        new_muffled_list.splice(index, 1);
-        set_muffled_list(new_muffled_list);
+        let new_temp_place_info = {...temp_place_info};
+        new_temp_place_info.muffled_list.splice(index, 1);
+        set_temp_place_info(new_temp_place_info);
     }
 
     function changeMuffled(event, index, property){
-        let new_muffled_list = [...muffled_list];
-        new_muffled_list[index][property] = event.target.value.toLowerCase();
+        let new_temp_place_info = {...temp_place_info};
+        new_temp_place_info.muffled_list[index][property] = event.target.value.toLowerCase();
         if("max" in event.target){
-            if(parseFloat(event.target.value)>parseFloat(event.target.max)) new_muffled_list[index][property] = event.target.max;
+            if(parseFloat(event.target.value)>parseFloat(event.target.max)) new_temp_place_info.muffled_list[index][property] = event.target.max;
         }
         if("min" in event.target){
-            if(parseFloat(event.target.value)<parseFloat(event.target.min)) new_muffled_list[index][property] = event.target.min;
+            if(parseFloat(event.target.value)<parseFloat(event.target.min)) new_temp_place_info.muffled_list[index][property] = event.target.min;
         }
-        set_muffled_list(new_muffled_list);
+        set_temp_place_info(new_temp_place_info);
     } 
 
     let sounds_list_html = (<p className='text-body-secondary m-0'><small>No sounds added</small></p>);
-    if(sounds_list.length>0){
-        sounds_list_html = sounds_list.map((sound, i) => 
+    if(temp_place_info.sounds_list.length>0){
+        sounds_list_html = temp_place_info.sounds_list.map((sound, i) => 
             <AddedSound key={"added-sound-"+i}
                         sound={sound}
                         sound_name_correct={sounds[sound.name]!==undefined}
@@ -80,11 +88,11 @@ function PlaceEditor({edited_place_name, places, sounds, savePlace, deletePlace,
     }
 
     let muffled_list_html = (<p className='text-body-secondary m-0'><small>No muffled places added</small></p>);
-    if(muffled_list.length>0){
-        muffled_list_html = muffled_list.map((muffled, i) => 
+    if(temp_place_info.muffled_list.length>0){
+        muffled_list_html = temp_place_info.muffled_list.map((muffled, i) => 
             <AddedMuffled key={"added-muffled-"+i}
                         muffled_name={muffled.name}
-                        muffled_name_correct={places[muffled.name]!==undefined && muffled.name!=edited_place_name && muffled.name!=place_name}
+                        muffled_name_correct={places[muffled.name]!==undefined && muffled.name!=edited_place_name && muffled.name!=temp_place_name}
                         muffle_amount={muffled.muffle_amount}
                         changeMuffled={(event, property) => {changeMuffled(event, i, property)}}
                         deleteMuffled={()=> {deleteMuffled(i)}}/>
@@ -102,9 +110,9 @@ function PlaceEditor({edited_place_name, places, sounds, savePlace, deletePlace,
                 <div className="mb-3">
                     <label className="form-label">Name of the place</label>
                     <input type="text"
-                        value={place_name}
-                        onChange={(e)=>{set_place_name(e.target.value.toLowerCase())}}
-                        className={"form-control "+((places[place_name]!==undefined && place_name!=edited_place_name) || place_name.length==0?"is-invalid":"is-valid")}/>
+                        value={temp_place_name}
+                        onChange={(e)=>{set_temp_place_name(e.target.value.toLowerCase())}}
+                        className={"form-control "+((places[temp_place_name]!==undefined && temp_place_name!=edited_place_name) || temp_place_name.length==0?"is-invalid":"is-valid")}/>
                 </div>
                 <div className="mb-3">
                     <label className="form-label">Sounds</label>
@@ -122,7 +130,7 @@ function PlaceEditor({edited_place_name, places, sounds, savePlace, deletePlace,
                 </div>
                 <div className='d-flex flex-column gap-2'>
                     <button type="button" className="btn btn-primary btn-lg" onClick={()=>{
-                        if(savePlace(edited_place_name, place_name, {sounds_list: sounds_list, muffled_list: muffled_list})){
+                        if(savePlace(edited_place_name, temp_place_name, temp_place_info)){
                             closeEditor();
                         }}}>Save place</button>
                     <button type="button" className="btn btn-outline-danger" onClick={()=>{

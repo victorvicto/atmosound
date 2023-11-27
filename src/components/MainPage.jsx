@@ -5,7 +5,7 @@ import PlaceEditor from './PlaceEditor.jsx';
 
 function MainPage({places, sounds, addPlace, savePlace, deletePlace, places_status, set_places_status}) {
 
-    const [edited_place_name, set_edited_place_name] = useState(""); // "" means no place is being edited
+    const [edited_place_name, set_edited_place_name] = useState("");
     
     function turnOffAllPlaces(final_places_status){
         for(let place_name in final_places_status){
@@ -44,7 +44,9 @@ function MainPage({places, sounds, addPlace, savePlace, deletePlace, places_stat
                         place_status={places_status[place_name]}
                         modify_status={(e, property)=>modifyPlacesStatus(e, place_name, property)}
                         switchStatus={(new_status)=>{switchState(place_name, new_status)}}
-                        open_place_editor={()=>set_edited_place_name(place_name)}/>
+                        open_place_editor={()=>{
+                            set_edited_place_name(place_name);
+                        }}/>
         );
 
     return (
@@ -54,11 +56,13 @@ function MainPage({places, sounds, addPlace, savePlace, deletePlace, places_stat
         </div>
         <div className='d-flex justify-content-center mt-3'>
             <button className="btn btn-outline-primary btn-lg"
-                    onClick={()=>set_edited_place_name(addPlace())}>
+                    onClick={()=>{
+                        set_edited_place_name(addPlace());
+                    }}>
                 Add place
             </button>
         </div>
-        {edited_place_name!="" && <PlaceEditor edited_place_name={edited_place_name}
+        {edited_place_name!="" && <PlaceEditor  edited_place_name={edited_place_name}
                                                 places={places}
                                                 sounds={sounds}
                                                 savePlace={savePlace}
