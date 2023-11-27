@@ -195,6 +195,15 @@ function App() {
 
         let new_sounds = {...sounds};
         new_sounds[new_sound_name] = new_content;
+
+        for(let sound_pack of new_sounds[new_sound_name].sound_packs){
+            if(Object.keys(sound_pack.biome_presences).length==0){
+                for(let biome in biomes){
+                    sound_pack.biome_presences[biome] = false;
+                }
+            }
+        }
+
         if(new_sound_name!=sound_name){
             delete new_sounds[sound_name];
 

@@ -11,6 +11,15 @@ function SoundCard({sound_name, sound_info, changeSound}){
         changeSound(sound_name, sound_name, new_sound_info);
     }
 
+    function addSoundPack(){
+        let new_sound_info = {...sound_info};
+        new_sound_info.sound_packs.push({
+            sound_files: [],
+            biome_presences: {}
+        });
+        changeSound(sound_name, sound_name, new_sound_info);
+    }
+
     const sound_packs_html = sound_info.sound_packs.map((sound_pack, i) => 
             <li key={sound_name+"-sound-pack-"+i} className="list-group-item d-flex flex-column gap-2 p-2">
                 <SoundPack sound_pack_name={"Sound pack "+i} sound_pack={sound_pack} changeSoundPack={changeSoundPack}/>     
@@ -35,6 +44,7 @@ function SoundCard({sound_name, sound_info, changeSound}){
                     <a href='#' onClick={()=>set_is_open(!is_open)}><i className={"fa-solid fa-chevron-"+(is_open?"up":"down")}></i></a>
                 </li>
                 {is_open && sound_packs_html}
+                <button type="button" className="btn btn-primary" onClick={addSoundPack}>Add sound pack</button>
             </ul>
         </div>
     )
