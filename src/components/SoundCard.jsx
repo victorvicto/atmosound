@@ -44,7 +44,11 @@ function SoundCard({sound_name, sound_info, changeSound}){
                     <a href='#' onClick={()=>set_is_open(!is_open)}><i className={"fa-solid fa-chevron-"+(is_open?"up":"down")}></i></a>
                 </li>
                 {is_open && sound_packs_html}
-                <button type="button" className="btn btn-primary" onClick={addSoundPack}>Add sound pack</button>
+                {is_open && 
+                    <li className="list-group-item p-2">
+                        <button type="button" className="btn btn-primary" onClick={addSoundPack}>Add sound pack</button>
+                    </li>
+                }
             </ul>
         </div>
     )
