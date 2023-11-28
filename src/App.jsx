@@ -3,11 +3,20 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'jquery/dist/jquery.min.js'
 import 'bootstrap/dist/js/bootstrap.min.js'
 
+import * as AudioManager from "./AudioManager";
+
 import MainPage from './components/MainPage.jsx';
 import SoundsLibPage from './components/SoundsLibPage.jsx';
 
 function App() {
     const[error_message, set_error_message] = useState("");
+
+    if(localStorage.getItem("transition_time")===null){
+        localStorage.setItem("transition_time", 2000);
+    }
+    if(localStorage.getItem("active_biome")===null){
+        localStorage.setItem("active_biome", "default");
+    }
 
     function initialisePlaces(){
         let start_places = JSON.parse(localStorage.getItem("places"));
@@ -53,6 +62,7 @@ function App() {
     const [places_status, set_places_status] = useState(initialisePlacesStatus);
     const [sounds, set_sounds] = useState(initialiseSounds);
     const [biomes, set_biomes] = useState(initialiseBiomes);
+    const [audio_context_started, set_audio_context_started] = useState(false);
 
     function addPlace(){
         let new_place_name = "new";
@@ -278,7 +288,7 @@ function App() {
                 </div>
             </div>
         </nav>
-        <div className="tab-content">
+        {audio_context_started && <div className="tab-content">
             <div className="tab-pane fade show active p-2 p-md-5" id="main-page" role="tabpanel">
                 <MainPage places={places}
                             sounds={sounds} 
@@ -291,7 +301,17 @@ function App() {
             <div className="tab-pane fade p-2 p-md-5" id="sounds-lib-page" role="tabpanel">
                 <SoundsLibPage sounds={sounds} addSound={addSound} changeSound={changeSound} deleteSound={deleteSound}/>
             </div>
-        </div>
+        </div>}
+        {!audio_context_started && 
+        <div className='d-flex justify-content-center p-5'>
+            <button type="button" className='btn btn-primary btn-lg m-5'
+                    onClick={()=>{
+                        AudioManager.startAudioContext();
+                        set_audio_context_started(true);
+                        }}>
+                        Activate audio context
+            </button>
+        </div>}
         {error_toast}
         </>
     )

@@ -1,11 +1,32 @@
 import { useState } from 'react'
 
+import * as AudioManager from "../AudioManager";
+
 import PlaceBadge from './PlaceBadge.jsx';
 import PlaceEditor from './PlaceEditor.jsx';
 
 function MainPage({places, sounds, addPlace, savePlace, deletePlace, places_status, set_places_status}) {
 
     const [edited_place_name, set_edited_place_name] = useState("");
+
+    function getSoundUrls(sound_name){
+        // TODO make sure to filter based on biomes
+        let urls = []
+        for(let sound_file of sounds[sound_name].sound_packs[0].sound_files){
+            urls.push(sound_file.url);
+        }
+        return urls;
+    }
+
+    function transitionAudio(final_places_status){
+        for(const [place_name, place_status] of Object.entries(final_places_status)){
+            if(place_status.state=="off"){
+                AudioManager.fade_out_place(place_name);
+            } else if(place_status.state=="on"){
+                AudioManager.start_place(place_name, places[place_name].sounds_list, 0, getSoundUrls);
+            }
+        }
+    }
     
     function turnOffAllPlaces(final_places_status){
         for(let place_name in final_places_status){
@@ -29,6 +50,7 @@ function MainPage({places, sounds, addPlace, savePlace, deletePlace, places_stat
             }
             final_places_status[place_name].state = new_state;
         }
+        transitionAudio(final_places_status);
         set_places_status(final_places_status);
     }
 
