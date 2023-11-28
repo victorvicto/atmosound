@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import SoundPack from './SoundPack'
 
-function SoundCard({sound_name, sound_info, changeSound}){
+function SoundCard({sound_name, sound_info, changeSound, deleteSound}){
     const [is_open, set_is_open] = useState(false);
 
     function changeSoundPack(sound_pack_name, new_sound_pack){
@@ -45,8 +45,14 @@ function SoundCard({sound_name, sound_info, changeSound}){
                 </li>
                 {is_open && sound_packs_html}
                 {is_open && 
-                    <li className="list-group-item p-2">
+                    <li className="list-group-item d-flex justify-content-between p-2">
                         <button type="button" className="btn btn-primary" onClick={addSoundPack}>Add sound pack</button>
+                        <button type="button" className="btn btn-outline-danger" onClick={()=>{
+                            if(confirm("Are you sure you want to delete the sound: "+sound_name+"?")){
+                                deleteSound(sound_name);
+                            }}}>
+                                Delete sound <i className="fa-solid fa-trash"></i>
+                        </button>
                     </li>
                 }
             </ul>

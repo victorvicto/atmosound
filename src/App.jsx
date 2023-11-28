@@ -221,6 +221,25 @@ function App() {
         return true;
     }
 
+    function deleteSound(sound_name){
+        let new_sounds = {...sounds};
+        delete new_sounds[sound_name];
+        set_sounds(new_sounds);
+        localStorage.setItem("sounds", JSON.stringify(new_sounds));
+
+        // modifying all places that were using this place
+        let new_places = {...places};
+        for(let place_name in new_places){
+            let new_sounds_list = []
+            for(let sound of new_places[place_name].sounds_list){
+                if(sound.name!=sound_name) new_sounds_list.push(sound);
+            }
+            new_places[place_name].sounds_list = new_sounds_list;
+        }
+        set_places(new_places);
+        localStorage.setItem("places", JSON.stringify(new_places));
+    }
+
     let error_toast = null;
     if(error_message.length>0){
         error_toast = (
@@ -270,7 +289,7 @@ function App() {
                             set_places_status={set_places_status}/>
             </div>
             <div className="tab-pane fade p-2 p-md-5" id="sounds-lib-page" role="tabpanel">
-                <SoundsLibPage sounds={sounds} addSound={addSound} changeSound={changeSound}/>
+                <SoundsLibPage sounds={sounds} addSound={addSound} changeSound={changeSound} deleteSound={deleteSound}/>
             </div>
         </div>
         {error_toast}
