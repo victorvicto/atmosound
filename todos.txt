@@ -3,3 +3,5 @@
 - themes (6h)
 - make biomes selector (5min)
 - make transition_time adjustor (2min)
+- use daytime (30min)
+- making longer sounds start at random moment (20min)
