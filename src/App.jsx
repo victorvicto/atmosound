@@ -22,14 +22,15 @@ function App() {
     function initialisePlaces(){
         let start_places = JSON.parse(localStorage.getItem("places"));
         if (start_places === null) {
-            start_places = {}
+            start_places = {};
+            localStorage.setItem("places", JSON.stringify(start_places));
         }
         return start_places;
     }
 
     function initialisePlacesStatus(){
         const base_places_status = {};
-        for(let place_name in places){
+        for(let place_name in JSON.parse(localStorage.getItem("places"))){
             base_places_status[place_name] = {
                 "state": "off",
                 "muffle_amount": 0.5,
@@ -42,7 +43,8 @@ function App() {
     function initialiseSounds(){
         let start_sounds = JSON.parse(localStorage.getItem("sounds"));
         if (start_sounds === null) {
-            start_sounds = {}
+            start_sounds = {};
+            localStorage.setItem("sounds", JSON.stringify(start_sounds));
         }
         return start_sounds;
     }
@@ -55,6 +57,7 @@ function App() {
                 "icelands":{},
                 "oriental":{}
             }
+            localStorage.setItem("biomes", JSON.stringify(start_biomes));
         }
         return start_biomes;
     }
@@ -251,6 +254,39 @@ function App() {
         localStorage.setItem("places", JSON.stringify(new_places));
     }
 
+    function downloadSetup(){
+        let setup = {
+            "places": places,
+            "sounds": sounds,
+            "biomes": biomes,
+            "free_sound_api_key": localStorage.getItem("freesound_api_key") || ""
+        };
+        let blob = new Blob([JSON.stringify(setup)], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "my-atmosound-setup.json");
+    }
+
+    function uploadSetup(){
+        let input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = e => { 
+            let file = e.target.files[0]; 
+            let reader = new FileReader();
+            reader.readAsText(file,'UTF-8');
+            reader.onload = readerEvent => {
+                let content = JSON.parse(readerEvent.target.result);
+                set_places(content.places);
+                set_sounds(content.sounds);
+                set_biomes(content.biomes);
+                localStorage.setItem("freesound_api_key", content.free_sound_api_key);
+                localStorage.setItem("places", JSON.stringify(content.places));
+                localStorage.setItem("sounds", JSON.stringify(content.sounds));
+                localStorage.setItem("biomes", JSON.stringify(content.biomes));
+                set_places_status(initialisePlacesStatus());
+            }
+        }
+    }
+
     let error_toast = null;
     if(error_message.length>0){
         error_toast = (
@@ -289,8 +325,8 @@ function App() {
                             </button>
                         </li>
                     </ul>
-                    <button type="button" className="btn btn-outline-success" onClick={()=>{set_error_message("coucou")}}>Upload setup</button>
-                    <button type="button" className="btn btn-outline-success ms-2">Save my setup</button>
+                    <button type="button" className="btn btn-outline-success" onClick={uploadSetup}>Upload setup</button>
+                    <button type="button" className="btn btn-outline-success ms-2" onClick={downloadSetup}>Save my setup</button>
                 </div>
             </div>
         </nav>
