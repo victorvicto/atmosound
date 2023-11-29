@@ -19,11 +19,14 @@ function MainPage({places, sounds, addPlace, savePlace, deletePlace, places_stat
     }
 
     function transitionAudio(final_places_status){
+        AudioManager.clear_fading_out_places();
         for(const [place_name, place_status] of Object.entries(final_places_status)){
             if(place_status.state=="off"){
                 AudioManager.fade_out_place(place_name);
             } else if(place_status.state=="on"){
                 AudioManager.start_place(place_name, places[place_name].sounds_list, 0, getSoundUrls);
+            } else if(place_status.state=="muffled"){
+                AudioManager.start_place(place_name, places[place_name].sounds_list, place_status.muffle_amount, getSoundUrls);
             }
         }
     }
