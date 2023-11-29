@@ -41,13 +41,14 @@ export function start_place(place_name, sounds_list, muffled_amount, getSoundUrl
             localStorage.getItem("transition_time")/1000);
         return;
     }
-    console.log(Howler.ctx);
     let new_filter = Howler.ctx.createBiquadFilter();
     new_filter.type = "lowpass";
     new_filter.frequency.setValueAtTime(
         muffle_amount_to_frequency(muffled_amount), 
         Howler.ctx.currentTime);
     new_filter.Q.setValueAtTime(0.707, Howler.ctx.currentTime);
+    new_filter.connect(Howler.ctx.destination);
+    console.log(Howler.ctx==new_filter.context);
 
     currently_playing_places[place_name] = {
         howls: [],
@@ -65,6 +66,9 @@ export function start_place(place_name, sounds_list, muffled_amount, getSoundUrl
         let time = (Math.random()/2)*sound_descr.average_time*1000;
         setTimeout(()=>{
             new_howl.play();
+            console.log(new_howl._sounds[0]._node);
+            console.log(new_howl._sounds[0]._node.context==Howler.ctx);
+            new_howl._sounds[0]._node.disconnect();
             new_howl._sounds[0]._node.connect(new_filter);
         }, time);
         new_howl.on('end', ()=>{
