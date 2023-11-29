@@ -20,9 +20,18 @@ function SoundCard({sound_name, sound_info, changeSound, deleteSound}){
         changeSound(sound_name, sound_name, new_sound_info);
     }
 
+    function deleteSoundPack(sound_pack_name){
+        let new_sound_info = {...sound_info};
+        new_sound_info.sound_packs.splice(sound_pack_name, 1);
+        changeSound(sound_name, sound_name, new_sound_info);
+    }
+
     const sound_packs_html = sound_info.sound_packs.map((sound_pack, i) => 
             <li key={sound_name+"-sound-pack-"+i} className="list-group-item d-flex flex-column gap-2 p-2">
-                <SoundPack sound_pack_name={"Sound pack "+i} sound_pack={sound_pack} changeSoundPack={changeSoundPack}/>     
+                <SoundPack sound_pack_name={"Sound pack "+i}
+                            sound_pack={sound_pack}
+                            changeSoundPack={changeSoundPack}
+                            deleteSoundPack={deleteSoundPack}/>     
             </li>
         );
 
