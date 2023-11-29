@@ -1,0 +1,5 @@
+- change Icon (10min)
+- weathers (6h)
+- themes (6h)
+- make biomes selector (5min)
+- make transition_time adjustor (2min)
