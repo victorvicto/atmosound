@@ -6,13 +6,7 @@ export function startAudioContext(){
     let first_sound = new Howl({
         src: ['https://freesound.org/data/previews/80/80921_1022651-lq.mp3']
     });
-    // // Clear listener after first call.
-    // first_sound.once('load', function(){
-    //     console.log("first sound loaded");
-    //     first_sound.play();
-    // });
     first_sound.on('end', function(){
-        console.log("first sound ended");
         first_sound.unload();
     });
     first_sound.play();
@@ -32,7 +26,8 @@ export function clear_fading_out_places(){
 
 const max_freq = 8000;
 function muffle_amount_to_frequency(muffle_amount){
-    return max_freq*(1-muffle_amount);
+    // return max_freq*(1-muffle_amount);
+    return max_freq*((1-muffle_amount)**3);
 }
 
 export function fade_out_place(place_name){
@@ -58,7 +53,6 @@ export function start_place(place_name, sounds_list, muffled_amount, getSoundUrl
     }
     let new_filter = Howler.ctx.createBiquadFilter();
     new_filter.type = "lowpass";
-    console.log("muffled freq: "+muffle_amount_to_frequency(muffled_amount));
     new_filter.frequency.setValueAtTime(
         muffle_amount_to_frequency(muffled_amount), 
         Howler.ctx.currentTime);
@@ -73,9 +67,7 @@ export function start_place(place_name, sounds_list, muffled_amount, getSoundUrl
         let sound_urls = getSoundUrls(sound_descr.name);
         if(sound_urls.length==0) continue;
         let random_url = sound_urls[Math.floor(Math.random()*sound_urls.length)];
-        console.log('https://corsproxy.io/?' + encodeURIComponent(random_url));
         let new_howl = new Howl({
-            // src: ['https://corsproxy.io/?' + encodeURIComponent(random_url)],
             src: [random_url],
             autoplay: false,
             volume: sound_descr.volume
@@ -91,7 +83,6 @@ export function start_place(place_name, sounds_list, muffled_amount, getSoundUrl
             let time = (Math.random()/2+0.5)*sound_descr.average_time*1000;
             setTimeout(()=>{
                 new_howl.play();
-                console.log("playing "+random_url);
             }, time);
         })
     }
