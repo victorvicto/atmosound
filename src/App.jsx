@@ -261,11 +261,17 @@ function App() {
             "biomes": biomes,
             "free_sound_api_key": localStorage.getItem("freesound_api_key") || ""
         };
-        let blob = new Blob([JSON.stringify(setup)], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, "my-atmosound-setup.json");
+        let data_string = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(setup));
+        var downloadLink = document.createElement("a");
+        downloadLink.setAttribute("href", data_string);
+        downloadLink.setAttribute("download", "my_atmousound_setup.json");
+        downloadLink.click();
+        downloadLink.remove();
     }
 
+
     function uploadSetup(){
+        if(!confirm("This will overwrite your current setup. Are you sure?")) return;
         let input = document.createElement('input');
         input.type = 'file';
         input.accept = '.json';
@@ -285,6 +291,8 @@ function App() {
                 set_places_status(initialisePlacesStatus());
             }
         }
+        input.click();
+        input.remove();
     }
 
     let error_toast = null;
