@@ -15,10 +15,33 @@ function SoundPack({sound_pack_name, sound_pack, changeSoundPack}){
         changeSoundPack(sound_pack_name, new_sound_pack);
     }
 
+    async function set_url(i, url){
+        let final_url = url;
+        if(url.includes("::")){
+            let [api, sound_id] = url.split("::");
+            if(api=="fs"){
+                let key = localStorage.getItem("freesound_api_key");
+                if(key!=null){
+                    const resp = await fetch("https://freesound.org/apiv2/sounds/"+sound_id+"/?fields=previews&token="+key);
+                    const previews = await resp.json();
+                    console.log(previews);
+                    if("previews" in previews){
+                        final_url = previews.previews["preview-hq-mp3"];
+                    }
+                }
+            }
+        }
+        changeSoundFile(i, "url", final_url);
+    }
+
     const urls_html = sound_pack.sound_files.map((sound_file, i)=>
         <li key={sound_pack_name+"-sound-file-"+i} className="list-group-item d-flex flex-column gap-2 p-2">
             <input type='text' className={"form-control form-control-sm"} value={sound_file.url}
-                    onChange={(e)=>changeSoundFile(i, "url", e.target.value)}/>
+                    onClick={(e)=>{
+                        let new_url = prompt("Enter the URL of the sound file");
+                        if(new_url!=null){
+                            set_url(i, new_url);
+                        }}}/>
             <div className="d-flex flex-row justify-content-between align-items-center gap-2">
                 <audio controls className="w-100">
                     <source src={sound_file.url} type="audio/mpeg"/>

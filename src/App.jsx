@@ -7,6 +7,7 @@ import * as AudioManager from "./AudioManager";
 
 import MainPage from './components/MainPage.jsx';
 import SoundsLibPage from './components/SoundsLibPage.jsx';
+import SettingsPage from './components/SettingsPage.jsx';
 
 function App() {
     const[error_message, set_error_message] = useState("");
@@ -282,6 +283,11 @@ function App() {
                                 Sound Library
                             </button>
                         </li>
+                        <li className="nav-item" role="presentation">
+                            <button className="nav-link" data-bs-toggle="tab" data-bs-target="#settings-page" type="button" role="tab" aria-selected="false">
+                                Settings
+                            </button>
+                        </li>
                     </ul>
                     <button type="button" className="btn btn-outline-success" onClick={()=>{set_error_message("coucou")}}>Upload setup</button>
                     <button type="button" className="btn btn-outline-success ms-2">Save my setup</button>
@@ -301,13 +307,16 @@ function App() {
             <div className="tab-pane fade p-2 p-md-5" id="sounds-lib-page" role="tabpanel">
                 <SoundsLibPage sounds={sounds} addSound={addSound} changeSound={changeSound} deleteSound={deleteSound}/>
             </div>
+            <div className="tab-pane fade p-2 p-md-5" id="settings-page" role="tabpanel">
+                <SettingsPage/>
+            </div>
         </div>}
         {!audio_context_started && 
         <div className='d-flex justify-content-center p-5'>
             <button type="button" className='btn btn-primary btn-lg m-5'
                     onClick={()=>{
-                        AudioManager.startAudioContext();
                         set_audio_context_started(true);
+                        AudioManager.startAudioContext();
                         }}>
                         Activate audio context
             </button>
