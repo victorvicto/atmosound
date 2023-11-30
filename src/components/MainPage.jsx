@@ -10,10 +10,13 @@ function MainPage({places, sounds, addPlace, savePlace, deletePlace, places_stat
     const [edited_place_name, set_edited_place_name] = useState("");
 
     function getSoundUrls(sound_name){
-        // TODO make sure to filter based on biomes
-        let urls = []
-        for(let sound_file of sounds[sound_name].sound_packs[0].sound_files){
-            urls.push(sound_file.url);
+        let urls = [];
+        for(let sound_pack of sounds[sound_name].sound_packs){
+            if(sound_pack.biome_presences[localStorage.getItem("active_biome")]){
+                for(let sound_file of sound_pack.sound_files){
+                    urls.push(sound_file.url);
+                }
+            }
         }
         return urls;
     }
@@ -24,9 +27,10 @@ function MainPage({places, sounds, addPlace, savePlace, deletePlace, places_stat
             if(place_status.state=="off"){
                 AudioManager.fade_out_place(place_name);
             } else if(place_status.state=="on"){
-                AudioManager.start_place(place_name, places[place_name].sounds_list, 0, getSoundUrls);
+                AudioManager.start_place(place_name, places[place_name].sounds_list, 0, 1, getSoundUrls);
             } else if(place_status.state=="muffled"){
-                AudioManager.start_place(place_name, places[place_name].sounds_list, place_status.muffle_amount, getSoundUrls);
+                AudioManager.start_place(place_name, places[place_name].sounds_list, 
+                    place_status.muffle_amount, place_status.volume, getSoundUrls);
             }
         }
     }
@@ -60,6 +64,7 @@ function MainPage({places, sounds, addPlace, savePlace, deletePlace, places_stat
     function modifyPlacesStatus(event, place_name, property){
         let new_places_status = {...places_status};
         new_places_status[place_name][property] = event.target.value;
+        transitionAudio(new_places_status);
         set_places_status(new_places_status);
     }
 

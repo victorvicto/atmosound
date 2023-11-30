@@ -56,7 +56,8 @@ function PlaceEditor({edited_place_name, places, sounds, savePlace, deletePlace,
         let new_temp_place_info = {...temp_place_info};
         new_temp_place_info.muffled_list.push({
             name:"",
-            muffle_amount:0.5
+            muffle_amount:0.5,
+            volume:1
         });
         set_temp_place_info(new_temp_place_info);
     }
@@ -94,9 +95,8 @@ function PlaceEditor({edited_place_name, places, sounds, savePlace, deletePlace,
     if(temp_place_info.muffled_list.length>0){
         muffled_list_html = temp_place_info.muffled_list.map((muffled, i) => 
             <AddedMuffled key={"added-muffled-"+i}
-                        muffled_name={muffled.name}
+                        muffled={muffled}
                         muffled_name_correct={places[muffled.name]!==undefined && muffled.name!=edited_place_name && muffled.name!=temp_place_name}
-                        muffle_amount={muffled.muffle_amount}
                         changeMuffled={(event, property) => {changeMuffled(event, i, property)}}
                         deleteMuffled={()=> {deleteMuffled(i)}}/>
         );

@@ -36,7 +36,7 @@ function SoundPack({sound_pack_name, sound_pack, changeSoundPack, deleteSoundPac
             let [api, sound_id] = url.split("::");
             if(api=="fs"){
                 let key = localStorage.getItem("freesound_api_key");
-                if(key!=null){
+                if(key!=null && key!=""){
                     const resp = await fetch("https://freesound.org/apiv2/sounds/"+sound_id+"/?fields=previews&token="+key);
                     const previews = await resp.json();
                     console.log(previews);

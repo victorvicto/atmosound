@@ -18,6 +18,9 @@ function App() {
     if(localStorage.getItem("active_biome")===null){
         localStorage.setItem("active_biome", "default");
     }
+    if(localStorage.getItem("time_of_day")===null){
+        localStorage.setItem("time_of_day", "day");
+    }
 
     function initialisePlaces(){
         let start_places = JSON.parse(localStorage.getItem("places"));
@@ -34,7 +37,7 @@ function App() {
             base_places_status[place_name] = {
                 "state": "off",
                 "muffle_amount": 0.5,
-                "distance": 50
+                "volume": 1
             }
         }
         return base_places_status;
@@ -87,7 +90,8 @@ function App() {
             ...places_status,
             [new_place_name]:{
                 "state": "off",
-                "muffle_amount": 0.5
+                "muffle_amount": 0.5,
+                "volume": 1
             }
         });
         localStorage.setItem("places", JSON.stringify(new_places));
@@ -269,7 +273,6 @@ function App() {
         downloadLink.remove();
     }
 
-
     function uploadSetup(){
         if(!confirm("This will overwrite your current setup. Are you sure?")) return;
         let input = document.createElement('input');
@@ -307,6 +310,11 @@ function App() {
         );
     }
 
+    let biome_options_html = [];
+    for(let biome_name in biomes){
+        biome_options_html.push(<option key={biome_name+"-option"} value={biome_name}>{biome_name}</option>);
+    }
+
     return (
         <>
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -338,15 +346,44 @@ function App() {
                 </div>
             </div>
         </nav>
-        {audio_context_started && <div className="tab-content">
+        <div className='card m-2 text-bg-light'>
+            <div className='card-body d-flex align-items-center gap-2 p-2'>
+                <small className='text-nowrap'>Time of day: </small>
+                <select className="form-select form-select-sm"
+                        value={localStorage.getItem("time_of_day")}
+                        onChange={(e)=>localStorage.setItem("time_of_day", e.target.value)}>
+                    <option value="morning">Morning</option>
+                    <option value="day">Day</option>
+                    <option value="evening">Evening</option>
+                    <option value="night">Night</option>
+                </select>
+                <small>Biome: </small>
+                <select className="form-select form-select-sm text-capitalize"
+                        value={localStorage.getItem("active_biome")}
+                        onChange={(e)=>localStorage.setItem("active_biome", e.target.value)}>
+                    {biome_options_html}
+                </select>
+            </div>
+        </div>
+        <div className="tab-content">
             <div className="tab-pane fade show active p-2 p-md-5" id="main-page" role="tabpanel">
-                <MainPage places={places}
+                {audio_context_started && <MainPage places={places}
                             sounds={sounds} 
                             addPlace={addPlace} 
                             savePlace={savePlace} 
                             deletePlace={deletePlace} 
                             places_status={places_status} 
-                            set_places_status={set_places_status}/>
+                            set_places_status={set_places_status}/>}
+                {!audio_context_started && 
+                    <div className='d-flex justify-content-center p-5'>
+                        <button type="button" className='btn btn-primary btn-lg m-5 shadow shadow-md'
+                                onClick={()=>{
+                                    set_audio_context_started(true);
+                                    AudioManager.startAudioContext();
+                                    }}>
+                                    Activate audio context
+                        </button>
+                    </div>}
             </div>
             <div className="tab-pane fade p-2 p-md-5" id="sounds-lib-page" role="tabpanel">
                 <SoundsLibPage sounds={sounds} addSound={addSound} changeSound={changeSound} deleteSound={deleteSound}/>
@@ -354,17 +391,7 @@ function App() {
             <div className="tab-pane fade p-2 p-md-5" id="settings-page" role="tabpanel">
                 <SettingsPage/>
             </div>
-        </div>}
-        {!audio_context_started && 
-        <div className='d-flex justify-content-center p-5'>
-            <button type="button" className='btn btn-primary btn-lg m-5'
-                    onClick={()=>{
-                        set_audio_context_started(true);
-                        AudioManager.startAudioContext();
-                        }}>
-                        Activate audio context
-            </button>
-        </div>}
+        </div>
         {error_toast}
         </>
     )

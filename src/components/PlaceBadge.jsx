@@ -8,13 +8,24 @@ function PlaceBadge({place_name, place_status, modify_status, switchStatus, open
         scheme = "danger";
     } else if(place_status.state=="muffled"){
         scheme = "success";
-        footer = (<div className='card-footer text-bg-success d-flex flex-row align-items-center gap-2'>
-            <i className="fa-solid fa-volume-low opacity-25"></i>
-            <input type="range" value={place_status.muffle_amount}
-                    onChange={(e)=>modify_status(e, "muffle_amount")}
-                    className="form-range"
-                    min="0" max="1" step='.05'/>
-            <i className="fa-solid fa-volume-high"></i>
+        footer = (
+        <div className='card-footer text-bg-success d-flex flex-column gap-2'>
+            <div className='d-flex flex-row align-items-center gap-2'>
+                <i className="fa-solid fa-volume-low"></i>
+                <input type="range" value={place_status.volume}
+                        onChange={(e)=>modify_status(e, "volume")}
+                        className="form-range"
+                        min="0" max="1" step='.05'/>
+                <i className="fa-solid fa-volume-high"></i>
+            </div>
+            <div className='d-flex flex-row align-items-center gap-2'>
+                <i className="fa-solid fa-volume-high"></i>
+                <input type="range" value={place_status.muffle_amount}
+                        onChange={(e)=>modify_status(e, "muffle_amount")}
+                        className="form-range"
+                        min="0" max="1" step='.05'/>
+                <i className="fa-solid fa-volume-high opacity-25"></i>
+            </div>
         </div>);
     }
 
@@ -31,10 +42,6 @@ function PlaceBadge({place_name, place_status, modify_status, switchStatus, open
                 <button onClick={()=>{switchStatus("muffled")}}
                     className={'btn btn'+(place_status.state=='muffled'?'':'-outline')+'-success btn-sm'}>
                     <i className="fa-solid fa-volume-low"></i>
-                </button>
-                <button onClick={()=>{switchStatus("distant")}}
-                    className={'btn btn'+(place_status.state=='distant'?'':'-outline')+'-primary btn-sm'}>
-                    <i className="fa-solid fa-people-arrows"></i>
                 </button>
             </div>
             {footer}
