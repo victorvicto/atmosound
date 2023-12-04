@@ -310,11 +310,6 @@ function App() {
         );
     }
 
-    let biome_options_html = [];
-    for(let biome_name in biomes){
-        biome_options_html.push(<option key={biome_name+"-option"} value={biome_name}>{biome_name}</option>);
-    }
-
     return (
         <>
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -346,29 +341,11 @@ function App() {
                 </div>
             </div>
         </nav>
-        <div className='card m-2 text-bg-light'>
-            <div className='card-body d-flex align-items-center gap-2 p-2'>
-                <small className='text-nowrap'>Time of day: </small>
-                <select className="form-select form-select-sm"
-                        value={localStorage.getItem("time_of_day")}
-                        onChange={(e)=>localStorage.setItem("time_of_day", e.target.value)}>
-                    <option value="morning">Morning</option>
-                    <option value="day">Day</option>
-                    <option value="evening">Evening</option>
-                    <option value="night">Night</option>
-                </select>
-                <small>Biome: </small>
-                <select className="form-select form-select-sm text-capitalize"
-                        value={localStorage.getItem("active_biome")}
-                        onChange={(e)=>localStorage.setItem("active_biome", e.target.value)}>
-                    {biome_options_html}
-                </select>
-            </div>
-        </div>
         <div className="tab-content">
             <div className="tab-pane fade show active p-2 p-md-5" id="main-page" role="tabpanel">
                 {audio_context_started && <MainPage places={places}
                             sounds={sounds} 
+                            biomes={biomes}
                             addPlace={addPlace} 
                             savePlace={savePlace} 
                             deletePlace={deletePlace} 

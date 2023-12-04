@@ -48,6 +48,7 @@ export function fade_out_place(place_name){
 
 export function start_place(place_name, sounds_list, muffled_amount, place_volume, getSoundUrls){
     if(place_name in currently_playing_places){
+        console.log("already playing place", place_name);
         currently_playing_places[place_name].filter_node.frequency.setTargetAtTime(
             muffle_amount_to_frequency(muffled_amount), 
             Howler.ctx.currentTime, 
@@ -58,7 +59,7 @@ export function start_place(place_name, sounds_list, muffled_amount, place_volum
             localStorage.getItem("transition_time")/1000);
         return;
     }
-
+    console.log("starting place", place_name);
     let new_gain_node = Howler.ctx.createGain();
     new_gain_node.gain.value = 0;
     new_gain_node.gain.setTargetAtTime(
