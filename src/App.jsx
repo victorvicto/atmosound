@@ -13,7 +13,7 @@ function App() {
     const[error_message, set_error_message] = useState("");
 
     if(localStorage.getItem("transition_time")===null){
-        localStorage.setItem("transition_time", 2000);
+        localStorage.setItem("transition_time", 500);
     }
     if(localStorage.getItem("active_biome")===null){
         localStorage.setItem("active_biome", "default");

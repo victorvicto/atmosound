@@ -52,6 +52,7 @@ function MainPage({places, sounds, addPlace, savePlace, deletePlace, places_stat
                     for(let muffled of places[place_name].muffled_list){
                         final_places_status[muffled.name].state = "muffled";
                         final_places_status[muffled.name].muffle_amount = muffled.muffle_amount;
+                        final_places_status[muffled.name].volume = muffled.volume;
                     }
                 }
             }

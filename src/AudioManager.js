@@ -35,13 +35,15 @@ export function fade_out_place(place_name){
     if(!(place_name in currently_playing_places)) return;
 
     fading_out_places[place_name] = currently_playing_places[place_name];
-    currently_playing_places[place_name].gain_node.disconnect();
     delete currently_playing_places[place_name];
     for(let howl of fading_out_places[place_name].howls){
         howl.fade(howl.volume(), 0, localStorage.getItem("transition_time"));
         setTimeout(()=>howl.unload(), localStorage.getItem("transition_time"));
     }
-    setTimeout(()=>delete fading_out_places[place_name], localStorage.getItem("transition_time"));
+    setTimeout(()=>{
+        fading_out_places[place_name].gain_node.disconnect();
+        delete fading_out_places[place_name];
+    }, localStorage.getItem("transition_time"));
 }
 
 export function start_place(place_name, sounds_list, muffled_amount, place_volume, getSoundUrls){
@@ -58,7 +60,11 @@ export function start_place(place_name, sounds_list, muffled_amount, place_volum
     }
 
     let new_gain_node = Howler.ctx.createGain();
-    new_gain_node.gain.value = place_volume;
+    new_gain_node.gain.value = 0;
+    new_gain_node.gain.setTargetAtTime(
+        place_volume, 
+        Howler.ctx.currentTime, 
+        localStorage.getItem("transition_time")/1000);
     new_gain_node.connect(Howler.masterGain);
 
     let new_filter_node = Howler.ctx.createBiquadFilter();
