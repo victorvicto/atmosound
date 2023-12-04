@@ -68,6 +68,8 @@ export function start_place(place_name, sounds_list, muffled_amount, place_volum
     new_gain_node.connect(Howler.masterGain);
 
     let new_filter_node = Howler.ctx.createBiquadFilter();
+    new_filter_node.channelCount = sounds_list.length;
+    console.log("channel count", new_filter_node.channelCount);
     new_filter_node.type = "lowpass";
     new_filter_node.frequency.value = muffle_amount_to_frequency(muffled_amount);
     new_filter_node.Q.value = 0.707;
@@ -78,6 +80,7 @@ export function start_place(place_name, sounds_list, muffled_amount, place_volum
         filter_node: new_filter_node,
         gain_node: new_gain_node
     }
+    let i = 0;
     for(let sound_descr of sounds_list){
         if(!sound_descr[localStorage.getItem("time_of_day")]) continue;
         let sound_urls = getSoundUrls(sound_descr.name);
@@ -90,11 +93,17 @@ export function start_place(place_name, sounds_list, muffled_amount, place_volum
         });
         currently_playing_places[place_name].howls.push(new_howl);
         let time = (Math.random()/2)*sound_descr.average_time*1000;
-        setTimeout(()=>{
-            new_howl.play();
-            new_howl._sounds[0]._node.disconnect();
-            new_howl._sounds[0]._node.connect(new_filter_node);
-        }, time);
+        new_howl.on('load', ()=>{
+            let howl_duration = new_howl.duration();
+            if(howl_duration>20){
+                new_howl.seek(Math.random()*howl_duration);
+            }
+            setTimeout(()=>{
+                new_howl._sounds[0]._node.disconnect();
+                new_howl._sounds[0]._node.connect(new_filter_node, 0, i);
+                new_howl.play();
+            }, time);
+        });
         new_howl.on('end', ()=>{
             let time = (Math.random()+0.5)*sound_descr.average_time*1000;
             setTimeout(()=>{

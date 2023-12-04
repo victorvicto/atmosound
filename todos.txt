@@ -1,6 +1,6 @@
 - change Icon (10min)
 - weathers (6h)
+- make system to pick weather conditions that activate sound (like for time of day) (1h)
 - themes (6h)
-- make transition_time adjustor (2min)
-- making longer sounds start at random moment (20min)
+- solving glitch problem
 - make audio change when a setting is modified
