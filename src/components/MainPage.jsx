@@ -4,6 +4,7 @@ import * as AudioManager from "../AudioManager";
 
 import PlaceBadge from './PlaceBadge.jsx';
 import PlaceEditor from './PlaceEditor.jsx';
+import WeatherBadge from './WeatherBadge.jsx';
 
 function MainPage({places, sounds, biomes, addPlace, savePlace, deletePlace, places_status, set_places_status}) {
 
@@ -114,7 +115,7 @@ function MainPage({places, sounds, biomes, addPlace, savePlace, deletePlace, pla
 
     return (
         <>
-        <div className='card m-2 text-bg-light'>
+        <div className='card mb-3 text-bg-light'>
             <div className='card-body d-flex align-items-center gap-2 p-2'>
                 <small className='text-nowrap'>Time of day: </small>
                 <select className="form-select form-select-sm"
@@ -141,7 +142,8 @@ function MainPage({places, sounds, biomes, addPlace, savePlace, deletePlace, pla
                 </select>
             </div>
         </div>
-        <div className='d-flex flex-row flex-wrap justify-content-center align-items-start gap-2'>
+        <WeatherBadge status={{state: "on", volume: 1, muffle_amount: 0}}/>
+        <div className='p-2 p-md-5 d-flex flex-row flex-wrap justify-content-center align-items-start gap-2'>
             {places_badges}
         </div>
         <div className='d-flex justify-content-center mt-3'>

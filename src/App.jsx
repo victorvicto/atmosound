@@ -65,10 +65,27 @@ function App() {
         return start_biomes;
     }
 
+    function initialiseWeathers(){
+        let start_weathers = JSON.parse(localStorage.getItem("weathers"));
+        if (start_weathers === null) {
+            start_weathers = {
+                "none":{
+                    "sound_list": [],
+                    "image_url": "https://media.istockphoto.com/id/1178541716/vector/weather-forecast-meteorological-weather-map-of-the-united-state-of-america-realistic.jpg?s=612x612&w=0&k=20&c=3ZAheyxofy--xJPXn98IvQl-gBQMK_4LjUtpXtmLwk0="
+                },
+                "rainy":{},
+                "stormy":{}
+            }
+            localStorage.setItem("weathers", JSON.stringify(start_weathers));
+        }
+        return start_weathers;
+    }
+
     const [places, set_places] = useState(initialisePlaces);
     const [places_status, set_places_status] = useState(initialisePlacesStatus);
     const [sounds, set_sounds] = useState(initialiseSounds);
     const [biomes, set_biomes] = useState(initialiseBiomes);
+    const [weathers, set_weathers] = useState(initialiseWeathers);
     const [audio_context_started, set_audio_context_started] = useState(false);
 
     function addPlace(){
@@ -342,7 +359,7 @@ function App() {
             </div>
         </nav>
         <div className="tab-content">
-            <div className="tab-pane fade show active p-2 p-md-5" id="main-page" role="tabpanel">
+            <div className="tab-pane fade show active p-2 p-md-3" id="main-page" role="tabpanel">
                 {audio_context_started && <MainPage places={places}
                             sounds={sounds} 
                             biomes={biomes}
