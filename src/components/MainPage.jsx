@@ -6,7 +6,7 @@ import PlaceBadge from './PlaceBadge.jsx';
 import PlaceEditor from './PlaceEditor.jsx';
 import WeatherBadge from './WeatherBadge.jsx';
 
-function MainPage({places, sounds, biomes, addPlace, savePlace, deletePlace, places_status, set_places_status}) {
+function MainPage({places, sounds, biomes, weathers, addPlace, savePlace, deletePlace, places_status, set_places_status}) {
 
     function instantiateActiveBiome(){
         let new_active_biome = localStorage.getItem("active_biome");
@@ -142,7 +142,7 @@ function MainPage({places, sounds, biomes, addPlace, savePlace, deletePlace, pla
                 </select>
             </div>
         </div>
-        <WeatherBadge status={{state: "on", volume: 1, muffle_amount: 0}}/>
+        <WeatherBadge weathers={weathers} status={{state: "on", volume: 1, muffle_amount: 0}}/>
         <div className='p-2 p-md-5 d-flex flex-row flex-wrap justify-content-center align-items-start gap-2'>
             {places_badges}
         </div>

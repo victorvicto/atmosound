@@ -363,6 +363,7 @@ function App() {
                 {audio_context_started && <MainPage places={places}
                             sounds={sounds} 
                             biomes={biomes}
+                            weathers={weathers}
                             addPlace={addPlace} 
                             savePlace={savePlace} 
                             deletePlace={deletePlace} 
