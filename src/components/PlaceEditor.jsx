@@ -4,7 +4,7 @@ import AddedSound from './AddedSound';
 import AddedMuffled from './AddedMuffled';
 import { useEffect } from 'react';
 
-function PlaceEditor({edited_place_name, places, sounds, savePlace, deletePlace, closeEditor}){
+function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, deletePlace, closeEditor}){
 
     function clone_place(){
         return structuredClone(places[edited_place_name])
@@ -19,14 +19,21 @@ function PlaceEditor({edited_place_name, places, sounds, savePlace, deletePlace,
 
     function addSound(){
         let new_temp_place_info = {...temp_place_info};
+        let new_weathers = {};
+        for(let weather_name of Object.keys(weathers)){
+            new_weathers[weather_name] = true;
+        }
         new_temp_place_info.sounds_list.push({
             name:"",
             average_time:0,
             volume:1,
-            morning: true,
-            day: true,
-            evening: true,
-            night: true
+            time_of_day: {
+                morning: true,
+                day: true,
+                evening: true,
+                night: true
+            },
+            weathers: new_weathers
         });
         set_temp_place_info(new_temp_place_info);
     }
@@ -37,7 +44,7 @@ function PlaceEditor({edited_place_name, places, sounds, savePlace, deletePlace,
         set_temp_place_info(new_temp_place_info);
     }
 
-    function changeSound(event, index, property){
+    function changeSound(event, index, property){ // setup lodash for weathers and time_of_day
         let new_temp_place_info = {...temp_place_info};
         if(event.target.type=="checkbox") new_temp_place_info.sounds_list[index][property] = event.target.checked;
         else {
@@ -84,6 +91,7 @@ function PlaceEditor({edited_place_name, places, sounds, savePlace, deletePlace,
     if(temp_place_info.sounds_list.length>0){
         sounds_list_html = temp_place_info.sounds_list.map((sound, i) => 
             <AddedSound key={"added-sound-"+i}
+                        weathers={weathers}
                         sound={sound}
                         sound_name_correct={sounds[sound.name]!==undefined}
                         changeSound={(event, property) => {changeSound(event, i, property)}}

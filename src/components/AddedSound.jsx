@@ -2,6 +2,24 @@ import { useState } from 'react';
 
 function AddedSound({sound, sound_name_correct, changeSound, deleteSound}) {
     const [is_open, set_is_open] = useState(false);
+
+    let time_of_day_checkboxes = Object.entries(sound.time_of_day).map(([time_of_day_name, time_of_day_on]) =>
+        <div className="d-flex flex-row align-items-center gap-1">
+            <input type="checkbox" checked={time_of_day_on} onChange={(e)=>changeSound(e, ("time_of_day",time_of_day_name))}/>
+            <small>
+                {time_of_day_name}
+            </small>
+        </div>
+    );
+
+    let weathers_checboxes = Object.entries(sound.weathers).map(([weather_name, weather_on]) => 
+        <div className="d-flex flex-row align-items-center gap-1">
+            <input type="checkbox" checked={weather_on} onChange={(e)=>changeSound(e, ("weathers",weather_name))}/>
+            <small>
+                {weather_name}
+            </small>
+        </div>
+    );
   return (
     <div className='card text-sm'>
         <ul className="list-group list-group-flush">
@@ -27,32 +45,15 @@ function AddedSound({sound, sound_name_correct, changeSound, deleteSound}) {
                 </>}
             </li>
             {is_open &&
+                <>
                 <li className="list-group-item d-flex flex-row justify-content-between gap-3 flex-wrap">
-                    <div className="d-flex flex-row align-items-center gap-1">
-                        <input type="checkbox" checked={sound.morning} onChange={(e)=>changeSound(e, "morning")}/>
-                        <small>
-                            Morning
-                        </small>
-                    </div>
-                    <div className="d-flex flex-row align-items-center gap-1">
-                        <input type="checkbox" checked={sound.day} onChange={(e)=>changeSound(e, "day")}/>
-                        <small>
-                            Day
-                        </small>
-                    </div>
-                    <div className="d-flex flex-row align-items-center gap-1">
-                        <input type="checkbox" checked={sound.evening} onChange={(e)=>changeSound(e, "evening")}/>
-                        <small>
-                            Evening
-                        </small>
-                    </div>
-                    <div className="d-flex flex-row align-items-center gap-1">
-                        <input type="checkbox" checked={sound.night} onChange={(e)=>changeSound(e, "night")}/>
-                        <small>
-                            Night
-                        </small>
-                    </div>
-                </li>}
+                    {time_of_day_checkboxes}
+                </li>
+                <li className="list-group-item d-flex flex-row justify-content-between gap-3 flex-wrap">
+                    {weathers_checboxes}
+                </li>
+                </>
+                }
         </ul>
     </div>
   );
