@@ -36,7 +36,7 @@ function WeatherBadge({ weathers, status, modify_status, switchStatus}) {
         <button key={weather_name}
                 className={'btn btn-'+(current_weather==weather_name?'':'outline-')+'primary btn-sm'}
                 >
-            <a href='#' className='text-decoration-none text-reset' onClick={()=>{set_current_weather(weather_name)}}>
+            <a href='#' className='text-decoration-none text-reset text-capitalize' onClick={()=>{set_current_weather(weather_name)}}>
                 {weather_name}
             </a>
             <a href='#' className='icon-link text-decoration-none text-reset ms-2' onClick={()=>console.log("click")}>
