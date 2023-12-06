@@ -32,23 +32,47 @@ function WeatherBadge({ weathers, status, modify_status, switchStatus}) {
         </div>);
     }
 
+    const weather_buttons = Object.keys(weathers).map((weather_name) =>
+        <button key={weather_name}
+                className={'btn btn-'+(current_weather==weather_name?'':'outline-')+'primary btn-sm'}
+                onClick={()=>{set_current_weather(weather_name)}}>
+            {weather_name}
+        </button>
+    );
+
+    const badge_style = {backgroundImage:"linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1), rgba(255,255,255,1))",
+                            backgroundPositionY:"center"};
+    badge_style.backgroundImage+=", url('"+weathers[current_weather].image_url+"')";
+
     return (
-        <div className={'card border-'+scheme+(status.state=="off"?' shadow-sm':' border-3 shadow')}>
-            <div className='card-body d-flex flex-row justify-content-between gap-2 align-items-center'>
-                <h2 className={"card-title mb-0 text-capitalize fw-semibold"}>
-                    <a href='#' onClick={()=>set_is_open(!is_open)} className="icon-link text-decoration-none text-reset me-2"><i className={"fa-solid fa-chevron-"+(is_open?"up":"down")}></i></a>
-                    Weather
-                </h2>
-                <div className="d-flex gap-2">
-                    <button onClick={()=>{switchStatus("on")}}
-                        className={'btn btn'+(status.state=='on'?'':'-outline')+'-danger btn-sm border-2'}>
-                        <i className="fa-solid fa-volume-high"></i>
-                    </button>
-                    <button onClick={()=>{switchStatus("muffled")}}
-                        className={'btn btn'+(status.state=='muffled'?'':'-outline')+'-success btn-sm'}>
-                        <i className="fa-solid fa-volume-low"></i>
-                    </button>
+        <div className={'card border-'+scheme+(status.state=="off"?' shadow-sm':' border-3 shadow')} style={badge_style}>
+            <div className='card-body d-flex flex-column'>
+                <div className='d-flex flex-row justify-content-between gap-2 align-items-center'>
+                    <h2 className={"card-title mb-0 text-capitalize fw-semibold text-light"} style={{textShadow:"2pt 2pt 8pt #000000"}}>
+                        <a href='#' onClick={()=>set_is_open(!is_open)} className="icon-link text-decoration-none text-reset me-2"><i className={"fa-solid fa-chevron-"+(is_open?"up":"down")}></i></a>
+                        Weather
+                        <small className="fs-5 ms-3">(selected: {current_weather})</small>
+                    </h2>
+                    <div className="d-flex gap-2">
+                        <button onClick={()=>{switchStatus("on")}}
+                            className={'btn btn'+(status.state=='on'?'':'-outline')+'-danger btn-sm border-2'}>
+                            <i className="fa-solid fa-volume-high"></i>
+                        </button>
+                        <button onClick={()=>{switchStatus("muffled")}}
+                            className={'btn btn'+(status.state=='muffled'?'':'-outline')+'-success btn-sm'}>
+                            <i className="fa-solid fa-volume-low"></i>
+                        </button>
+                    </div>
                 </div>
+                {is_open &&
+                    <div className="card mt-3">
+                        <div className="card-body">
+                            <div className='d-flex flex-row gap-2 align-items-center'>
+                                {weather_buttons}
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
             {footer}
         </div>

@@ -1,4 +1,5 @@
 - Solve why sound stops if running when switching day time
+- if no localStorage found, use setupUpload to load default json file (15min)
 - change Icon (10min)
 - weathers (6h)
 - make system to pick weather conditions that activate sound (like for time of day) (1h)

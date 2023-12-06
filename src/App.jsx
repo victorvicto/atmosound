@@ -73,8 +73,18 @@ function App() {
                     "sound_list": [],
                     "image_url": "https://media.istockphoto.com/id/1178541716/vector/weather-forecast-meteorological-weather-map-of-the-united-state-of-america-realistic.jpg?s=612x612&w=0&k=20&c=3ZAheyxofy--xJPXn98IvQl-gBQMK_4LjUtpXtmLwk0="
                 },
-                "rainy":{},
-                "stormy":{}
+                "light rain":{
+                    "sound_list": [],
+                    "image_url": "https://images.pexels.com/photos/1154510/pexels-photo-1154510.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                },
+                "storm":{
+                    "sound_list": [],
+                    "image_url": "https://images.pexels.com/photos/53459/lightning-storm-weather-sky-53459.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                },
+                "sunny":{
+                    "sound_list": [],
+                    "image_url": "https://images.pexels.com/photos/589802/pexels-photo-589802.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                }
             }
             localStorage.setItem("weathers", JSON.stringify(start_weathers));
         }
