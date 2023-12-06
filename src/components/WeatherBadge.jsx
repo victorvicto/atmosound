@@ -32,16 +32,22 @@ function WeatherBadge({ weathers, status, modify_status, switchStatus}) {
         </div>);
     }
 
-    const weather_buttons = Object.keys(weathers).map((weather_name) =>
+    let weather_buttons = Object.keys(weathers).map((weather_name) =>
         <button key={weather_name}
                 className={'btn btn-'+(current_weather==weather_name?'':'outline-')+'primary btn-sm'}
-                onClick={()=>{set_current_weather(weather_name)}}>
-            {weather_name}
+                >
+            <a href='#' className='text-decoration-none text-reset' onClick={()=>{set_current_weather(weather_name)}}>
+                {weather_name}
+            </a>
+            <a href='#' className='icon-link text-decoration-none text-reset ms-2' onClick={()=>console.log("click")}>
+                <i className="fa-solid fa-square-pen"></i>
+            </a>
         </button>
     );
+    weather_buttons.push(<button className="btn btn-outline-primary btn-sm">+</button>);
 
     const badge_style = {backgroundImage:"linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1), rgba(255,255,255,1))",
-                            backgroundPositionY:"center"};
+                            backgroundPositionY:"-150pt", backgroundSizeY:"400pt"};
     badge_style.backgroundImage+=", url('"+weathers[current_weather].image_url+"')";
 
     return (

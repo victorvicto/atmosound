@@ -71,7 +71,8 @@ function App() {
             start_weathers = {
                 "none":{
                     "sound_list": [],
-                    "image_url": "https://media.istockphoto.com/id/1178541716/vector/weather-forecast-meteorological-weather-map-of-the-united-state-of-america-realistic.jpg?s=612x612&w=0&k=20&c=3ZAheyxofy--xJPXn98IvQl-gBQMK_4LjUtpXtmLwk0="
+                    // "image_url": "https://media.istockphoto.com/id/1178541716/vector/weather-forecast-meteorological-weather-map-of-the-united-state-of-america-realistic.jpg?s=612x612&w=0&k=20&c=3ZAheyxofy--xJPXn98IvQl-gBQMK_4LjUtpXtmLwk0="
+                    "image_url": "https://images.pexels.com/photos/450055/pexels-photo-450055.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                 },
                 "light rain":{
                     "sound_list": [],
