@@ -46,6 +46,12 @@ export function fade_out_place(place_name){
     }, localStorage.getItem("transition_time"));
 }
 
+function sound_should_be_played(sound_descr){
+    if(!sound_descr["time_of_day"][localStorage.getItem("time_of_day")]) return false;
+    if(!sound_descr["weathers"][localStorage.getItem("current_weather")]) return false;
+    return true;
+}
+
 export function start_place(place_name, sounds_list, muffled_amount, place_volume, getSoundUrls){
     if(place_name in currently_playing_places){
         console.log("already playing place", place_name);
@@ -83,7 +89,7 @@ export function start_place(place_name, sounds_list, muffled_amount, place_volum
     }
     let i = 0;
     for(let sound_descr of sounds_list){
-        if(!sound_descr[localStorage.getItem("time_of_day")]) continue;
+        if(!sound_should_be_played(sound_descr)) continue;
         let sound_urls = getSoundUrls(sound_descr.name);
         if(sound_urls.length==0) continue;
         let random_url = sound_urls[Math.floor(Math.random()*sound_urls.length)];

@@ -2,8 +2,17 @@ import { useState } from "react";
 
 function WeatherBadge({ weathers, status, modify_status, switchStatus}) {
 
+    function instantiateCurrentWeather(){
+        let new_current_weather = localStorage.getItem("current_weather");
+        if(new_current_weather==null){
+            localStorage.setItem("current_weather", "none");
+            new_current_weather = "none";
+        }
+        return new_current_weather;
+    }
+
     const [is_open, set_is_open] = useState(false);
-    const [current_weather, set_current_weather] = useState("none");
+    const [current_weather, set_current_weather] = useState(instantiateCurrentWeather);
 
     let scheme = "secondary";
     let footer = ""
@@ -33,10 +42,10 @@ function WeatherBadge({ weathers, status, modify_status, switchStatus}) {
     }
 
     let weather_buttons = Object.keys(weathers).map((weather_name) =>
-        <button key={weather_name}
+        <button key={weather_name+"btn"}
                 className={'btn btn-'+(current_weather==weather_name?'':'outline-')+'primary btn-sm'}
                 >
-            <a href='#' className='text-decoration-none text-reset text-capitalize' onClick={()=>{set_current_weather(weather_name)}}>
+            <a href='#' className='text-decoration-none text-reset text-capitalize' onClick={()=>{localStorage.setItem("current_weather", weather_name);set_current_weather(weather_name)}}>
                 {weather_name}
             </a>
             <a href='#' className='icon-link text-decoration-none text-reset ms-2' onClick={()=>console.log("click")}>

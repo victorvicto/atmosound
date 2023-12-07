@@ -4,7 +4,7 @@ function AddedSound({sound, sound_name_correct, changeSound, deleteSound}) {
     const [is_open, set_is_open] = useState(false);
 
     let time_of_day_checkboxes = Object.entries(sound.time_of_day).map(([time_of_day_name, time_of_day_on]) =>
-        <div className="d-flex flex-row align-items-center gap-1">
+        <div className="d-flex flex-row align-items-center gap-1" key={time_of_day_name+"timeofday-checkbox"}>
             <input type="checkbox" checked={time_of_day_on} onChange={(e)=>changeSound(e, ("time_of_day",time_of_day_name))}/>
             <small>
                 {time_of_day_name}
@@ -13,7 +13,7 @@ function AddedSound({sound, sound_name_correct, changeSound, deleteSound}) {
     );
 
     let weathers_checboxes = Object.entries(sound.weathers).map(([weather_name, weather_on]) => 
-        <div className="d-flex flex-row align-items-center gap-1">
+        <div className="d-flex flex-row align-items-center gap-1" key={weather_name+"weathers-checkbox"}>
             <input type="checkbox" checked={weather_on} onChange={(e)=>changeSound(e, ("weathers",weather_name))}/>
             <small>
                 {weather_name}
@@ -24,7 +24,7 @@ function AddedSound({sound, sound_name_correct, changeSound, deleteSound}) {
     <div className='card text-sm'>
         <ul className="list-group list-group-flush">
             <li className="list-group-item d-flex flex-column gap-2 p-2">
-                <div className="d-flex flex-row justify-content-between align-items-center gap-3">
+                <div className="d-flex flex-row justify-content-between align-items-center gap-2">
                     <a href='#' onClick={()=>set_is_open(!is_open)} className="icon-link text-decoration-none text-reset">
                         <i className={"fa-solid fa-chevron-"+(is_open?"up":"down")}></i>
                     </a>
