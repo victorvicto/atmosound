@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function WeatherBadge({ weathers, status, modify_status, switchStatus}) {
+function WeatherBadge({ weathers, status, modify_status, switchStatus, set_edited_weather_name}) {
 
     function instantiateCurrentWeather(){
         let new_current_weather = localStorage.getItem("current_weather");
@@ -48,7 +48,7 @@ function WeatherBadge({ weathers, status, modify_status, switchStatus}) {
             <a href='#' className='text-decoration-none text-reset text-capitalize' onClick={()=>{localStorage.setItem("current_weather", weather_name);set_current_weather(weather_name)}}>
                 {weather_name}
             </a>
-            <a href='#' className='icon-link text-decoration-none text-reset ms-2' onClick={()=>console.log("click")}>
+            <a href='#' className='icon-link text-decoration-none text-reset ms-2' onClick={()=>set_edited_weather_name(weather_name)}>
                 <i className="fa-solid fa-square-pen"></i>
             </a>
         </button>

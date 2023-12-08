@@ -3,6 +3,8 @@ import { useState } from 'react';
 function AddedSound({sound, sound_name_correct, changeSound, deleteSound}) {
     const [is_open, set_is_open] = useState(false);
 
+    if(sound.time_of_day==undefined) sound.time_of_day = {morning: true, day:true, evening:true, night:true}; // to remove in finished version
+
     let time_of_day_checkboxes = Object.entries(sound.time_of_day).map(([time_of_day_name, time_of_day_on]) =>
         <div className="d-flex flex-row align-items-center gap-1" key={time_of_day_name+"timeofday-checkbox"}>
             <input type="checkbox" checked={time_of_day_on} onChange={(e)=>changeSound(e, ("time_of_day",time_of_day_name))}/>
@@ -11,6 +13,8 @@ function AddedSound({sound, sound_name_correct, changeSound, deleteSound}) {
             </small>
         </div>
     );
+
+    if(sound.weathers==undefined) sound.weathers = {}; // to remove in finished version
 
     let weathers_checboxes = Object.entries(sound.weathers).map(([weather_name, weather_on]) => 
         <div className="d-flex flex-row align-items-center gap-1" key={weather_name+"weathers-checkbox"}>

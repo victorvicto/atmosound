@@ -5,6 +5,7 @@ import * as AudioManager from "../AudioManager";
 import PlaceBadge from './PlaceBadge.jsx';
 import PlaceEditor from './PlaceEditor.jsx';
 import WeatherBadge from './WeatherBadge.jsx';
+import WeatherEditor from './WeatherEditor.jsx';
 
 function MainPage({places, sounds, biomes, weathers, addPlace, savePlace, deletePlace, places_status, set_places_status}) {
 
@@ -27,6 +28,7 @@ function MainPage({places, sounds, biomes, weathers, addPlace, savePlace, delete
     }
 
     const [edited_place_name, set_edited_place_name] = useState("");
+    const [edited_weather_name, set_edited_weather_name] = useState("");
     const [active_biome, set_active_biome] = useState(instantiateActiveBiome);
     const [time_of_day, set_time_of_day] = useState(instantiateTimeOfDay);
 
@@ -142,7 +144,7 @@ function MainPage({places, sounds, biomes, weathers, addPlace, savePlace, delete
                 </select>
             </div>
         </div>
-        <WeatherBadge weathers={weathers} status={{state: "on", volume: 1, muffle_amount: 0}}/>
+        <WeatherBadge weathers={weathers} status={{state: "on", volume: 1, muffle_amount: 0}} set_edited_weather_name={set_edited_weather_name}/>
         <div className='p-2 p-md-5 d-flex flex-row flex-wrap justify-content-center align-items-start gap-2'>
             {places_badges}
         </div>
@@ -160,6 +162,11 @@ function MainPage({places, sounds, biomes, weathers, addPlace, savePlace, delete
                                                 savePlace={savePlace}
                                                 deletePlace={deletePlace}
                                                 closeEditor={()=>set_edited_place_name("")}/>}
+        {edited_weather_name!="" && <WeatherEditor  weathers={weathers}
+                                                    edited_weather_name={edited_weather_name}
+                                                    saveWeather={()=>console.log("save")}
+                                                    deleteWeather={()=>console.log("delete")}
+                                                    closeEditor={()=>set_edited_weather_name("")}/>}
         </>
     )
 }
