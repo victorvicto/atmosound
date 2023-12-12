@@ -9,6 +9,8 @@ import MainPage from './components/MainPage.jsx';
 import SoundsLibPage from './components/SoundsLibPage.jsx';
 import SettingsPage from './components/SettingsPage.jsx';
 
+import default_setup from "./default_setup.json";
+
 function App() {
     const[error_message, set_error_message] = useState("");
 
@@ -326,6 +328,20 @@ function App() {
         input.remove();
     }
 
+    function resetSetup(){
+        if(!confirm("This will reset your setup to the default one. Are you sure?")) return;
+        localStorage.clear();
+        let content = default_setup;
+        set_places(content.places);
+        set_sounds(content.sounds);
+        set_biomes(content.biomes);
+        localStorage.setItem("freesound_api_key", content.free_sound_api_key);
+        localStorage.setItem("places", JSON.stringify(content.places));
+        localStorage.setItem("sounds", JSON.stringify(content.sounds));
+        localStorage.setItem("biomes", JSON.stringify(content.biomes));
+        set_places_status(initialisePlacesStatus());
+    }
+
     let error_toast = null;
     if(error_message.length>0){
         error_toast = (
@@ -364,7 +380,8 @@ function App() {
                             </button>
                         </li>
                     </ul>
-                    <button type="button" className="btn btn-outline-success" onClick={uploadSetup}>Upload setup</button>
+                    <button type="button" className="btn btn-outline-danger" onClick={resetSetup}>Reset setup</button>
+                    <button type="button" className="btn btn-outline-success ms-2" onClick={uploadSetup}>Upload setup</button>
                     <button type="button" className="btn btn-outline-success ms-2" onClick={downloadSetup}>Save my setup</button>
                 </div>
             </div>
