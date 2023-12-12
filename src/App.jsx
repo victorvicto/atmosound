@@ -380,6 +380,7 @@ function App() {
                             </button>
                         </li>
                     </ul>
+                    {/* remove reset button on final build, it is just for development purpose */}
                     <button type="button" className="btn btn-outline-danger" onClick={resetSetup}>Reset setup</button>
                     <button type="button" className="btn btn-outline-success ms-2" onClick={uploadSetup}>Upload setup</button>
                     <button type="button" className="btn btn-outline-success ms-2" onClick={downloadSetup}>Save my setup</button>
