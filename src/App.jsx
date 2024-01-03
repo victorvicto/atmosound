@@ -27,7 +27,7 @@ function App() {
     function initialisePlaces(){
         let start_places = JSON.parse(localStorage.getItem("places"));
         if (start_places === null) {
-            start_places = {};
+            start_places = default_setup.places;
             localStorage.setItem("places", JSON.stringify(start_places));
         }
         return start_places;
@@ -48,7 +48,7 @@ function App() {
     function initialiseSounds(){
         let start_sounds = JSON.parse(localStorage.getItem("sounds"));
         if (start_sounds === null) {
-            start_sounds = {};
+            start_sounds = default_setup.sounds;
             localStorage.setItem("sounds", JSON.stringify(start_sounds));
         }
         return start_sounds;
@@ -57,11 +57,7 @@ function App() {
     function initialiseBiomes(){
         let start_biomes = JSON.parse(localStorage.getItem("biomes"));
         if (start_biomes === null) {
-            start_biomes = {
-                "default":{},
-                "icelands":{},
-                "oriental":{}
-            }
+            start_biomes = default_setup.biomes;
             localStorage.setItem("biomes", JSON.stringify(start_biomes));
         }
         return start_biomes;
@@ -70,25 +66,7 @@ function App() {
     function initialiseWeathers(){
         let start_weathers = JSON.parse(localStorage.getItem("weathers"));
         if (start_weathers === null) {
-            start_weathers = {
-                "none":{
-                    "sound_list": [],
-                    // "image_url": "https://media.istockphoto.com/id/1178541716/vector/weather-forecast-meteorological-weather-map-of-the-united-state-of-america-realistic.jpg?s=612x612&w=0&k=20&c=3ZAheyxofy--xJPXn98IvQl-gBQMK_4LjUtpXtmLwk0="
-                    "image_url": "https://images.pexels.com/photos/450055/pexels-photo-450055.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                },
-                "light rain":{
-                    "sound_list": [],
-                    "image_url": "https://images.pexels.com/photos/1154510/pexels-photo-1154510.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                },
-                "storm":{
-                    "sound_list": [],
-                    "image_url": "https://images.pexels.com/photos/53459/lightning-storm-weather-sky-53459.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                },
-                "sunny":{
-                    "sound_list": [],
-                    "image_url": "https://images.pexels.com/photos/589802/pexels-photo-589802.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                }
-            }
+            start_weathers = default_setup.weathers;
             localStorage.setItem("weathers", JSON.stringify(start_weathers));
         }
         return start_weathers;
@@ -293,6 +271,7 @@ function App() {
             "places": places,
             "sounds": sounds,
             "biomes": biomes,
+            "weathers": weathers,
             "free_sound_api_key": localStorage.getItem("freesound_api_key") || ""
         };
         let data_string = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(setup));
@@ -301,6 +280,19 @@ function App() {
         downloadLink.setAttribute("download", "my_atmousound_setup.json");
         downloadLink.click();
         downloadLink.remove();
+    }
+
+    function bakeInSetup(setup_content){
+        set_places(setup_content.places);
+        set_sounds(setup_content.sounds);
+        set_biomes(setup_content.biomes);
+        set_weathers(setup_content.weathers);
+        localStorage.setItem("freesound_api_key", setup_content.free_sound_api_key);
+        localStorage.setItem("places", JSON.stringify(setup_content.places));
+        localStorage.setItem("sounds", JSON.stringify(setup_content.sounds));
+        localStorage.setItem("biomes", JSON.stringify(setup_content.biomes));
+        localStorage.setItem("weathers", JSON.stringify(setup_content.weathers));
+        set_places_status(initialisePlacesStatus());
     }
 
     function uploadSetup(){
@@ -314,14 +306,7 @@ function App() {
             reader.readAsText(file,'UTF-8');
             reader.onload = readerEvent => {
                 let content = JSON.parse(readerEvent.target.result);
-                set_places(content.places);
-                set_sounds(content.sounds);
-                set_biomes(content.biomes);
-                localStorage.setItem("freesound_api_key", content.free_sound_api_key);
-                localStorage.setItem("places", JSON.stringify(content.places));
-                localStorage.setItem("sounds", JSON.stringify(content.sounds));
-                localStorage.setItem("biomes", JSON.stringify(content.biomes));
-                set_places_status(initialisePlacesStatus());
+                bakeInSetup(content);
             }
         }
         input.click();
@@ -331,15 +316,7 @@ function App() {
     function resetSetup(){
         if(!confirm("This will reset your setup to the default one. Are you sure?")) return;
         localStorage.clear();
-        let content = default_setup;
-        set_places(content.places);
-        set_sounds(content.sounds);
-        set_biomes(content.biomes);
-        localStorage.setItem("freesound_api_key", content.free_sound_api_key);
-        localStorage.setItem("places", JSON.stringify(content.places));
-        localStorage.setItem("sounds", JSON.stringify(content.sounds));
-        localStorage.setItem("biomes", JSON.stringify(content.biomes));
-        set_places_status(initialisePlacesStatus());
+        bakeInSetup(default_setup);
     }
 
     let error_toast = null;
