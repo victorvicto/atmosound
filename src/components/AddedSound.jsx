@@ -7,7 +7,7 @@ function AddedSound({sound, sound_name_correct, changeSound, deleteSound}) {
 
     let time_of_day_checkboxes = Object.entries(sound.time_of_day).map(([time_of_day_name, time_of_day_on]) =>
         <div className="d-flex flex-row align-items-center gap-1" key={time_of_day_name+"timeofday-checkbox"}>
-            <input type="checkbox" checked={time_of_day_on} onChange={(e)=>changeSound(e, ("time_of_day",time_of_day_name))}/>
+            <input type="checkbox" checked={time_of_day_on} onChange={(e)=>changeSound(e, ["time_of_day", time_of_day_name])}/>
             <small>
                 {time_of_day_name}
             </small>
@@ -18,7 +18,7 @@ function AddedSound({sound, sound_name_correct, changeSound, deleteSound}) {
 
     let weathers_checboxes = Object.entries(sound.weathers).map(([weather_name, weather_on]) => 
         <div className="d-flex flex-row align-items-center gap-1" key={weather_name+"weathers-checkbox"}>
-            <input type="checkbox" checked={weather_on} onChange={(e)=>changeSound(e, ("weathers",weather_name))}/>
+            <input type="checkbox" checked={weather_on} onChange={(e)=>changeSound(e, ["weathers", weather_name])}/>
             <small>
                 {weather_name}
             </small>

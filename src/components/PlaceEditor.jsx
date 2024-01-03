@@ -4,6 +4,8 @@ import AddedSound from './AddedSound';
 import AddedMuffled from './AddedMuffled';
 import { useEffect } from 'react';
 
+import { RecursiveReplace } from '../UtilityFunctions';
+
 function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, deletePlace, closeEditor}){
 
     function clone_place(){
@@ -46,14 +48,17 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
 
     function changeSound(event, index, property){ // setup lodash for weathers and time_of_day
         let new_temp_place_info = {...temp_place_info};
-        if(event.target.type=="checkbox") new_temp_place_info.sounds_list[index][property] = event.target.checked;
+        if(event.target.type=="checkbox")
+            RecursiveReplace(new_temp_place_info.sounds_list[index], property, event.target.checked);
         else {
-            new_temp_place_info.sounds_list[index][property] = event.target.value.toLowerCase();
+            RecursiveReplace(new_temp_place_info.sounds_list[index], property, event.target.value.toLowerCase());
             if("max" in event.target){
-                if(parseFloat(event.target.value)>parseFloat(event.target.max)) new_temp_place_info.sounds_list[index][property] = event.target.max;
+                if(parseFloat(event.target.value)>parseFloat(event.target.max))
+                    RecursiveReplace(new_temp_place_info.sounds_list[index], property, event.target.max);
             }
             if("min" in event.target){
-                if(parseFloat(event.target.value)<parseFloat(event.target.min)) new_temp_place_info.sounds_list[index][property] = event.target.min;
+                if(parseFloat(event.target.value)<parseFloat(event.target.min))
+                    RecursiveReplace(new_temp_place_info.sounds_list[index], property, event.target.min);
             }
         }
         set_temp_place_info(new_temp_place_info);
