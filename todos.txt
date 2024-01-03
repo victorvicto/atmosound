@@ -1,8 +1,10 @@
+- make weathereditor
+- do the addWeather function (don't forget to update all the soundlists accordingly)
+- Make weather setstate (and make according audiomanager changes/new functions to play weather)
+- make biomes menu, where biomes can be added (don't forget to update all sounds when that is done)
 - Solve why sound stops if running when switching day time
-- if no localStorage found, use setupUpload to load default json file (15min)
 - change Icon (10min)
 - weathers (6h)
-- make system to pick weather conditions that activate sound (like for time of day) (1h)
 - themes (6h)
 - solving glitch problem
 - make audio change when a setting is modified

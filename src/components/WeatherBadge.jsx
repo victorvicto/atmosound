@@ -42,7 +42,7 @@ function WeatherBadge({ weathers, status, modify_status, switchStatus, set_edite
     }
 
     let weather_buttons = Object.keys(weathers).map((weather_name) =>
-        <button key={weather_name+"btn"}
+        <button key={weather_name+"-btn"}
                 className={'btn btn-'+(current_weather==weather_name?'':'outline-')+'primary btn-sm'}
                 >
             <a href='#' className='text-decoration-none text-reset text-capitalize' onClick={()=>{localStorage.setItem("current_weather", weather_name);set_current_weather(weather_name)}}>
@@ -53,7 +53,7 @@ function WeatherBadge({ weathers, status, modify_status, switchStatus, set_edite
             </a>
         </button>
     );
-    weather_buttons.push(<button className="btn btn-outline-primary btn-sm">+</button>);
+    weather_buttons.push(<button key={"add-weather-btn"} className="btn btn-outline-primary btn-sm">+</button>);
 
     const badge_style = {backgroundImage:"linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1), rgba(255,255,255,1))",
                             backgroundPositionY:"-150pt", backgroundSizeY:"400pt"};

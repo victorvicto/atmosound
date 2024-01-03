@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 
 import { RecursiveReplace } from '../UtilityFunctions';
 
-function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, deletePlace, closeEditor}){
+function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, deletePlace, closeEditor, reloadAudio}){
 
     function clone_place(){
         return structuredClone(places[edited_place_name])
@@ -147,6 +147,7 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
                 <div className='d-flex flex-column gap-2'>
                     <button type="button" className="btn btn-primary btn-lg" onClick={()=>{
                         if(savePlace(edited_place_name, temp_place_name, temp_place_info)){
+                            reloadAudio();
                             closeEditor();
                         }}}>Save place</button>
                     <button type="button" className="btn btn-outline-danger" onClick={()=>{

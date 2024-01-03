@@ -161,7 +161,8 @@ function MainPage({places, sounds, biomes, weathers, addPlace, savePlace, delete
                                                 sounds={sounds}
                                                 savePlace={savePlace}
                                                 deletePlace={deletePlace}
-                                                closeEditor={()=>set_edited_place_name("")}/>}
+                                                closeEditor={()=>set_edited_place_name("")}
+                                                reloadAudio={reloadAudio}/>}
         {edited_weather_name!="" && <WeatherEditor  weathers={weathers}
                                                     edited_weather_name={edited_weather_name}
                                                     saveWeather={()=>console.log("save")}
