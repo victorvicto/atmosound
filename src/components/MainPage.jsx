@@ -7,7 +7,7 @@ import PlaceEditor from './PlaceEditor.jsx';
 import WeatherBadge from './WeatherBadge.jsx';
 import WeatherEditor from './WeatherEditor.jsx';
 
-function MainPage({places, sounds, biomes, weathers, addPlace, savePlace, deletePlace, places_status, set_places_status}) {
+function MainPage(props) {
 
     function instantiateActiveBiome(){
         let new_active_biome = localStorage.getItem("active_biome");
@@ -34,7 +34,7 @@ function MainPage({places, sounds, biomes, weathers, addPlace, savePlace, delete
 
     function getSoundUrls(sound_name){
         let urls = [];
-        for(let sound_pack of sounds[sound_name].sound_packs){
+        for(let sound_pack of props.sounds[sound_name].sound_packs){
             if(sound_pack.biome_presences[localStorage.getItem("active_biome")]){
                 for(let sound_file of sound_pack.sound_files){
                     urls.push(sound_file.url);
@@ -45,10 +45,10 @@ function MainPage({places, sounds, biomes, weathers, addPlace, savePlace, delete
     }
 
     function reloadAudio(){
-        for(const [place_name, place_status] of Object.entries(places_status)){
+        for(const [place_name, place_status] of Object.entries(props.places_status)){
             AudioManager.fade_out_place(place_name);
         }
-        transitionAudio(places_status, false);
+        transitionAudio(props.places_status, false);
     }
 
     function transitionAudio(final_places_status, clear_fading_out=true){
@@ -57,9 +57,9 @@ function MainPage({places, sounds, biomes, weathers, addPlace, savePlace, delete
             if(place_status.state=="off"){
                 if(clear_fading_out) AudioManager.fade_out_place(place_name);
             } else if(place_status.state=="on"){
-                AudioManager.start_place(place_name, places[place_name].sounds_list, 0, 1, getSoundUrls);
+                AudioManager.start_place(place_name, props.places[place_name].sounds_list, 0, 1, getSoundUrls);
             } else if(place_status.state=="muffled"){
-                AudioManager.start_place(place_name, places[place_name].sounds_list, 
+                AudioManager.start_place(place_name, props.places[place_name].sounds_list, 
                     place_status.muffle_amount, place_status.volume, getSoundUrls);
             }
         }
@@ -72,14 +72,14 @@ function MainPage({places, sounds, biomes, weathers, addPlace, savePlace, delete
     }
 
     function switchState(place_name, new_state){
-        let final_places_status = {...places_status};
-        if(places_status[place_name].state==new_state){
+        let final_places_status = {...props.places_status};
+        if(props.places_status[place_name].state==new_state){
             final_places_status[place_name].state = "off";
         } else {
             if(new_state=="on"){
                 turnOffAllPlaces(final_places_status);
-                if("muffled_list" in places[place_name]){
-                    for(let muffled of places[place_name].muffled_list){
+                if("muffled_list" in props.places[place_name]){
+                    for(let muffled of props.places[place_name].muffled_list){
                         final_places_status[muffled.name].state = "muffled";
                         final_places_status[muffled.name].muffle_amount = muffled.muffle_amount;
                         final_places_status[muffled.name].volume = muffled.volume;
@@ -89,20 +89,20 @@ function MainPage({places, sounds, biomes, weathers, addPlace, savePlace, delete
             final_places_status[place_name].state = new_state;
         }
         transitionAudio(final_places_status);
-        set_places_status(final_places_status);
+        props.set_places_status(final_places_status);
     }
 
     function modifyPlacesStatus(event, place_name, property){
-        let new_places_status = {...places_status};
+        let new_places_status = {...props.places_status};
         new_places_status[place_name][property] = event.target.value;
         transitionAudio(new_places_status);
-        set_places_status(new_places_status);
+        props.set_places_status(new_places_status);
     }
 
-    const places_badges = Object.entries(places).map(([place_name, place_info]) => 
+    const places_badges = Object.entries(props.places).map(([place_name, place_info]) => 
             <PlaceBadge key={place_name}
                         place_name={place_name}
-                        place_status={places_status[place_name]}
+                        place_status={props.places_status[place_name]}
                         modify_status={(e, property)=>modifyPlacesStatus(e, place_name, property)}
                         switchStatus={(new_status)=>{switchState(place_name, new_status)}}
                         open_place_editor={()=>{
@@ -111,7 +111,7 @@ function MainPage({places, sounds, biomes, weathers, addPlace, savePlace, delete
         );
 
     let biome_options_html = [];
-    for(let biome_name in biomes){
+    for(let biome_name in props.biomes){
         biome_options_html.push(<option key={biome_name+"-option"} value={biome_name}>{biome_name}</option>);
     }
 
@@ -144,28 +144,38 @@ function MainPage({places, sounds, biomes, weathers, addPlace, savePlace, delete
                 </select>
             </div>
         </div>
-        <WeatherBadge weathers={weathers} status={{state: "on", volume: 1, muffle_amount: 0}} set_edited_weather_name={set_edited_weather_name}/>
+        <WeatherBadge   weathers={props.weathers}
+                        status={{state: "on", volume: 1, muffle_amount: 0}}
+                        set_edited_weather_name={set_edited_weather_name}
+                        addWeather={()=>{
+                            let new_weather_name = props.addWeather();
+                            set_edited_weather_name(new_weather_name);
+                        }}/>
         <div className='p-2 p-md-5 d-flex flex-row flex-wrap justify-content-center align-items-start gap-2'>
             {places_badges}
         </div>
         <div className='d-flex justify-content-center mt-3'>
             <button className="btn btn-outline-primary btn-lg"
                     onClick={()=>{
-                        set_edited_place_name(addPlace());
+                        set_edited_place_name(props.addPlace());
                     }}>
                 Add place
             </button>
         </div>
         {edited_place_name!="" && <PlaceEditor  edited_place_name={edited_place_name}
-                                                places={places}
-                                                sounds={sounds}
-                                                savePlace={savePlace}
-                                                deletePlace={deletePlace}
+                                                places={props.places}
+                                                sounds={props.sounds}
+                                                savePlace={props.savePlace}
+                                                deletePlace={props.deletePlace}
                                                 closeEditor={()=>set_edited_place_name("")}
                                                 reloadAudio={reloadAudio}/>}
-        {edited_weather_name!="" && <WeatherEditor  weathers={weathers}
+        {edited_weather_name!="" && <WeatherEditor  weathers={props.weathers}
                                                     edited_weather_name={edited_weather_name}
-                                                    saveWeather={()=>console.log("save")}
+                                                    changeWeather={(new_name, new_content)=>{
+                                                        if(props.changeWeather(edited_weather_name, new_name, new_content)){
+                                                            set_edited_weather_name(new_name);
+                                                        }
+                                                    }}
                                                     deleteWeather={()=>console.log("delete")}
                                                     closeEditor={()=>set_edited_weather_name("")}/>}
         </>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function WeatherBadge({ weathers, status, modify_status, switchStatus, set_edited_weather_name}) {
+function WeatherBadge({ weathers, status, modify_status, switchStatus, set_edited_weather_name, addWeather}) {
 
     function instantiateCurrentWeather(){
         let new_current_weather = localStorage.getItem("current_weather");
@@ -53,7 +53,7 @@ function WeatherBadge({ weathers, status, modify_status, switchStatus, set_edite
             </a>
         </button>
     );
-    weather_buttons.push(<button key={"add-weather-btn"} className="btn btn-outline-primary btn-sm">+</button>);
+    weather_buttons.push(<button key={"add-weather-btn"} className="btn btn-outline-primary btn-sm" onClick={addWeather}>+</button>);
 
     const badge_style = {backgroundImage:"linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1), rgba(255,255,255,1))",
                             backgroundPositionY:"-150pt", backgroundSizeY:"400pt"};

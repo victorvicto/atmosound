@@ -266,6 +266,87 @@ function App() {
         localStorage.setItem("places", JSON.stringify(new_places));
     }
 
+    function addWeather(){
+        let new_weather_name = "new weather";
+        let i = 0;
+        while(new_weather_name in weathers){
+            new_weather_name = "new weather " + i;
+            i++;
+        }
+        let new_weathers = {
+            ...weathers,
+            [new_weather_name]:{
+                "sounds_list": [],
+                "image_url": ""
+            }
+        };
+        let new_places = {...places};
+        for(let place_name in new_places){
+            for(let sound of new_places[place_name].sounds_list){
+                sound.weathers[new_weather_name] = true;
+            }
+        }
+        set_places(new_places);
+        localStorage.setItem("places", JSON.stringify(new_places));
+        set_weathers(new_weathers);
+        localStorage.setItem("weathers", JSON.stringify(new_weathers));
+        return new_weather_name;
+    }
+
+    function changeWeather(weather_name, new_weather_name, new_content){
+        if(new_weather_name!=weather_name){
+            if(weathers[new_weather_name]!==undefined){
+                set_error_message("Tried to create a weather with a name that already exists");
+                return false;
+            }
+        }
+        if(new_weather_name.length==0){
+            set_error_message("Tried to create a weather with an empty name");
+            return false;
+        }
+        for(let sound of new_content.sounds_list){
+            if(sounds[sound.name]==undefined){
+                set_error_message("Tried to create a weather containing a sound that doesn't exist");
+                return false;
+            }
+        }
+
+        let new_weathers = {...weathers};
+        new_weathers[new_weather_name] = new_content;
+        if(new_weather_name!=weather_name){
+            delete new_weathers[weather_name];
+
+            let new_places = {...places};
+            for(let place_name in new_places){
+                for(let sound of new_places[place_name].sounds_list){
+                    sound.weathers[new_weather_name] = sound.weathers[weather_name];
+                    delete sound.weathers[weather_name];
+                }
+            }
+            set_places(new_places);
+            localStorage.setItem("places", JSON.stringify(new_places));
+        }
+
+        set_weathers(new_weathers);
+        localStorage.setItem("weathers", JSON.stringify(new_weathers));
+        return true;
+    }
+
+    function deleteWeather(weather_name){
+        let new_weathers = {...weathers};
+        delete new_weathers[weather_name];
+        let new_places = {...places};
+        for(let place_name in new_places){
+            for(let sound of new_places[place_name].sounds_list){
+                delete sound.weathers[weather_name];
+            }
+        }
+        set_places(new_places);
+        localStorage.setItem("places", JSON.stringify(new_places));
+        set_weathers(new_weathers);
+        localStorage.setItem("weathers", JSON.stringify(new_weathers));
+    }
+
     function downloadSetup(){
         let setup = {
             "places": places,
@@ -374,7 +455,10 @@ function App() {
                             savePlace={savePlace} 
                             deletePlace={deletePlace} 
                             places_status={places_status} 
-                            set_places_status={set_places_status}/>}
+                            set_places_status={set_places_status}
+                            addWeather={addWeather}
+                            changeWeather={changeWeather}
+                            deleteWeather={deleteWeather}/>}
                 {!audio_context_started && 
                     <div className='d-flex justify-content-center p-5'>
                         <button type="button" className='btn btn-primary btn-lg m-5 shadow shadow-md'
