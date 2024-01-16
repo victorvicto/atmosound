@@ -1,5 +1,6 @@
 import EditLink from "./EditLink";
 
+// TODO to continue
 function AddedWeatherSound(weather_sound, changeWeatherSound, deleteWeatherSound){
     const [is_open, set_is_open] = useState(false);
 
@@ -13,7 +14,8 @@ function AddedWeatherSound(weather_sound, changeWeatherSound, deleteWeatherSound
                     {weather_sound.name}
                     <EditLink   edit_prompt={"new name for "+weather_sound.name}
                                 applyChange={(new_name)=>{changeWeatherSound("name", new_name)}}/>
-                </h5>
+                </h5> 
+                {/* last edited here */}
                 <button type="button" className="btn-close" onClick={deleteWeatherSound}></button>
             </div>
             {is_open &&
