@@ -161,6 +161,12 @@ function MainPage(props) {
                     }}>
                 Add place
             </button>
+            <button className="btn btn-outline-primary btn-lg"
+                    onClick={()=>{
+                        AudioManager.playTest();
+                    }}>
+                Play test
+            </button>
         </div>
         {edited_place_name!="" && <PlaceEditor  edited_place_name={edited_place_name}
                                                 places={props.places}

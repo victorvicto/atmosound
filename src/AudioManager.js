@@ -4,7 +4,19 @@ export function startAudioContext(){
     Howler.volume(1);
     console.log("starting audio context");
     let first_sound = new Howl({
-        src: ['https://freesound.org/data/previews/80/80921_1022651-lq.mp3']
+        src: ['https://cdn.freesound.org/data/previews/80/80921_1022651-lq.mp3'],
+        autoplay: false
+    });
+    first_sound.on('end', function(){
+        first_sound.unload();
+    });
+    first_sound.play();
+}
+
+export function playTest(){
+    let first_sound = new Howl({
+        src: ['https://cdn.freesound.org/data/previews/80/80921_1022651-lq.mp3'],
+        autoplay: false
     });
     first_sound.on('end', function(){
         first_sound.unload();
