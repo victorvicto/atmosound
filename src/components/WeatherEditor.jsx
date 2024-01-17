@@ -2,6 +2,8 @@ import EditLink from "./EditLink";
 
 function WeatherEditor({weathers, edited_weather_name, changeWeather,  deleteWeather, closeEditor}) {
 
+    
+    
     return (
         <div className="offcanvas offcanvas-end show"
             tabIndex="-1">
@@ -12,9 +14,9 @@ function WeatherEditor({weathers, edited_weather_name, changeWeather,  deleteWea
             <div className="offcanvas-body">
                 <h4 className="mb-3">
                     {edited_weather_name}
-                    <EditLink edit_prompt={"New weather name"} applyChange={((new_weather_name)=>{
+                    <EditLink edit_prompt={"New weather name"} applyChange={(new_weather_name)=>{
                         changeWeather(new_weather_name, weathers[edited_weather_name]);
-                    })}/>
+                    }}/>
                 </h4>
                 <div className="mb-3">
                     <label className="form-label">Sounds</label>
