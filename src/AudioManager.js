@@ -64,7 +64,7 @@ function sound_should_be_played(sound_descr){
     return true;
 }
 
-export function start_place(place_name, sounds_list, muffled_amount, place_volume, getSoundUrls){
+export async function start_place(place_name, sounds_list, muffled_amount, place_volume, getSoundUrls){
     if(place_name in currently_playing_places){
         console.log("already playing place", place_name);
         currently_playing_places[place_name].filter_node.frequency.setTargetAtTime(
@@ -102,7 +102,7 @@ export function start_place(place_name, sounds_list, muffled_amount, place_volum
     let i = 0;
     for(let sound_descr of sounds_list){
         if(!sound_should_be_played(sound_descr)) continue;
-        let sound_urls = getSoundUrls(sound_descr.name);
+        let sound_urls = await getSoundUrls(sound_descr.name);
         if(sound_urls.length==0) continue;
         let random_url = sound_urls[Math.floor(Math.random()*sound_urls.length)];
         let new_howl = new Howl({

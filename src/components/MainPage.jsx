@@ -32,12 +32,41 @@ function MainPage(props) {
     const [active_biome, set_active_biome] = useState(instantiateActiveBiome);
     const [time_of_day, set_time_of_day] = useState(instantiateTimeOfDay);
 
-    function getSoundUrls(sound_name){
+    async function translateUrl(url){
+        final_url = url;
+        if(url.includes("::")){
+            final_url = null;
+            let [prefix, sound_id] = url.split("::");
+            if(prefix=="fs"){
+                let key = localStorage.getItem("freesound_api_key");
+                if(key!=null && key!=""){
+                    const resp = await fetch("https://freesound.org/apiv2/sounds/"+sound_id+"/?fields=previews&token="+key);
+                    const previews = await resp.json();
+                    console.log(previews);
+                    if("previews" in previews){
+                        final_url = previews.previews["preview-hq-mp3"];
+                    }
+                }
+            } else if(prefix=="yt") {
+                const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
+                const info = await resp.json();
+                console.log(info);
+                if("url" in info){
+                    final_url = info["url"];
+                }
+            }
+        }
+        return final_url;
+    }
+
+    async function getSoundUrls(sound_name){
         let urls = [];
         for(let sound_pack of props.sounds[sound_name].sound_packs){
             if(sound_pack.biome_presences[localStorage.getItem("active_biome")]){
                 for(let sound_file of sound_pack.sound_files){
-                    urls.push(sound_file.url);
+                    let url_to_add = await translateUrl(sound_file.url);
+                    if(url_to_add != null)
+                        urls.push(url_to_add);
                 }
             }
         }
