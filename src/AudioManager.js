@@ -64,6 +64,7 @@ function sound_should_be_played(sound_descr){
     return true;
 }
 
+// TODO, log to see why youtube makes no sound
 export async function start_place(place_name, sounds_list, muffled_amount, place_volume, getSoundUrls){
     if(place_name in currently_playing_places){
         console.log("already playing place", place_name);

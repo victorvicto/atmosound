@@ -51,11 +51,15 @@ function MainPage(props) {
                 const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
                 const info = await resp.json();
                 console.log(info);
-                if("url" in info){
-                    final_url = info["url"];
+                if("formats" in info){
+                    if("audio/mp4" in info["formats"])
+                        final_url = info["formats"]["audio/mp4"];
+                    else if("audio/webm" in info["formats"])
+                        final_url = info["formats"]["audio/webm"];
                 }
             }
         }
+        console.log(final_url);
         return final_url;
     }
 
