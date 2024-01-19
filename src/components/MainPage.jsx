@@ -33,7 +33,7 @@ function MainPage(props) {
     const [time_of_day, set_time_of_day] = useState(instantiateTimeOfDay);
 
     async function translateUrl(url){
-        final_url = url;
+        let final_url = url;
         if(url.includes("::")){
             final_url = null;
             let [prefix, sound_id] = url.split("::");
@@ -200,6 +200,7 @@ function MainPage(props) {
         {edited_place_name!="" && <PlaceEditor  edited_place_name={edited_place_name}
                                                 places={props.places}
                                                 sounds={props.sounds}
+                                                weathers={props.weathers}
                                                 savePlace={props.savePlace}
                                                 deletePlace={props.deletePlace}
                                                 closeEditor={()=>set_edited_place_name("")}
