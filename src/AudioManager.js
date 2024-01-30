@@ -64,6 +64,65 @@ function sound_should_be_played(sound_descr){
     return true;
 }
 
+function createAudioSource(url, output_node){
+    // TODO create either Howl or mediastreamaudiosource from url and plug it into output_node
+    // let new_howl = new Howl({
+    //     src: [random_url],
+    //     autoplay: false,
+    //     volume: sound_descr.volume
+    // });
+    // currently_playing_places[place_name].howls.push(new_howl);
+    // let time = (Math.random()/2)*sound_descr.average_time*1000;
+    // new_howl.on('load', ()=>{
+    //     let howl_duration = new_howl.duration();
+    //     if(howl_duration>20){
+    //         new_howl.seek(Math.random()*howl_duration);
+    //     }
+    //     setTimeout(()=>{
+    //         new_howl._sounds[0]._node.disconnect();
+    //         new_howl._sounds[0]._node.connect(new_filter_node, 0, i);
+    //         new_howl.play();
+    //     }, time);
+    // });
+    // new_howl.on('end', ()=>{
+    //     let time = (Math.random()+0.5)*sound_descr.average_time*1000;
+    //     setTimeout(()=>{
+    //         new_howl.play();
+    //     }, time);
+    // })
+}
+
+async function translateUrl(url){
+    let final_url = url;
+    if(url.includes("::")){
+        final_url = null;
+        let [prefix, sound_id] = url.split("::");
+        if(prefix=="fs"){
+            let key = localStorage.getItem("freesound_api_key");
+            if(key!=null && key!=""){
+                const resp = await fetch("https://freesound.org/apiv2/sounds/"+sound_id+"/?fields=previews&token="+key);
+                const previews = await resp.json();
+                console.log(previews);
+                if("previews" in previews){
+                    final_url = previews.previews["preview-hq-mp3"];
+                }
+            }
+        } else if(prefix=="yt") {
+            const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
+            const info = await resp.json();
+            console.log(info);
+            if("formats" in info){
+                if("audio/webm" in info["formats"])
+                    final_url = info["formats"]["audio/webm"];
+                else if("audio/mp4" in info["formats"])
+                    final_url = info["formats"]["audio/mp4"];
+            }
+        }
+    }
+    console.log(final_url);
+    return final_url;
+}
+
 // TODO, log to see why youtube makes no sound
 export async function start_place(place_name, sounds_list, muffled_amount, place_volume, getSoundUrls){
     if(place_name in currently_playing_places){
@@ -97,6 +156,7 @@ export async function start_place(place_name, sounds_list, muffled_amount, place
 
     currently_playing_places[place_name] = {
         howls: [],
+        media_stream_audio_sources: [],
         filter_node: new_filter_node,
         gain_node: new_gain_node
     }
@@ -106,29 +166,6 @@ export async function start_place(place_name, sounds_list, muffled_amount, place
         let sound_urls = await getSoundUrls(sound_descr.name);
         if(sound_urls.length==0) continue;
         let random_url = sound_urls[Math.floor(Math.random()*sound_urls.length)];
-        let new_howl = new Howl({
-            src: [random_url],
-            autoplay: false,
-            volume: sound_descr.volume
-        });
-        currently_playing_places[place_name].howls.push(new_howl);
-        let time = (Math.random()/2)*sound_descr.average_time*1000;
-        new_howl.on('load', ()=>{
-            let howl_duration = new_howl.duration();
-            if(howl_duration>20){
-                new_howl.seek(Math.random()*howl_duration);
-            }
-            setTimeout(()=>{
-                new_howl._sounds[0]._node.disconnect();
-                new_howl._sounds[0]._node.connect(new_filter_node, 0, i);
-                new_howl.play();
-            }, time);
-        });
-        new_howl.on('end', ()=>{
-            let time = (Math.random()+0.5)*sound_descr.average_time*1000;
-            setTimeout(()=>{
-                new_howl.play();
-            }, time);
-        })
+        createAudioSource(random_url, new_filter_node);       
     }
 }

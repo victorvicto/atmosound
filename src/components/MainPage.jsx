@@ -32,45 +32,12 @@ function MainPage(props) {
     const [active_biome, set_active_biome] = useState(instantiateActiveBiome);
     const [time_of_day, set_time_of_day] = useState(instantiateTimeOfDay);
 
-    async function translateUrl(url){
-        let final_url = url;
-        if(url.includes("::")){
-            final_url = null;
-            let [prefix, sound_id] = url.split("::");
-            if(prefix=="fs"){
-                let key = localStorage.getItem("freesound_api_key");
-                if(key!=null && key!=""){
-                    const resp = await fetch("https://freesound.org/apiv2/sounds/"+sound_id+"/?fields=previews&token="+key);
-                    const previews = await resp.json();
-                    console.log(previews);
-                    if("previews" in previews){
-                        final_url = previews.previews["preview-hq-mp3"];
-                    }
-                }
-            } else if(prefix=="yt") {
-                const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
-                const info = await resp.json();
-                console.log(info);
-                if("formats" in info){
-                    if("audio/mp4" in info["formats"])
-                        final_url = info["formats"]["audio/mp4"];
-                    else if("audio/webm" in info["formats"])
-                        final_url = info["formats"]["audio/webm"];
-                }
-            }
-        }
-        console.log(final_url);
-        return final_url;
-    }
-
     async function getSoundUrls(sound_name){
         let urls = [];
         for(let sound_pack of props.sounds[sound_name].sound_packs){
             if(sound_pack.biome_presences[localStorage.getItem("active_biome")]){
                 for(let sound_file of sound_pack.sound_files){
-                    let url_to_add = await translateUrl(sound_file.url);
-                    if(url_to_add != null)
-                        urls.push(url_to_add);
+                    urls.push(sound_file.url);
                 }
             }
         }
