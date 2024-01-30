@@ -64,32 +64,58 @@ function sound_should_be_played(sound_descr){
     return true;
 }
 
-function createAudioSource(url, output_node){
+function createAndAddStream(mediastreamaudiosource, playing_place){
+
+}
+
+function createAndAddHowl(url, playing_place){
+    let new_howl = new Howl({
+        src: [url],
+        autoplay: false,
+        volume: sound_descr.volume
+    });
+    playing_place.howls.push(new_howl);
+    let time = (Math.random()/2)*sound_descr.average_time*1000;
+    new_howl.on('load', ()=>{
+        let howl_duration = new_howl.duration();
+        if(howl_duration>20){
+            new_howl.seek(Math.random()*howl_duration);
+        }
+        setTimeout(()=>{
+            new_howl._sounds[0]._node.disconnect();
+            new_howl._sounds[0]._node.connect(new_filter_node, 0, i);
+            new_howl.play();
+        }, time);
+    });
+    new_howl.on('end', ()=>{
+        let time = (Math.random()+0.5)*sound_descr.average_time*1000;
+        setTimeout(()=>{
+            new_howl.play();
+        }, time);
+    })
+}
+
+async function createAudioSource(url, playing_place){
     // TODO create either Howl or mediastreamaudiosource from url and plug it into output_node
-    // let new_howl = new Howl({
-    //     src: [random_url],
-    //     autoplay: false,
-    //     volume: sound_descr.volume
-    // });
-    // currently_playing_places[place_name].howls.push(new_howl);
-    // let time = (Math.random()/2)*sound_descr.average_time*1000;
-    // new_howl.on('load', ()=>{
-    //     let howl_duration = new_howl.duration();
-    //     if(howl_duration>20){
-    //         new_howl.seek(Math.random()*howl_duration);
-    //     }
-    //     setTimeout(()=>{
-    //         new_howl._sounds[0]._node.disconnect();
-    //         new_howl._sounds[0]._node.connect(new_filter_node, 0, i);
-    //         new_howl.play();
-    //     }, time);
-    // });
-    // new_howl.on('end', ()=>{
-    //     let time = (Math.random()+0.5)*sound_descr.average_time*1000;
-    //     setTimeout(()=>{
-    //         new_howl.play();
-    //     }, time);
-    // })
+    if(url.includes("::")){
+        let [prefix, sound_id] = url.split("::");
+        if(prefix=="fs"){
+            let key = localStorage.getItem("freesound_api_key");
+            if(key!=null && key!=""){
+                const resp = await fetch("https://freesound.org/apiv2/sounds/"+sound_id+"/?fields=previews&token="+key);
+                const previews = await resp.json();
+                console.log(previews);
+                if("previews" in previews){
+                    let final_url = previews.previews["preview-hq-mp3"];
+                    createAndAddHowl(final_url, playing_place);
+                }
+            }
+        }else if(prefix=="yt"){
+            // TODO create mediastream from ytdl-core and call createAndAddStream
+        }
+    } else {
+        createAndAddHowl(url, playing_place);
+    }
 }
 
 async function translateUrl(url){
@@ -166,6 +192,6 @@ export async function start_place(place_name, sounds_list, muffled_amount, place
         let sound_urls = await getSoundUrls(sound_descr.name);
         if(sound_urls.length==0) continue;
         let random_url = sound_urls[Math.floor(Math.random()*sound_urls.length)];
-        createAudioSource(random_url, new_filter_node);       
+        createAudioSource(random_url, currently_playing_places[place_name]);       
     }
 }
