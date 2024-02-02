@@ -1,4 +1,5 @@
 import {Howl, Howler} from 'howler';
+const ytdl = require('ytdl-core');
 
 export function startAudioContext(){
     Howler.volume(1);
@@ -112,6 +113,24 @@ async function createAudioSource(url, playing_place){
             }
         }else if(prefix=="yt"){
             // TODO create mediastream from ytdl-core and call createAndAddStream
+            // Create a readable stream with ytdl-core
+            const stream = ytdl('http://www.youtube.com/watch?v=A02s8omM_hI');
+
+            // Decode the stream into audio data
+            let audioData;
+            stream.on('data', (chunk) => {
+                Howler.ctx.decodeAudioData(chunk.buffer, (buffer) => {
+                    audioData = buffer;
+                });
+            });
+
+            // Create a MediaStream track with the audio data
+            const destination = Howler.ctx.createMediaStreamDestination();
+            const track = destination.stream.getAudioTracks()[0];
+
+            // Play the MediaStream track
+            const source = context.createMediaStreamSource(destination.stream);
+            source.connect(context.destination);
         }
     } else {
         createAndAddHowl(url, playing_place);
