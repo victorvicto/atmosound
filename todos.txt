@@ -1,3 +1,4 @@
+- use frontend alternative to ytdl-core (youtube to mp3 api, play api?, avoid it all together?)
 - transition placeEditor to live editor (instead of "save changes" system) to avoid parallel editing incoherences
 - make weathereditor
 - Make weather setstate (and make according audiomanager changes/new functions to play weather)
