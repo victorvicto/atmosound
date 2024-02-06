@@ -1,5 +1,4 @@
 import {Howl, Howler} from 'howler';
-const ytdl = require('ytdl-core');
 
 export function startAudioContext(){
     Howler.volume(1);
@@ -65,8 +64,16 @@ function sound_should_be_played(sound_descr){
     return true;
 }
 
-function createAndAddStream(mediastreamaudiosource, playing_place){
-
+function createAndAddStream(mediastreamaudiosource_url, playing_place){
+    let new_audio_element = document.createElement("audio");
+    new_audio_element.src = mediastreamaudiosource_url;
+    new_audio_element.autoplay = true;
+    new_audio_element.hidden = true;
+    document.body.appendChild(new_audio_element);
+    let media_stream_audio_source = Howler.ctx.createMediaElementSource(new_audio_element);
+    media_stream_audio_source.connect(playing_place.filter_node);
+    playing_place.audio_elements.push(new_audio_element);
+    playing_place.media_stream_audio_sources.push(media_stream_audio_source);
 }
 
 function createAndAddHowl(url, playing_place){
@@ -84,7 +91,9 @@ function createAndAddHowl(url, playing_place){
         }
         setTimeout(()=>{
             new_howl._sounds[0]._node.disconnect();
-            new_howl._sounds[0]._node.connect(new_filter_node, 0, i);
+            // TODO, not sure it works without the i as input index, does it override the 0 index input or does it combine all inputs?
+            //new_howl._sounds[0]._node.connect(playing_place.filter_node, 0, i);
+            new_howl._sounds[0]._node.connect(playing_place.filter_node);
             new_howl.play();
         }, time);
     });
@@ -112,25 +121,18 @@ async function createAudioSource(url, playing_place){
                 }
             }
         }else if(prefix=="yt"){
-            // TODO create mediastream from ytdl-core and call createAndAddStream
-            // Create a readable stream with ytdl-core
-            const stream = ytdl('http://www.youtube.com/watch?v=A02s8omM_hI');
-
-            // Decode the stream into audio data
-            let audioData;
-            stream.on('data', (chunk) => {
-                Howler.ctx.decodeAudioData(chunk.buffer, (buffer) => {
-                    audioData = buffer;
-                });
-            });
-
-            // Create a MediaStream track with the audio data
-            const destination = Howler.ctx.createMediaStreamDestination();
-            const track = destination.stream.getAudioTracks()[0];
-
-            // Play the MediaStream track
-            const source = context.createMediaStreamSource(destination.stream);
-            source.connect(context.destination);
+            const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
+            const info = await resp.json();
+            console.log(info);
+            if("formats" in info){
+                if("audio/webm" in info["formats"]){
+                    final_url = info["formats"]["audio/webm"];
+                    createAndAddStream(final_url, playing_place);
+                } else if("audio/mp4" in info["formats"]){
+                    final_url = info["formats"]["audio/mp4"];
+                    createAndAddStream(final_url, playing_place);
+                }
+            }
         }
     } else {
         createAndAddHowl(url, playing_place);
@@ -202,6 +204,7 @@ export async function start_place(place_name, sounds_list, muffled_amount, place
     currently_playing_places[place_name] = {
         howls: [],
         media_stream_audio_sources: [],
+        audio_elements: [],
         filter_node: new_filter_node,
         gain_node: new_gain_node
     }
