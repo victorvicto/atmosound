@@ -167,6 +167,7 @@ function MainPage(props) {
                     }}>
                 Play test
             </button>
+            <input type="file" id="fileInput"></input>
         </div>
         {edited_place_name!="" && <PlaceEditor  edited_place_name={edited_place_name}
                                                 places={props.places}
