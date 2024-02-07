@@ -120,55 +120,57 @@ async function createAudioSource(url, playing_place){
                     createAndAddHowl(final_url, playing_place);
                 }
             }
-        }else if(prefix=="yt"){
-            const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
-            const info = await resp.json();
-            console.log(info);
-            if("formats" in info){
-                if("audio/webm" in info["formats"]){
-                    final_url = info["formats"]["audio/webm"];
-                    createAndAddStream(final_url, playing_place);
-                } else if("audio/mp4" in info["formats"]){
-                    final_url = info["formats"]["audio/mp4"];
-                    createAndAddStream(final_url, playing_place);
-                }
-            }
         }
+        // letting youtube down, without my own ytdl backend it seems complicated to stream youtube audio without running into cors errors
+        // else if(prefix=="yt"){
+        //     const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
+        //     const info = await resp.json();
+        //     console.log(info);
+        //     if("formats" in info){
+        //         if("audio/webm" in info["formats"]){
+        //             let final_url = info["formats"]["audio/webm"];
+        //             createAndAddStream(final_url, playing_place);
+        //         } else if("audio/mp4" in info["formats"]){
+        //             let final_url = info["formats"]["audio/mp4"];
+        //             createAndAddStream(final_url, playing_place);
+        //         }
+        //     }
+        // }
     } else {
         createAndAddHowl(url, playing_place);
     }
 }
 
-async function translateUrl(url){
-    let final_url = url;
-    if(url.includes("::")){
-        final_url = null;
-        let [prefix, sound_id] = url.split("::");
-        if(prefix=="fs"){
-            let key = localStorage.getItem("freesound_api_key");
-            if(key!=null && key!=""){
-                const resp = await fetch("https://freesound.org/apiv2/sounds/"+sound_id+"/?fields=previews&token="+key);
-                const previews = await resp.json();
-                console.log(previews);
-                if("previews" in previews){
-                    final_url = previews.previews["preview-hq-mp3"];
-                }
-            }
-        } else if(prefix=="yt") {
-            const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
-            const info = await resp.json();
-            console.log(info);
-            if("formats" in info){
-                if("audio/webm" in info["formats"])
-                    final_url = info["formats"]["audio/webm"];
-                else if("audio/mp4" in info["formats"])
-                    final_url = info["formats"]["audio/mp4"];
-            }
-        }
-    }
-    console.log(final_url);
-    return final_url;
-}
+// async function translateUrl(url){
+//     let final_url = url;
+//     if(url.includes("::")){
+//         final_url = null;
+//         let [prefix, sound_id] = url.split("::");
+//         if(prefix=="fs"){
+//             let key = localStorage.getItem("freesound_api_key");
+//             if(key!=null && key!=""){
+//                 const resp = await fetch("https://freesound.org/apiv2/sounds/"+sound_id+"/?fields=previews&token="+key);
+//                 const previews = await resp.json();
+//                 console.log(previews);
+//                 if("previews" in previews){
+//                     final_url = previews.previews["preview-hq-mp3"];
+//                 }
+//             }
+//         } else if(prefix=="yt") {
+//             const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
+//             const info = await resp.json();
+//             console.log(info);
+//             if("formats" in info){
+//                 if("audio/webm" in info["formats"])
+//                     final_url = info["formats"]["audio/webm"];
+//                 else if("audio/mp4" in info["formats"])
+//                     final_url = info["formats"]["audio/mp4"];
+//             }
+//         }
+//     }
+//     console.log(final_url);
+//     return final_url;
+// }
 
 // TODO, log to see why youtube makes no sound
 export async function start_place(place_name, sounds_list, muffled_amount, place_volume, getSoundUrls){
