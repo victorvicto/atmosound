@@ -4,7 +4,7 @@ export function startAudioContext(){
     Howler.volume(1);
     console.log("starting audio context");
     let first_sound = new Howl({
-        src: ['https://cdn.freesound.org/data/previews/80/80921_1022651-lq.mp3'],
+        src: ['https://actions.google.com/sounds/v1/cartoon/pop.ogg'],
         autoplay: false
     });
     first_sound.on('end', function(){
@@ -14,14 +14,21 @@ export function startAudioContext(){
 }
 
 export function playTest(){
-    let first_sound = new Howl({
-        src: ['https://cdn.freesound.org/data/previews/80/80921_1022651-lq.mp3'],
-        autoplay: false
-    });
-    first_sound.on('end', function(){
-        first_sound.unload();
-    });
-    first_sound.play();
+    // let first_sound = new Howl({
+    //     src: ['https://cdn.freesound.org/data/previews/80/80921_1022651-lq.mp3'],
+    //     autoplay: false
+    // });
+    // first_sound.on('end', function(){
+    //     first_sound.unload();
+    // });
+    // first_sound.play();
+    let new_audio_element = document.createElement("audio");
+    new_audio_element.src = 'https://universal-soundbank.com/sounds/13699.mp3';
+    new_audio_element.autoplay = true;
+    //new_audio_element.hidden = true;
+    document.body.appendChild(new_audio_element);
+    let media_stream_audio_source = Howler.ctx.createMediaElementSource(new_audio_element);
+    media_stream_audio_source.connect(Howler.masterGain);
 }
 
 let currently_playing_places = {};
