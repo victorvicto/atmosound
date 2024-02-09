@@ -88,17 +88,17 @@ function sound_should_be_played(sound_descr){
     return true;
 }
 
-function createAndAddStream(mediastreamaudiosource_url, playing_place){
-    let new_audio_element = document.createElement("audio");
-    new_audio_element.src = mediastreamaudiosource_url;
-    new_audio_element.autoplay = true;
-    new_audio_element.hidden = true;
-    document.body.appendChild(new_audio_element);
-    let media_stream_audio_source = Howler.ctx.createMediaElementSource(new_audio_element);
-    media_stream_audio_source.connect(playing_place.filter_node);
-    playing_place.audio_elements.push(new_audio_element);
-    playing_place.media_stream_audio_sources.push(media_stream_audio_source);
-}
+// function createAndAddStream(mediastreamaudiosource_url, playing_place){
+//     let new_audio_element = document.createElement("audio");
+//     new_audio_element.src = mediastreamaudiosource_url;
+//     new_audio_element.autoplay = true;
+//     new_audio_element.hidden = true;
+//     document.body.appendChild(new_audio_element);
+//     let media_stream_audio_source = Howler.ctx.createMediaElementSource(new_audio_element);
+//     media_stream_audio_source.connect(playing_place.filter_node);
+//     playing_place.audio_elements.push(new_audio_element);
+//     playing_place.media_stream_audio_sources.push(media_stream_audio_source);
+// }
 
 function createAndAddHowl(url, playing_place){
     let new_howl = new Howl({
@@ -145,21 +145,25 @@ async function createAudioSource(url, playing_place){
                 }
             }
         }
-        // letting youtube down, without my own ytdl backend it seems complicated to stream youtube audio without running into cors errors
-        // else if(prefix=="yt"){
-        //     const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
-        //     const info = await resp.json();
-        //     console.log(info);
-        //     if("formats" in info){
-        //         if("audio/webm" in info["formats"]){
-        //             let final_url = info["formats"]["audio/webm"];
-        //             createAndAddStream(final_url, playing_place);
-        //         } else if("audio/mp4" in info["formats"]){
-        //             let final_url = info["formats"]["audio/mp4"];
-        //             createAndAddStream(final_url, playing_place);
-        //         }
-        //     }
-        // }
+        // I have my own personal ytdl backend
+        // not sure how to make this functionality public without backend
+        // maybe I upload backend and only give access to api codes
+        // I give an api code to patreons
+        else if(prefix=="yt"){
+            createAndAddHowl("http://localhost:5000/yt/"+sound_id, playing_place);
+            // const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
+            // const info = await resp.json();
+            // console.log(info);
+            // if("formats" in info){
+            //     if("audio/webm" in info["formats"]){
+            //         let final_url = info["formats"]["audio/webm"];
+            //         createAndAddStream(final_url, playing_place);
+            //     } else if("audio/mp4" in info["formats"]){
+            //         let final_url = info["formats"]["audio/mp4"];
+            //         createAndAddStream(final_url, playing_place);
+            //     }
+            // }
+        }
     } else {
         createAndAddHowl(url, playing_place);
     }
@@ -229,8 +233,8 @@ export async function start_place(place_name, sounds_list, muffled_amount, place
 
     currently_playing_places[place_name] = {
         howls: [],
-        media_stream_audio_sources: [],
-        audio_elements: [],
+        //media_stream_audio_sources: [],
+        //audio_elements: [],
         filter_node: new_filter_node,
         gain_node: new_gain_node
     }
