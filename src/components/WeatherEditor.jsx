@@ -1,4 +1,4 @@
-import EditLink from "./EditLink";
+import EditableText from "./EditableText";
 
 function WeatherEditor({weathers, edited_weather_name, changeWeather,  deleteWeather, closeEditor}) {
 
@@ -13,8 +13,7 @@ function WeatherEditor({weathers, edited_weather_name, changeWeather,  deleteWea
             </div>
             <div className="offcanvas-body">
                 <h4 className="mb-3">
-                    {edited_weather_name}
-                    <EditLink edit_prompt={"New weather name"} applyChange={(new_weather_name)=>{
+                    <EditableText base_text={edited_weather_name} edit_prompt={"New weather name"} applyChange={(new_weather_name)=>{
                         changeWeather(new_weather_name, weathers[edited_weather_name]);
                     }}/>
                 </h4>

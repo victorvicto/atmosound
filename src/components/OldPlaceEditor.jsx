@@ -1,11 +1,23 @@
+import { useState } from 'react';
+
 import AddedSound from './AddedSound';
 import AddedMuffled from './AddedMuffled';
-import EditLink from "./EditLink";
+import { useEffect } from 'react';
 
 import { RecursiveReplace } from '../UtilityFunctions';
-import EditableText from './EditableText';
 
 function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, deletePlace, closeEditor, reloadAudio}){
+
+    function clone_place(){
+        return structuredClone(places[edited_place_name])
+    }
+    const [temp_place_info, set_temp_place_info] = useState(clone_place);
+    const [temp_place_name, set_temp_place_name] = useState(edited_place_name);
+
+    useEffect(()=>{
+        set_temp_place_name(edited_place_name);
+        set_temp_place_info(clone_place());
+    }, [edited_place_name])
 
     function addSound(){
         let new_temp_place_info = {...temp_place_info};
@@ -113,10 +125,10 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
             <div className="offcanvas-body">
                 <div className="mb-3">
                     <label className="form-label">Name of the place</label>
-                    <EditableText
-                        base_text={edited_place_name}
-                        edit_prompt={"New place name"}
-                        applyChange={(new_place_name)=>{savePlace(edited_place_name, new_place_name.toLowerCase(), places[edited_place_name])}}/>
+                    <input type="text"
+                        value={temp_place_name}
+                        onChange={(e)=>{set_temp_place_name(e.target.value.toLowerCase())}}
+                        className={"form-control "+((places[temp_place_name]!==undefined && temp_place_name!=edited_place_name) || temp_place_name.length==0?"is-invalid":"is-valid")}/>
                 </div>
                 <div className="mb-3">
                     <label className="form-label">Sounds</label>
