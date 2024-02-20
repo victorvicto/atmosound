@@ -1,20 +1,20 @@
 import AddedSound from './AddedSound';
 import AddedMuffled from './AddedMuffled';
-import EditLink from "./EditLink";
 
-import { RecursiveReplace } from '../UtilityFunctions';
+import { RecursiveReplace, PromptEdit } from '../UtilityFunctions';
 import EditableText from './EditableText';
 
 function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, deletePlace, closeEditor, reloadAudio}){
 
-    function addSound(){
-        let new_temp_place_info = {...temp_place_info};
+    function addSound(sound_name){
+        let new_place_info = {...places[edited_place_name]};
         let new_weathers = {};
         for(let weather_name of Object.keys(weathers)){
             new_weathers[weather_name] = true;
         }
-        new_temp_place_info.sounds_list.push({
-            name:"",
+        let new_sounds_list = {...new_place_info.sounds_list}
+        new_sounds_list.push({
+            name:sound_name,
             average_time:0,
             volume:1,
             time_of_day: {
@@ -25,31 +25,32 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
             },
             weathers: new_weathers
         });
-        set_temp_place_info(new_temp_place_info);
+        new_place_info.sounds_list = new_sounds_list;
+        return savePlace(edited_place_name, edited_place_name, new_place_info);
     }
 
     function deleteSound(index){
-        let new_temp_place_info = {...temp_place_info};
-        new_temp_place_info.sounds_list.splice(index, 1);
-        set_temp_place_info(new_temp_place_info);
+        let new_place_info = {...places[edited_place_name]};
+        new_place_info.sounds_list.splice(index, 1);
+        savePlace(edited_place_name, edited_place_name, new_place_info);
     }
 
     function changeSound(event, index, property){ // setup lodash for weathers and time_of_day
-        let new_temp_place_info = {...temp_place_info};
+        let new_place_info = {...places[edited_place_name]};
         if(event.target.type=="checkbox")
-            RecursiveReplace(new_temp_place_info.sounds_list[index], property, event.target.checked);
+            RecursiveReplace(new_place_info.sounds_list[index], property, event.target.checked);
         else {
-            RecursiveReplace(new_temp_place_info.sounds_list[index], property, event.target.value.toLowerCase());
+            RecursiveReplace(new_place_info.sounds_list[index], property, event.target.value.toLowerCase());
             if("max" in event.target){
                 if(parseFloat(event.target.value)>parseFloat(event.target.max))
-                    RecursiveReplace(new_temp_place_info.sounds_list[index], property, event.target.max);
+                    RecursiveReplace(new_place_info.sounds_list[index], property, event.target.max);
             }
             if("min" in event.target){
                 if(parseFloat(event.target.value)<parseFloat(event.target.min))
-                    RecursiveReplace(new_temp_place_info.sounds_list[index], property, event.target.min);
+                    RecursiveReplace(new_place_info.sounds_list[index], property, event.target.min);
             }
         }
-        set_temp_place_info(new_temp_place_info);
+        return savePlace(edited_place_name, edited_place_name, new_place_info);
     }
 
     function addMuffled(){
@@ -123,7 +124,8 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
                     <div className='d-flex flex-column gap-2'>
                         {sounds_list_html}
                     </div>
-                    <button type="button" className="btn btn-outline-primary btn-sm mt-2" onClick={addSound}>Add sound</button>
+                    <button type="button" className="btn btn-outline-primary btn-sm mt-2" 
+                            onClick={()=>PromptEdit("New sound name", addSound)}>Add sound</button>
                 </div>
                 <div className="mb-3">
                     <label className="form-label">Muffled places</label>

@@ -1,10 +1,14 @@
-import EditLink from "./EditLink";
+import { PromptEdit } from "../UtilityFunctions";
 
-function EditableText({base_text, edit_prompt, isAllowed=(answer)=>true, applyChange}){
+function EditableText({base_text, edit_prompt, applyChange, isAllowed=(answer)=>true}){
     return (
         <>
         {base_text}
-        <EditLink edit_prompt={edit_prompt} isAllowed={isAllowed} applyChange={applyChange}/>
+        <a href='#' className='icon-link text-decoration-none ms-2' onClick={()=>{
+            PromptEdit(edit_prompt, applyChange, isAllowed)
+        }}>
+            <i className="fa-solid fa-square-pen"></i>
+        </a>
         </>
     )
 }

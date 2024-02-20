@@ -11,3 +11,14 @@ export function RecursiveReplace(object, keys_path, new_value){
         current_obj[keys_path[keys_path.length-1]] = new_value;
     }
 }
+
+export function PromptEdit(edit_prompt, applyChange, isAllowed=(answer)=>true){
+    while(true){
+        let new_name = prompt(edit_prompt);
+        if(new_name!=null && isAllowed(new_name)){
+            if(applyChange(new_name)){
+                break;
+            }
+        }
+    }
+}
