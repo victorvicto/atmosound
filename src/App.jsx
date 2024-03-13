@@ -109,7 +109,7 @@ function App() {
     function savePlace(place_name, new_place_name, new_content){
         if(new_place_name!=place_name){
             if(places[new_place_name]!==undefined){
-                set_error_message("Tried to create a place with a name that already exists");
+                set_error_message("Tried to use a place's name that is already taken");
                 return false;
             }
         }

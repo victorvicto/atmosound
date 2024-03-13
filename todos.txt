@@ -2,6 +2,7 @@
 - transition placeEditor to live editor (instead of "save changes" system) to avoid parallel editing incoherences
 - make weathereditor
 - Make weather setstate (and make according audiomanager changes/new functions to play weather)
+- Make promptEdit give suggestions and only allow suggestions (10 min)
 - make biomes menu, where biomes can be added (don't forget to update all sounds when that is done)
 - Solve why sound stops if running when switching day time
 - change Icon (10min)

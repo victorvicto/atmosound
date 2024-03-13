@@ -12,7 +12,7 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
         for(let weather_name of Object.keys(weathers)){
             new_weathers[weather_name] = true;
         }
-        let new_sounds_list = {...new_place_info.sounds_list}
+        let new_sounds_list = [...new_place_info.sounds_list]
         new_sounds_list.push({
             name:sound_name,
             average_time:0,
@@ -54,36 +54,36 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
     }
 
     function addMuffled(){
-        let new_temp_place_info = {...temp_place_info};
-        new_temp_place_info.muffled_list.push({
+        let new_place_info = {...places[edited_place_name]};
+        new_place_info.muffled_list.push({
             name:"",
             muffle_amount:0.5,
             volume:1
         });
-        set_temp_place_info(new_temp_place_info);
+        return savePlace(edited_place_name, edited_place_name, new_place_info);
     }
 
     function deleteMuffled(index){
-        let new_temp_place_info = {...temp_place_info};
-        new_temp_place_info.muffled_list.splice(index, 1);
-        set_temp_place_info(new_temp_place_info);
+        let new_place_info = {...places[edited_place_name]};
+        new_place_info.muffled_list.splice(index, 1);
+        return savePlace(edited_place_name, edited_place_name, new_place_info);
     }
 
-    function changeMuffled(event, index, property){
-        let new_temp_place_info = {...temp_place_info};
-        new_temp_place_info.muffled_list[index][property] = event.target.value.toLowerCase();
+    function changeMuffled(event, index, property){//TODO modify for live editing
+        let new_place_info = {...places[edited_place_name]};
+        new_place_info.muffled_list[index][property] = event.target.value.toLowerCase();
         if("max" in event.target){
-            if(parseFloat(event.target.value)>parseFloat(event.target.max)) new_temp_place_info.muffled_list[index][property] = event.target.max;
+            if(parseFloat(event.target.value)>parseFloat(event.target.max)) new_place_info.muffled_list[index][property] = event.target.max;
         }
         if("min" in event.target){
-            if(parseFloat(event.target.value)<parseFloat(event.target.min)) new_temp_place_info.muffled_list[index][property] = event.target.min;
+            if(parseFloat(event.target.value)<parseFloat(event.target.min)) new_place_info.muffled_list[index][property] = event.target.min;
         }
-        set_temp_place_info(new_temp_place_info);
+        return savePlace(edited_place_name, edited_place_name, new_place_info);
     } 
 
     let sounds_list_html = (<p className='text-body-secondary m-0'><small>No sounds added</small></p>);
-    if(temp_place_info.sounds_list.length>0){
-        sounds_list_html = temp_place_info.sounds_list.map((sound, i) => 
+    if(places[edited_place_name].sounds_list.length>0){
+        sounds_list_html = places[edited_place_name].sounds_list.map((sound, i) => 
             <AddedSound key={"added-sound-"+i}
                         weathers={weathers}
                         sound={sound}
@@ -94,11 +94,11 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
     }
 
     let muffled_list_html = (<p className='text-body-secondary m-0'><small>No muffled places added</small></p>);
-    if(temp_place_info.muffled_list.length>0){
-        muffled_list_html = temp_place_info.muffled_list.map((muffled, i) => 
+    if(places[edited_place_name].muffled_list.length>0){
+        muffled_list_html = places[edited_place_name].muffled_list.map((muffled, i) => 
             <AddedMuffled key={"added-muffled-"+i}
                         muffled={muffled}
-                        muffled_name_correct={places[muffled.name]!==undefined && muffled.name!=edited_place_name && muffled.name!=temp_place_name}
+                        muffled_name_correct={places[muffled.name]!==undefined && muffled.name!=edited_place_name && muffled.name!=edited_place_name}
                         changeMuffled={(event, property) => {changeMuffled(event, i, property)}}
                         deleteMuffled={()=> {deleteMuffled(i)}}/>
         );
@@ -117,7 +117,7 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
                     <EditableText
                         base_text={edited_place_name}
                         edit_prompt={"New place name"}
-                        applyChange={(new_place_name)=>{savePlace(edited_place_name, new_place_name.toLowerCase(), places[edited_place_name])}}/>
+                        applyChange={(new_place_name)=>{savePlace(edited_place_name, new_place_name, places[edited_place_name])}}/>
                 </div>
                 <div className="mb-3">
                     <label className="form-label">Sounds</label>
@@ -132,14 +132,10 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
                     <div className='d-flex flex-column gap-2'>
                         {muffled_list_html}
                     </div>
-                    <button type="button" className="btn btn-outline-primary btn-sm mt-2" onClick={addMuffled}>Add muffled place</button>
+                    <button type="button" className="btn btn-outline-primary btn-sm mt-2" 
+                            onClick={()=>PromptEdit("Muffled place name", addMuffled)}>Add muffled place</button>
                 </div>
                 <div className='d-flex flex-column gap-2'>
-                    <button type="button" className="btn btn-primary btn-lg" onClick={()=>{
-                        if(savePlace(edited_place_name, temp_place_name, temp_place_info)){
-                            reloadAudio();
-                            closeEditor();
-                        }}}>Save place</button>
                     <button type="button" className="btn btn-outline-danger" onClick={()=>{
                         if(confirm("Are you sure you want to delete the place called: "+edited_place_name)){
                             deletePlace(edited_place_name);
