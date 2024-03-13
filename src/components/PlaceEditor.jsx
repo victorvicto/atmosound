@@ -53,13 +53,15 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
         return savePlace(edited_place_name, edited_place_name, new_place_info);
     }
 
-    function addMuffled(){
+    function addMuffled(muffled_name){
         let new_place_info = {...places[edited_place_name]};
-        new_place_info.muffled_list.push({
-            name:"",
+        let new_muffled_list = [...new_place_info.muffled_list]
+        new_muffled_list.push({
+            name:muffled_name,
             muffle_amount:0.5,
             volume:1
         });
+        new_place_info.muffled_list = new_muffled_list;
         return savePlace(edited_place_name, edited_place_name, new_place_info);
     }
 
@@ -104,21 +106,20 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
         );
     }
 
+    // TODO changing place name doesn't work yet
     return (
         <div className="offcanvas offcanvas-start show"
             tabIndex="-1">
             <div className="offcanvas-header">
-                <h5 className="offcanvas-title">Place Editor</h5>
-                <button type="button" className="btn-close" aria-label="Close" onClick={closeEditor}></button>
-            </div>
-            <div className="offcanvas-body">
-                <div className="mb-3">
-                    <label className="form-label">Name of the place</label>
+                <h3 className="offcanvas-title text-capitalize">
                     <EditableText
                         base_text={edited_place_name}
                         edit_prompt={"New place name"}
                         applyChange={(new_place_name)=>{savePlace(edited_place_name, new_place_name, places[edited_place_name])}}/>
-                </div>
+                </h3>
+                <button type="button" className="btn-close" aria-label="Close" onClick={closeEditor}></button>
+            </div>
+            <div className="offcanvas-body">
                 <div className="mb-3">
                     <label className="form-label">Sounds</label>
                     <div className='d-flex flex-column gap-2'>
