@@ -123,7 +123,9 @@ function App() {
                 return false;
             }
         }
+        let muffled_places = [];
         for(let muffled of new_content.muffled_list){
+            console.log(muffled_places);
             if(places[muffled.name]==undefined){
                 set_error_message("Tried to create a place containing a muffled place that doesn't exist");
                 return false;
@@ -132,6 +134,11 @@ function App() {
                 set_error_message("Tried to create a place containing itself as a muffled place");
                 return false;
             }
+            if(muffled_places.includes(muffled.name)){
+                set_error_message("Tried to create a muffled place that is already present in the list");
+                return false;
+            }
+            muffled_places.push(muffled.name);
         }
 
         let new_places = {...places};
