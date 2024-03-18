@@ -180,12 +180,9 @@ function MainPage(props) {
                                                 reloadAudio={reloadAudio}/>}
         {edited_weather_name!="" && <WeatherEditor  weathers={props.weathers}
                                                     edited_weather_name={edited_weather_name}
-                                                    changeWeather={(new_name, new_content)=>{
-                                                        if(props.changeWeather(edited_weather_name, new_name, new_content)){
-                                                            set_edited_weather_name(new_name);
-                                                        }
-                                                    }}
+                                                    changeWeather={props.changeWeather}
                                                     deleteWeather={()=>console.log("delete")}
+                                                    sounds={props.sounds}
                                                     closeEditor={()=>set_edited_weather_name("")}/>}
         </>
     )

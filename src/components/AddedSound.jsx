@@ -14,16 +14,19 @@ function AddedSound({sound, sound_name_correct, changeSound, deleteSound}) {
         </div>
     );
 
-    if(sound.weathers==undefined) sound.weathers = {}; // to remove in finished version
-
-    let weathers_checboxes = Object.entries(sound.weathers).map(([weather_name, weather_on]) => 
-        <div className="d-flex flex-row align-items-center gap-1" key={weather_name+"weathers-checkbox"}>
-            <input type="checkbox" checked={weather_on} onChange={(e)=>changeSound(e, ["weathers", weather_name])}/>
-            <small>
-                {weather_name}
-            </small>
-        </div>
-    );
+    let weathers_checboxes = null;
+    
+    if(sound.weathers!=undefined && sound.weathers!=null){
+        weathers_checboxes = Object.entries(sound.weathers).map(([weather_name, weather_on]) => 
+            <div className="d-flex flex-row align-items-center gap-1" key={weather_name+"weathers-checkbox"}>
+                <input type="checkbox" checked={weather_on} onChange={(e)=>changeSound(e, ["weathers", weather_name])}/>
+                <small>
+                    {weather_name}
+                </small>
+            </div>
+        );
+    }
+    
   return (
     <div className='card text-sm'>
         <ul className="list-group list-group-flush">
@@ -53,9 +56,11 @@ function AddedSound({sound, sound_name_correct, changeSound, deleteSound}) {
                 <li className="list-group-item d-flex flex-row justify-content-between gap-3 flex-wrap">
                     {time_of_day_checkboxes}
                 </li>
-                <li className="list-group-item d-flex flex-row justify-content-between gap-3 flex-wrap">
-                    {weathers_checboxes}
-                </li>
+                {weathers_checboxes!=null &&
+                    <li className="list-group-item d-flex flex-row justify-content-between gap-3 flex-wrap">
+                        {weathers_checboxes}
+                    </li>
+                }
                 </>
                 }
         </ul>

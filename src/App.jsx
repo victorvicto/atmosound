@@ -294,6 +294,7 @@ function App() {
     }
 
     function changeWeather(weather_name, new_weather_name, new_content){
+        console.log(new_content);
         if(new_weather_name!=weather_name){
             if(weathers[new_weather_name]!==undefined){
                 set_error_message("Tried to create a weather with a name that already exists");
