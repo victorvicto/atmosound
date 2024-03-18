@@ -4,8 +4,10 @@ import AddedMuffled from './AddedMuffled';
 import { RecursiveReplace, PromptEdit } from '../UtilityFunctions';
 import EditableText from './EditableText';
 
-function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, deletePlace, closeEditor, reloadAudio}){
+function PlaceEditor({edited_place_name, set_edited_place_name, places, sounds, weathers, savePlace, deletePlace, closeEditor, reloadAudio}){
 
+    console.log(edited_place_name);
+    
     function addSound(sound_name){
         let new_place_info = {...places[edited_place_name]};
         let new_weathers = {};
@@ -71,7 +73,7 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
         return savePlace(edited_place_name, edited_place_name, new_place_info);
     }
 
-    function changeMuffled(event, index, property){//TODO modify for live editing
+    function changeMuffled(event, index, property){//TODO make sure illegal values like "" or "-" cannot be set
         let new_place_info = {...places[edited_place_name]};
         new_place_info.muffled_list[index][property] = event.target.value.toLowerCase();
         if("max" in event.target){
@@ -106,7 +108,6 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
         );
     }
 
-    // TODO changing place name doesn't work yet
     return (
         <div className="offcanvas offcanvas-start show"
             tabIndex="-1">
@@ -115,7 +116,11 @@ function PlaceEditor({edited_place_name, places, sounds, weathers, savePlace, de
                     <EditableText
                         base_text={edited_place_name}
                         edit_prompt={"New place name"}
-                        applyChange={(new_place_name)=>{savePlace(edited_place_name, new_place_name, places[edited_place_name])}}/>
+                        applyChange={(new_place_name)=>{
+                            if(savePlace(edited_place_name, new_place_name, places[edited_place_name])){
+                                set_edited_place_name(new_place_name);
+                            }
+                        }}/>
                 </h3>
                 <button type="button" className="btn-close" aria-label="Close" onClick={closeEditor}></button>
             </div>

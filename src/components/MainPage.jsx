@@ -170,6 +170,7 @@ function MainPage(props) {
             <input type="file" id="fileInput"></input>
         </div>
         {edited_place_name!="" && <PlaceEditor  edited_place_name={edited_place_name}
+                                                set_edited_place_name={set_edited_place_name}
                                                 places={props.places}
                                                 sounds={props.sounds}
                                                 weathers={props.weathers}
