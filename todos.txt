@@ -1,12 +1,12 @@
 - use frontend alternative to ytdl-core (youtube to mp3 api, play api?, avoid it all together?)
-- make weathereditor
 - Make weather setstate (and make according audiomanager changes/new functions to play weather)
 - Make promptEdit give suggestions and only allow suggestions (10 min)
 - make biomes menu, where biomes can be added (don't forget to update all sounds when that is done)
 - Solve why sound stops if running when switching day time
 - change Icon (10min)
-- weathers (6h)
-- themes (6h)
+- make themes (6h)
 - solving glitch problem
+- solve all sounds problem
+- add transition sound (with "transition" button)
 - make audio change when a setting is modified
 - multiply sound volume with sound link gain (10min)
