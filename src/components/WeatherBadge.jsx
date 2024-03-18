@@ -1,18 +1,9 @@
 import { useState } from "react";
 
-function WeatherBadge({ weathers, status, modify_status, switchStatus, set_edited_weather_name, addWeather}) {
-
-    function instantiateCurrentWeather(){
-        let new_current_weather = localStorage.getItem("current_weather");
-        if(new_current_weather==null){
-            localStorage.setItem("current_weather", "none");
-            new_current_weather = "none";
-        }
-        return new_current_weather;
-    }
+function WeatherBadge({ weathers, current_weather, set_current_weather, status, modify_status, switchStatus, set_edited_weather_name, addWeather}) {
 
     const [is_open, set_is_open] = useState(false);
-    const [current_weather, set_current_weather] = useState(instantiateCurrentWeather);
+    
 
     let scheme = "secondary";
     let footer = ""
@@ -55,27 +46,30 @@ function WeatherBadge({ weathers, status, modify_status, switchStatus, set_edite
     );
     weather_buttons.push(<button key={"add-weather-btn"} className="btn btn-outline-primary btn-sm" onClick={addWeather}>+</button>);
 
-    const badge_style = {backgroundImage:"linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1), rgba(255,255,255,1))",
-                            backgroundPositionY:"-150pt", backgroundSizeY:"400pt"};
+    // const badge_style = {backgroundImage:"linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1), rgba(255,255,255,1))",
+    //                         backgroundPositionY:"-150pt", backgroundSizeY:"400pt"};
+    const badge_style = {backgroundImage:"linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,1), rgba(255,255,255,0))",
+                            backgroundPosition:"right"};
     badge_style.backgroundImage+=", url('"+weathers[current_weather].image_url+"')";
 
     return (
         <div className={'card border-'+scheme+(status.state=="off"?' shadow-sm':' border-3 shadow')} style={badge_style}>
             <div className='card-body d-flex flex-column'>
                 <div className='d-flex flex-row justify-content-between gap-2 align-items-center'>
-                    <h2 className={"card-title mb-0 text-capitalize fw-semibold text-light"} style={{textShadow:"2pt 2pt 8pt #000000"}}>
+                    {/* <h2 className={"card-title mb-0 text-capitalize fw-semibold text-light"} style={{textShadow:"2pt 2pt 8pt #000000"}}>
+                        <a href='#' onClick={()=>set_is_open(!is_open)} className="icon-link text-decoration-none text-reset me-2"><i className={"fa-solid fa-chevron-"+(is_open?"up":"down")}></i></a>
+                        Weather
+                        <small className="fs-5 ms-3">(selected: {current_weather})</small>
+                    </h2> */}
+                    <h2 className={"card-title mb-0 text-capitalize fw-semibold text-"+scheme}>
                         <a href='#' onClick={()=>set_is_open(!is_open)} className="icon-link text-decoration-none text-reset me-2"><i className={"fa-solid fa-chevron-"+(is_open?"up":"down")}></i></a>
                         Weather
                         <small className="fs-5 ms-3">(selected: {current_weather})</small>
                     </h2>
                     <div className="d-flex gap-2">
-                        <button onClick={()=>{switchStatus("on")}}
-                            className={'btn btn'+(status.state=='on'?'':'-outline')+'-danger btn-sm border-2'}>
-                            <i className="fa-solid fa-volume-high"></i>
-                        </button>
                         <button onClick={()=>{switchStatus("muffled")}}
-                            className={'btn btn'+(status.state=='muffled'?'':'-outline')+'-success btn-sm'}>
-                            <i className="fa-solid fa-volume-low"></i>
+                            className={'btn btn'+(status.state=='muffled'?'-success':'-outline-success bg-light')+' btn-sm'}>
+                            <i className="fa-solid fa-volume-high"></i>
                         </button>
                     </div>
                 </div>

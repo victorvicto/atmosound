@@ -42,6 +42,11 @@ function App() {
                 "volume": 1
             }
         }
+        base_places_status["weather"] = {
+            "state": "off",
+            "muffle_amount": 0,
+            "volume": 1
+        }
         return base_places_status;
     }
 
@@ -90,7 +95,13 @@ function App() {
             ...places,
             [new_place_name]:{
                 "sounds_list": [],
-                "muffled_list": []
+                "muffled_list": [
+                    {
+                        "name":"weather",
+                        "muffle_amount":"0",
+                        "volume":"1"
+                    }
+                ]
             }
         };
         set_places(new_places);
@@ -126,7 +137,7 @@ function App() {
         let muffled_places = [];
         for(let muffled of new_content.muffled_list){
             console.log(muffled_places);
-            if(places[muffled.name]==undefined){
+            if(places[muffled.name]==undefined && muffled.name!="weather"){
                 set_error_message("Tried to create a place containing a muffled place that doesn't exist");
                 return false;
             }

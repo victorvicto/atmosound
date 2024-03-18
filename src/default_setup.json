@@ -41,7 +41,13 @@
                 }
             ],
             "muffled_list":
-            []
+            [
+                {
+                    "name":"weather",
+                    "muffle_amount":"0",
+                    "volume":"1"
+                }
+            ]
         },
         "small shop":
         {
@@ -86,6 +92,11 @@
             [
                 {
                     "name":"village center",
+                    "muffle_amount":"0.6",
+                    "volume":"0.05"
+                },
+                {
+                    "name":"weather",
                     "muffle_amount":"0.6",
                     "volume":"0.05"
                 }

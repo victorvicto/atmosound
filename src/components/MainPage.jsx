@@ -27,10 +27,20 @@ function MainPage(props) {
         return new_time_of_day;
     }
 
+    function instantiateCurrentWeather(){
+        let new_current_weather = localStorage.getItem("current_weather");
+        if(new_current_weather==null){
+            localStorage.setItem("current_weather", "none");
+            new_current_weather = "none";
+        }
+        return new_current_weather;
+    }
+
     const [edited_place_name, set_edited_place_name] = useState("");
     const [edited_weather_name, set_edited_weather_name] = useState("");
     const [active_biome, set_active_biome] = useState(instantiateActiveBiome);
     const [time_of_day, set_time_of_day] = useState(instantiateTimeOfDay);
+    const [current_weather, set_current_weather] = useState(instantiateCurrentWeather);
 
     async function getSoundUrls(sound_name){
         let urls = [];
@@ -54,12 +64,18 @@ function MainPage(props) {
     function transitionAudio(final_places_status, clear_fading_out=true){
         if(clear_fading_out) AudioManager.clear_fading_out_places();
         for(const [place_name, place_status] of Object.entries(final_places_status)){
+            let sounds_list;
+            if(place_name=="weather"){
+                sounds_list = props.weathers[current_weather].sounds_list;
+            } else {
+                sounds_list = props.places[place_name].sounds_list;
+            }
             if(place_status.state=="off"){
                 if(clear_fading_out) AudioManager.fade_out_place(place_name);
             } else if(place_status.state=="on"){
-                AudioManager.start_place(place_name, props.places[place_name].sounds_list, 0, 1, getSoundUrls);
+                AudioManager.start_place(place_name, sounds_list, 0, 1, getSoundUrls);
             } else if(place_status.state=="muffled"){
-                AudioManager.start_place(place_name, props.places[place_name].sounds_list, 
+                AudioManager.start_place(place_name, sounds_list, 
                     place_status.muffle_amount, place_status.volume, getSoundUrls);
             }
         }
@@ -145,7 +161,9 @@ function MainPage(props) {
             </div>
         </div>
         <WeatherBadge   weathers={props.weathers}
-                        status={{state: "on", volume: 1, muffle_amount: 0}}
+                        current_weather={current_weather}
+                        set_current_weather={set_current_weather}
+                        status={props.places_status["weather"]}
                         set_edited_weather_name={set_edited_weather_name}
                         addWeather={()=>{
                             let new_weather_name = props.addWeather();

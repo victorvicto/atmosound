@@ -100,7 +100,7 @@ function sound_should_be_played(sound_descr){
 //     playing_place.media_stream_audio_sources.push(media_stream_audio_source);
 // }
 
-function createAndAddHowl(url, playing_place){
+function createAndAddHowl(url, playing_place, sound_descr){
     let new_howl = new Howl({
         src: [url],
         autoplay: false,
@@ -129,7 +129,7 @@ function createAndAddHowl(url, playing_place){
     })
 }
 
-async function createAudioSource(url, playing_place){
+async function createAudioSource(url, playing_place, sound_descr){
     // TODO create either Howl or mediastreamaudiosource from url and plug it into output_node
     if(url.includes("::")){
         let [prefix, sound_id] = url.split("::");
@@ -141,7 +141,7 @@ async function createAudioSource(url, playing_place){
                 console.log(previews);
                 if("previews" in previews){
                     let final_url = previews.previews["preview-hq-mp3"];
-                    createAndAddHowl(final_url, playing_place);
+                    createAndAddHowl(final_url, playing_place, sound_descr);
                 }
             }
         }
@@ -150,7 +150,7 @@ async function createAudioSource(url, playing_place){
         // maybe I upload backend and only give access to api codes
         // I give an api code to patreons
         else if(prefix=="yt"){
-            createAndAddHowl("http://localhost:5000/yt/"+sound_id, playing_place);
+            createAndAddHowl("http://localhost:5000/yt/"+sound_id, playing_place, sound_descr);
             // const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
             // const info = await resp.json();
             // console.log(info);
@@ -165,7 +165,7 @@ async function createAudioSource(url, playing_place){
             // }
         }
     } else {
-        createAndAddHowl(url, playing_place);
+        createAndAddHowl(url, playing_place, sound_descr);
     }
 }
 
@@ -202,6 +202,7 @@ async function createAudioSource(url, playing_place){
 
 // TODO, log to see why youtube makes no sound
 export async function start_place(place_name, sounds_list, muffled_amount, place_volume, getSoundUrls){
+    if (sounds_list.length==0) return;
     if(place_name in currently_playing_places){
         console.log("already playing place", place_name);
         currently_playing_places[place_name].filter_node.frequency.setTargetAtTime(
@@ -244,6 +245,6 @@ export async function start_place(place_name, sounds_list, muffled_amount, place
         let sound_urls = await getSoundUrls(sound_descr.name);
         if(sound_urls.length==0) continue;
         let random_url = sound_urls[Math.floor(Math.random()*sound_urls.length)];
-        createAudioSource(random_url, currently_playing_places[place_name]);       
+        createAudioSource(random_url, currently_playing_places[place_name], sound_descr);       
     }
 }
