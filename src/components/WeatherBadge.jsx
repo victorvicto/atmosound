@@ -49,7 +49,7 @@ function WeatherBadge({ weathers, current_weather, set_current_weather, status, 
     // const badge_style = {backgroundImage:"linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1), rgba(255,255,255,1))",
     //                         backgroundPositionY:"-150pt", backgroundSizeY:"400pt"};
     const badge_style = {backgroundImage:"linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,1), rgba(255,255,255,0))",
-                            backgroundPosition:"right"};
+                            backgroundPosition:"top right", backgroundPositionY:"-150pt", backgroundSizeY:"400pt"};
     badge_style.backgroundImage+=", url('"+weathers[current_weather].image_url+"')";
 
     return (

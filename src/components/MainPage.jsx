@@ -6,6 +6,7 @@ import PlaceBadge from './PlaceBadge.jsx';
 import PlaceEditor from './PlaceEditor.jsx';
 import WeatherBadge from './WeatherBadge.jsx';
 import WeatherEditor from './WeatherEditor.jsx';
+import RadioButton from './RadioButton';
 
 function MainPage(props) {
 
@@ -133,10 +134,40 @@ function MainPage(props) {
 
     return (
         <>
-        <div className='card mb-3 text-bg-light'>
-            <div className='card-body d-flex align-items-center gap-2 p-2'>
-                <small className='text-nowrap'>Time of day: </small>
-                <select className="form-select form-select-sm"
+        <div className='card mb-3 text-bg-light small'>
+            <div className='card-body row py-0'>
+                <div className='col-6 d-flex align-items-center gap-3 p-2'>
+                    <div className='text-nowrap'>Time of day:</div>
+                    <RadioButton val="morning" 
+                            onChange={(e)=>{
+                                localStorage.setItem("time_of_day", e.target.value);
+                                set_time_of_day(e.target.value);
+                                reloadAudio();
+                            }}
+                            checked={time_of_day=="morning"}/>
+                    <RadioButton val="day" 
+                            onChange={(e)=>{
+                                localStorage.setItem("time_of_day", e.target.value);
+                                set_time_of_day(e.target.value);
+                                reloadAudio();
+                            }}
+                            checked={time_of_day=="day"}/>
+                    <RadioButton val="evening" 
+                            onChange={(e)=>{
+                                localStorage.setItem("time_of_day", e.target.value);
+                                set_time_of_day(e.target.value);
+                                reloadAudio();
+                            }}
+                            checked={time_of_day=="evening"}/>
+                    <RadioButton val="night" 
+                            onChange={(e)=>{
+                                localStorage.setItem("time_of_day", e.target.value);
+                                set_time_of_day(e.target.value);
+                                reloadAudio();
+                            }}
+                            checked={time_of_day=="night"}/>
+                </div>
+                {/* <select className="form-select form-select-sm"
                         value={time_of_day}
                         onChange={(e)=>{
                             localStorage.setItem("time_of_day", e.target.value);
@@ -147,17 +178,19 @@ function MainPage(props) {
                     <option value="day">Day</option>
                     <option value="evening">Evening</option>
                     <option value="night">Night</option>
-                </select>
-                <small>Biome: </small>
-                <select className="form-select form-select-sm text-capitalize"
-                        value={active_biome}
-                        onChange={(e)=>{
-                            localStorage.setItem("active_biome", e.target.value);
-                            set_active_biome(e.target.value);
-                            reloadAudio();
-                        }}>
-                    {biome_options_html}
-                </select>
+                </select> */}
+                <div className='col-6 d-flex align-items-center gap-2 p-2'>
+                    <div>Biome: </div>
+                    <select className="form-select form-select-sm text-capitalize"
+                            value={active_biome}
+                            onChange={(e)=>{
+                                localStorage.setItem("active_biome", e.target.value);
+                                set_active_biome(e.target.value);
+                                reloadAudio();
+                            }}>
+                        {biome_options_html}
+                    </select>
+                </div>
             </div>
         </div>
         <WeatherBadge   weathers={props.weathers}
