@@ -83,6 +83,7 @@ function App() {
     const [biomes, set_biomes] = useState(initialiseBiomes);
     const [weathers, set_weathers] = useState(initialiseWeathers);
     const [audio_context_started, set_audio_context_started] = useState(false);
+    const [need_upload, set_need_upload] = useState(false);
 
     function addPlace(){
         let new_place_name = "new";
@@ -459,11 +460,32 @@ function App() {
                     </ul>
                     {/* remove reset button on final build, it is just for development purpose */}
                     <button type="button" className="btn btn-outline-danger" onClick={resetSetup}>Reset setup</button>
-                    <button type="button" className="btn btn-outline-success ms-2" onClick={uploadSetup}>Upload setup</button>
+                    <button type="button" className="btn btn-outline-success ms-2" onClick={()=>{set_need_upload(true)}}>Upload setup</button>
                     <button type="button" className="btn btn-outline-success ms-2" onClick={downloadSetup}>Save my setup</button>
                 </div>
             </div>
         </nav>
+        <div className={"modal fade"+(need_upload?" show":"")} style={{display:(need_upload?"block":"none")}}>
+            <div className="modal-dialog">
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title">Upload Settings</h5>
+                        <button type="button" className="btn-close" aria-label="Close" onClick={()=>{set_need_upload(false)}}></button>
+                    </div>
+                    <div className="modal-body">
+                        <input type='file' accept='.json' onChange={(e) => { 
+                            let file = e.target.files[0]; 
+                            let reader = new FileReader();
+                            reader.readAsText(file,'UTF-8');
+                            reader.onload = readerEvent => {
+                                let content = JSON.parse(readerEvent.target.result);
+                                bakeInSetup(content);
+                            }
+                        }}/>
+                    </div>
+                </div>
+            </div>
+            </div>
         <div className="tab-content">
             <div className="tab-pane fade show active p-2 p-md-3" id="main-page" role="tabpanel">
                 {audio_context_started && <MainPage places={places}

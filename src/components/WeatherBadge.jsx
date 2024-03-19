@@ -83,7 +83,7 @@ function WeatherBadge({ weathers, current_weather, set_current_weather, status, 
                     </div>
                 }
             </div>
-            {footer}
+            {is_open && footer}
         </div>
     );
 }

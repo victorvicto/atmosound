@@ -197,6 +197,7 @@ function MainPage(props) {
                         current_weather={current_weather}
                         set_current_weather={set_current_weather}
                         status={props.places_status["weather"]}
+                        switchStatus={(new_status)=>{switchState("weather", new_status)}}
                         set_edited_weather_name={set_edited_weather_name}
                         addWeather={()=>{
                             let new_weather_name = props.addWeather();
@@ -212,13 +213,12 @@ function MainPage(props) {
                     }}>
                 Add place
             </button>
-            <button className="btn btn-outline-primary btn-lg"
+            {/* <button className="btn btn-outline-primary btn-lg"
                     onClick={()=>{
                         AudioManager.playTest();
                     }}>
                 Play test
-            </button>
-            <input type="file" id="fileInput"></input>
+            </button> */}
         </div>
         {edited_place_name!="" && <PlaceEditor  edited_place_name={edited_place_name}
                                                 set_edited_place_name={set_edited_place_name}
