@@ -1,0 +1,5 @@
+.v-text {
+    width: fit-content;
+    transform-origin: 0 0;
+    transform: rotate(-90deg)  translate(-100%,0);
+}

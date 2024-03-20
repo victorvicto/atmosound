@@ -193,32 +193,49 @@ function MainPage(props) {
                 </div>
             </div>
         </div>
-        <WeatherBadge   weathers={props.weathers}
-                        current_weather={current_weather}
-                        set_current_weather={set_current_weather}
-                        status={props.places_status["weather"]}
-                        switchStatus={(new_status)=>{switchState("weather", new_status)}}
-                        set_edited_weather_name={set_edited_weather_name}
-                        addWeather={()=>{
-                            let new_weather_name = props.addWeather();
-                            set_edited_weather_name(new_weather_name);
-                        }}/>
-        <div className='p-2 p-md-5 d-flex flex-row flex-wrap justify-content-center align-items-start gap-2'>
-            {places_badges}
-        </div>
-        <div className='d-flex justify-content-center mt-3'>
-            <button className="btn btn-outline-primary btn-lg"
-                    onClick={()=>{
-                        set_edited_place_name(props.addPlace());
-                    }}>
-                Add place
-            </button>
-            {/* <button className="btn btn-outline-primary btn-lg"
-                    onClick={()=>{
-                        AudioManager.playTest();
-                    }}>
-                Play test
-            </button> */}
+        <div className='d-flex flex-column vh-75'>
+            <div className='card'>
+                <div className='card-header small'>
+                    Environment
+                </div>
+                <div className='card-body'>
+                    <WeatherBadge   weathers={props.weathers}
+                                    current_weather={current_weather}
+                                    set_current_weather={set_current_weather}
+                                    status={props.places_status["weather"]}
+                                    switchStatus={(new_status)=>{switchState("weather", new_status)}}
+                                    set_edited_weather_name={set_edited_weather_name}
+                                    addWeather={()=>{
+                                        let new_weather_name = props.addWeather();
+                                        set_edited_weather_name(new_weather_name);
+                                    }}/>
+                    <div className='p-2 p-md-5 d-flex flex-row flex-wrap justify-content-center align-items-start gap-2'>
+                        {places_badges}
+                    </div>
+                    <div className='d-flex justify-content-center mt-3'>
+                        <button className="btn btn-outline-primary btn-lg"
+                                onClick={()=>{
+                                    set_edited_place_name(props.addPlace());
+                                }}>
+                            Add place
+                        </button>
+                        {/* <button className="btn btn-outline-primary btn-lg"
+                                onClick={()=>{
+                                    AudioManager.playTest();
+                                }}>
+                            Play test
+                        </button> */}
+                    </div>
+                </div>
+            </div>
+            <div className='card h-50'>
+                <div className='card-header small'>
+                    Mood
+                </div>
+                <div className='card-body'>
+                    Test
+                </div>
+            </div>
         </div>
         {edited_place_name!="" && <PlaceEditor  edited_place_name={edited_place_name}
                                                 set_edited_place_name={set_edited_place_name}
