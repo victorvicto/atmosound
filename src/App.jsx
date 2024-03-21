@@ -486,8 +486,8 @@ function App() {
                 </div>
             </div>
             </div>
-        <div className="tab-content">
-            <div className="tab-pane fade show active p-2 p-md-3" id="main-page" role="tabpanel">
+        <div className="tab-content flex-grow-1">
+            <div className="tab-pane fade show active p-2 p-md-3 h-100 d-flex flex-column gap-2" id="main-page" role="tabpanel">
                 {audio_context_started && <MainPage places={places}
                             sounds={sounds} 
                             biomes={biomes}

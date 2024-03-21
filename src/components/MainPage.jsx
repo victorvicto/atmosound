@@ -42,6 +42,7 @@ function MainPage(props) {
     const [active_biome, set_active_biome] = useState(instantiateActiveBiome);
     const [time_of_day, set_time_of_day] = useState(instantiateTimeOfDay);
     const [current_weather, set_current_weather] = useState(instantiateCurrentWeather);
+    const [mood_opened, set_mood_opened] = useState(false);
 
     async function getSoundUrls(sound_name){
         let urls = [];
@@ -134,71 +135,73 @@ function MainPage(props) {
 
     return (
         <>
-        <div className='card mb-3 text-bg-light small'>
-            <div className='card-body row py-0'>
-                <div className='col-6 d-flex align-items-center gap-3 p-2'>
-                    <div className='text-nowrap'>Time of day:</div>
-                    <RadioButton val="morning" 
+        <div className='card text-bg-light small'>
+            <div className='card-body py-0'>
+                <div className='row'>
+                    <div className='col-6 d-flex align-items-center gap-3 p-2'>
+                        <div className='text-nowrap'>Time of day:</div>
+                        <RadioButton val="morning" 
+                                onChange={(e)=>{
+                                    localStorage.setItem("time_of_day", e.target.value);
+                                    set_time_of_day(e.target.value);
+                                    reloadAudio();
+                                }}
+                                checked={time_of_day=="morning"}/>
+                        <RadioButton val="day" 
+                                onChange={(e)=>{
+                                    localStorage.setItem("time_of_day", e.target.value);
+                                    set_time_of_day(e.target.value);
+                                    reloadAudio();
+                                }}
+                                checked={time_of_day=="day"}/>
+                        <RadioButton val="evening" 
+                                onChange={(e)=>{
+                                    localStorage.setItem("time_of_day", e.target.value);
+                                    set_time_of_day(e.target.value);
+                                    reloadAudio();
+                                }}
+                                checked={time_of_day=="evening"}/>
+                        <RadioButton val="night" 
+                                onChange={(e)=>{
+                                    localStorage.setItem("time_of_day", e.target.value);
+                                    set_time_of_day(e.target.value);
+                                    reloadAudio();
+                                }}
+                                checked={time_of_day=="night"}/>
+                    </div>
+                    {/* <select className="form-select form-select-sm"
+                            value={time_of_day}
                             onChange={(e)=>{
                                 localStorage.setItem("time_of_day", e.target.value);
                                 set_time_of_day(e.target.value);
-                                reloadAudio();
-                            }}
-                            checked={time_of_day=="morning"}/>
-                    <RadioButton val="day" 
-                            onChange={(e)=>{
-                                localStorage.setItem("time_of_day", e.target.value);
-                                set_time_of_day(e.target.value);
-                                reloadAudio();
-                            }}
-                            checked={time_of_day=="day"}/>
-                    <RadioButton val="evening" 
-                            onChange={(e)=>{
-                                localStorage.setItem("time_of_day", e.target.value);
-                                set_time_of_day(e.target.value);
-                                reloadAudio();
-                            }}
-                            checked={time_of_day=="evening"}/>
-                    <RadioButton val="night" 
-                            onChange={(e)=>{
-                                localStorage.setItem("time_of_day", e.target.value);
-                                set_time_of_day(e.target.value);
-                                reloadAudio();
-                            }}
-                            checked={time_of_day=="night"}/>
-                </div>
-                {/* <select className="form-select form-select-sm"
-                        value={time_of_day}
-                        onChange={(e)=>{
-                            localStorage.setItem("time_of_day", e.target.value);
-                            set_time_of_day(e.target.value);
-                            reloadAudio();
-                        }}>
-                    <option value="morning">Morning</option>
-                    <option value="day">Day</option>
-                    <option value="evening">Evening</option>
-                    <option value="night">Night</option>
-                </select> */}
-                <div className='col-6 d-flex align-items-center gap-2 p-2'>
-                    <div>Biome: </div>
-                    <select className="form-select form-select-sm text-capitalize"
-                            value={active_biome}
-                            onChange={(e)=>{
-                                localStorage.setItem("active_biome", e.target.value);
-                                set_active_biome(e.target.value);
                                 reloadAudio();
                             }}>
-                        {biome_options_html}
-                    </select>
+                        <option value="morning">Morning</option>
+                        <option value="day">Day</option>
+                        <option value="evening">Evening</option>
+                        <option value="night">Night</option>
+                    </select> */}
+                    <div className='col-6 d-flex align-items-center gap-2 p-2'>
+                        <div>Biome: </div>
+                        <select className="form-select form-select-sm text-capitalize"
+                                value={active_biome}
+                                onChange={(e)=>{
+                                    localStorage.setItem("active_biome", e.target.value);
+                                    set_active_biome(e.target.value);
+                                    reloadAudio();
+                                }}>
+                            {biome_options_html}
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
-        <div className='d-flex flex-column vh-75'>
-            <div className='card'>
-                <div className='card-header small'>
-                    Environment
-                </div>
-                <div className='card-body'>
+        <div className='card flex-grow-1'>
+            <div className='card-header small'>
+                Environment
+            </div>
+            <div className='card-body position-relative'>
+                <div className='position-absolute top-0 start-0 bottom-0 end-0 overflow-auto p-2'>
                     <WeatherBadge   weathers={props.weathers}
                                     current_weather={current_weather}
                                     set_current_weather={set_current_weather}
@@ -209,7 +212,7 @@ function MainPage(props) {
                                         let new_weather_name = props.addWeather();
                                         set_edited_weather_name(new_weather_name);
                                     }}/>
-                    <div className='p-2 p-md-5 d-flex flex-row flex-wrap justify-content-center align-items-start gap-2'>
+                    <div className='p-3 d-flex flex-row flex-wrap justify-content-center align-items-start gap-2'>
                         {places_badges}
                     </div>
                     <div className='d-flex justify-content-center mt-3'>
@@ -228,14 +231,15 @@ function MainPage(props) {
                     </div>
                 </div>
             </div>
-            <div className='card h-50'>
-                <div className='card-header small'>
-                    Mood
-                </div>
-                <div className='card-body'>
-                    Test
-                </div>
+        </div>
+        <div className={'card'+(mood_opened?' flex-grow-1':'')}>
+            <div className='card-header small'>
+            <a href='#' onClick={()=>set_mood_opened(!mood_opened)} className="icon-link text-decoration-none text-reset me-2"><i className={"fa-solid fa-chevron-"+(mood_opened?"up":"down")}></i></a>
+                Mood
             </div>
+            {mood_opened && <div className='card-body'>
+                Test
+            </div>}
         </div>
         {edited_place_name!="" && <PlaceEditor  edited_place_name={edited_place_name}
                                                 set_edited_place_name={set_edited_place_name}
