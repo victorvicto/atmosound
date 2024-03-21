@@ -77,11 +77,21 @@ function App() {
         return start_weathers;
     }
 
+    function initialiseMoods(){
+        let start_moods = JSON.parse(localStorage.getItem("moods"));
+        if (start_moods === null) {
+            start_moods = default_setup.moods;
+            localStorage.setItem("moods", JSON.stringify(start_moods));
+        }
+        return start_moods;
+    }
+
     const [places, set_places] = useState(initialisePlaces);
     const [places_status, set_places_status] = useState(initialisePlacesStatus);
     const [sounds, set_sounds] = useState(initialiseSounds);
     const [biomes, set_biomes] = useState(initialiseBiomes);
     const [weathers, set_weathers] = useState(initialiseWeathers);
+    const [moods, set_moods] = useState(initialiseMoods);
     const [audio_context_started, set_audio_context_started] = useState(false);
     const [need_upload, set_need_upload] = useState(false);
 
@@ -102,7 +112,8 @@ function App() {
                         "muffle_amount":"0",
                         "volume":"1"
                     }
-                ]
+                ],
+                "override_moods":{}
             }
         };
         set_places(new_places);
@@ -151,6 +162,12 @@ function App() {
                 return false;
             }
             muffled_places.push(muffled.name);
+        }
+        for(let mood in new_content.override_moods){
+            if(moods[mood]==undefined){
+                set_error_message("You created a mood that doesn't exist");
+                return false;
+            }
         }
 
         let new_places = {...places};
@@ -367,6 +384,82 @@ function App() {
         localStorage.setItem("weathers", JSON.stringify(new_weathers));
     }
 
+    function addMood(){
+        let new_mood_name = prompt("New mood name: ").toLowerCase();
+        if(new_mood_name in moods){
+            set_error_message("A mood with the same name already exists");
+            return false;
+        }
+        let new_moods = {
+            ...moods,
+            [new_mood_name]:{
+                "sound": null
+            }
+        };
+        set_moods(new_moods);
+        localStorage.setItem("moods", JSON.stringify(new_moods));
+        return true;
+    }
+
+    function changeMoodName(mood_name, new_mood_name){
+        if(new_mood_name==mood_name){
+            set_error_message("Didn't change the name");
+            return false;
+        }
+        if(weathers[new_mood_name]!==undefined){
+            set_error_message("Tried to create a weather with a name that already exists");
+            return false;
+        }
+        if(new_mood_name.length==0){
+            set_error_message("Tried to create a weather with an empty name");
+            return false;
+        }
+        let new_moods = {...moods};
+        new_moods[new_mood_name] = new_moods[mood_name];
+        delete new_moods[mood_name];
+
+        let new_places = {...places};
+        for(let place_name in new_places){
+            if(mood_name in new_places[place_name].override_moods){
+                new_places[place_name].override_moods[new_mood_name] = new_places[place_name].override_moods[mood_name];
+                delete new_places[place_name].override_moods[mood_name];
+            }
+        }
+        set_places(new_places);
+        localStorage.setItem("places", JSON.stringify(new_places));
+
+        set_weathers(new_moods);
+        localStorage.setItem("moods", JSON.stringify(new_moods));
+        return true;
+    }
+
+    function changeMoodSound(mood_name, new_mood_sound){
+        if(sounds[new_mood_sound]==undefined){
+            set_error_message("That sound doesn't exist.");
+            return false;
+        }
+        let new_moods = {...moods};
+        new_moods[mood_name].sound = new_mood_sound;
+        set_weathers(new_moods);
+        localStorage.setItem("moods", JSON.stringify(new_moods));
+        return true;
+    }
+
+    function deleteMood(mood_name){
+        let new_moods = {...moods};
+        delete new_moods[mood_name];
+        let new_places = {...places};
+        for(let place_name in new_places){
+            if(mood_name in new_places[place_name].override_moods){
+                delete new_places[place_name].override_moods[mood_name];
+            }
+        }
+        set_places(new_places);
+        localStorage.setItem("places", JSON.stringify(new_places));
+        set_weathers(new_moods);
+        localStorage.setItem("moods", JSON.stringify(new_moods));
+    }
+
     function downloadSetup(){
         let setup = {
             "places": places,
@@ -487,11 +580,12 @@ function App() {
             </div>
             </div>
         <div className="tab-content flex-grow-1">
-            <div className="tab-pane fade show active p-2 p-md-3 h-100 d-flex flex-column gap-2" id="main-page" role="tabpanel">
+            <div className="tab-pane fade show active p-2 p-md-3 h-100" id="main-page" role="tabpanel">
                 {audio_context_started && <MainPage places={places}
                             sounds={sounds} 
                             biomes={biomes}
                             weathers={weathers}
+                            moods={moods}
                             addPlace={addPlace} 
                             savePlace={savePlace} 
                             deletePlace={deletePlace} 
@@ -499,7 +593,8 @@ function App() {
                             set_places_status={set_places_status}
                             addWeather={addWeather}
                             changeWeather={changeWeather}
-                            deleteWeather={deleteWeather}/>}
+                            deleteWeather={deleteWeather}
+                            addMood={addMood}/>}
                 {!audio_context_started && 
                     <div className='d-flex justify-content-center p-5'>
                         <button type="button" className='btn btn-primary btn-lg m-5 shadow shadow-md'

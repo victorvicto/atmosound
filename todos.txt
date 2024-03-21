@@ -2,6 +2,8 @@
 - Make weather setstate (and make according audiomanager changes/new functions to play weather)
 - Make promptEdit give suggestions and only allow suggestions (10 min)
 - make biomes menu, where biomes can be added (don't forget to update all sounds when that is done)
+- make sounds pick random sound from sound_pack
+- make one sound-pack per biome (automatically remove biome from other soundpack when biome activated on new soundpack)(if a biome is not activated in any soundpack, that biome doesn't play anything for that sound)
 - Solve why sound stops if running when switching day time
 - change Icon (10min)
 - make themes (6h)

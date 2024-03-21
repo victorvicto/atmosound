@@ -47,7 +47,11 @@
                     "muffle_amount":"0",
                     "volume":"1"
                 }
-            ]
+            ],
+            "override_moods":
+            {
+                
+            }
         },
         "small shop":
         {
@@ -100,7 +104,11 @@
                     "muffle_amount":"0.6",
                     "volume":"0.05"
                 }
-            ]
+            ],
+            "override_moods":
+            {
+
+            }
         }
     },
     "sounds":
@@ -213,6 +221,12 @@
         "sunny":{
             "sounds_list": [],
             "image_url": "https://images.pexels.com/photos/589802/pexels-photo-589802.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+        }
+    },
+    "moods":
+    {
+        "none":{
+            "sound": null
         }
     },
     "free_sound_api_key":"KnAkm3KR1GinLtK37OC1geBSQDzm2S1KhRvknkLa"

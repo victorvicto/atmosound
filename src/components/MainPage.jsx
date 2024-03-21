@@ -37,11 +37,21 @@ function MainPage(props) {
         return new_current_weather;
     }
 
+    function instantiateCurrentMood(){
+        let new_current_mood = localStorage.getItem("current_mood");
+        if(new_current_mood==null){
+            localStorage.setItem("mood", "none");
+            new_current_mood = "none";
+        }
+        return new_current_mood;
+    }
+
     const [edited_place_name, set_edited_place_name] = useState("");
     const [edited_weather_name, set_edited_weather_name] = useState("");
     const [active_biome, set_active_biome] = useState(instantiateActiveBiome);
     const [time_of_day, set_time_of_day] = useState(instantiateTimeOfDay);
     const [current_weather, set_current_weather] = useState(instantiateCurrentWeather);
+    const [current_mood, set_current_mood] = useState(instantiateCurrentMood);
     const [mood_opened, set_mood_opened] = useState(false);
 
     async function getSoundUrls(sound_name){
@@ -133,130 +143,146 @@ function MainPage(props) {
         biome_options_html.push(<option key={biome_name+"-option"} value={biome_name}>{biome_name}</option>);
     }
 
+    let mood_buttons = Object.keys(props.moods).map((mood_name) =>
+        <button key={mood_name+"-btn"}
+                className={'btn btn-'+(current_mood==mood_name?'':'outline-')+'primary btn-sm'}
+                >
+            <a href='#' className='text-decoration-none text-reset text-capitalize' onClick={()=>{localStorage.setItem("current_mood", mood_name);set_current_mood(mood_name)}}>
+                {mood_name}
+            </a>
+            <a href='#' className='icon-link text-decoration-none text-reset ms-2' onClick={()=>{}}>
+                <i className="fa-solid fa-square-pen"></i>
+            </a>
+        </button>
+    );
+
     return (
-        <>
-        <div className='card text-bg-light small'>
-            <div className='card-body py-0'>
-                <div className='row'>
-                    <div className='col-6 d-flex align-items-center gap-3 p-2'>
-                        <div className='text-nowrap'>Time of day:</div>
-                        <RadioButton val="morning" 
+        <div className='h-100 d-flex flex-column gap-2'>
+            <div className='card text-bg-light small'>
+                <div className='card-body py-0'>
+                    <div className='row'>
+                        <div className='col-6 d-flex align-items-center gap-3 p-2'>
+                            <div className='text-nowrap'>Time of day:</div>
+                            <RadioButton val="morning" 
+                                    onChange={(e)=>{
+                                        localStorage.setItem("time_of_day", e.target.value);
+                                        set_time_of_day(e.target.value);
+                                        reloadAudio();
+                                    }}
+                                    checked={time_of_day=="morning"}/>
+                            <RadioButton val="day" 
+                                    onChange={(e)=>{
+                                        localStorage.setItem("time_of_day", e.target.value);
+                                        set_time_of_day(e.target.value);
+                                        reloadAudio();
+                                    }}
+                                    checked={time_of_day=="day"}/>
+                            <RadioButton val="evening" 
+                                    onChange={(e)=>{
+                                        localStorage.setItem("time_of_day", e.target.value);
+                                        set_time_of_day(e.target.value);
+                                        reloadAudio();
+                                    }}
+                                    checked={time_of_day=="evening"}/>
+                            <RadioButton val="night" 
+                                    onChange={(e)=>{
+                                        localStorage.setItem("time_of_day", e.target.value);
+                                        set_time_of_day(e.target.value);
+                                        reloadAudio();
+                                    }}
+                                    checked={time_of_day=="night"}/>
+                        </div>
+                        {/* <select className="form-select form-select-sm"
+                                value={time_of_day}
                                 onChange={(e)=>{
                                     localStorage.setItem("time_of_day", e.target.value);
                                     set_time_of_day(e.target.value);
-                                    reloadAudio();
-                                }}
-                                checked={time_of_day=="morning"}/>
-                        <RadioButton val="day" 
-                                onChange={(e)=>{
-                                    localStorage.setItem("time_of_day", e.target.value);
-                                    set_time_of_day(e.target.value);
-                                    reloadAudio();
-                                }}
-                                checked={time_of_day=="day"}/>
-                        <RadioButton val="evening" 
-                                onChange={(e)=>{
-                                    localStorage.setItem("time_of_day", e.target.value);
-                                    set_time_of_day(e.target.value);
-                                    reloadAudio();
-                                }}
-                                checked={time_of_day=="evening"}/>
-                        <RadioButton val="night" 
-                                onChange={(e)=>{
-                                    localStorage.setItem("time_of_day", e.target.value);
-                                    set_time_of_day(e.target.value);
-                                    reloadAudio();
-                                }}
-                                checked={time_of_day=="night"}/>
-                    </div>
-                    {/* <select className="form-select form-select-sm"
-                            value={time_of_day}
-                            onChange={(e)=>{
-                                localStorage.setItem("time_of_day", e.target.value);
-                                set_time_of_day(e.target.value);
-                                reloadAudio();
-                            }}>
-                        <option value="morning">Morning</option>
-                        <option value="day">Day</option>
-                        <option value="evening">Evening</option>
-                        <option value="night">Night</option>
-                    </select> */}
-                    <div className='col-6 d-flex align-items-center gap-2 p-2'>
-                        <div>Biome: </div>
-                        <select className="form-select form-select-sm text-capitalize"
-                                value={active_biome}
-                                onChange={(e)=>{
-                                    localStorage.setItem("active_biome", e.target.value);
-                                    set_active_biome(e.target.value);
                                     reloadAudio();
                                 }}>
-                            {biome_options_html}
-                        </select>
+                            <option value="morning">Morning</option>
+                            <option value="day">Day</option>
+                            <option value="evening">Evening</option>
+                            <option value="night">Night</option>
+                        </select> */}
+                        <div className='col-6 d-flex align-items-center gap-2 p-2'>
+                            <div>Biome: </div>
+                            <select className="form-select form-select-sm text-capitalize"
+                                    value={active_biome}
+                                    onChange={(e)=>{
+                                        localStorage.setItem("active_biome", e.target.value);
+                                        set_active_biome(e.target.value);
+                                        reloadAudio();
+                                    }}>
+                                {biome_options_html}
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div className='card flex-grow-1'>
-            <div className='card-header small'>
-                Environment
-            </div>
-            <div className='card-body position-relative'>
-                <div className='position-absolute top-0 start-0 bottom-0 end-0 overflow-auto p-2'>
-                    <WeatherBadge   weathers={props.weathers}
-                                    current_weather={current_weather}
-                                    set_current_weather={set_current_weather}
-                                    status={props.places_status["weather"]}
-                                    switchStatus={(new_status)=>{switchState("weather", new_status)}}
-                                    set_edited_weather_name={set_edited_weather_name}
-                                    addWeather={()=>{
-                                        let new_weather_name = props.addWeather();
-                                        set_edited_weather_name(new_weather_name);
-                                    }}/>
-                    <div className='p-3 d-flex flex-row flex-wrap justify-content-center align-items-start gap-2'>
-                        {places_badges}
-                    </div>
-                    <div className='d-flex justify-content-center mt-3'>
-                        <button className="btn btn-outline-primary btn-lg"
-                                onClick={()=>{
-                                    set_edited_place_name(props.addPlace());
-                                }}>
-                            Add place
-                        </button>
-                        {/* <button className="btn btn-outline-primary btn-lg"
-                                onClick={()=>{
-                                    AudioManager.playTest();
-                                }}>
-                            Play test
-                        </button> */}
+            <div className='card flex-grow-1'>
+                <div className='card-header small'>
+                    Environment
+                </div>
+                <div className='card-body position-relative'>
+                    <div className='position-absolute top-0 start-0 bottom-0 end-0 overflow-auto p-2'>
+                        <WeatherBadge   weathers={props.weathers}
+                                        current_weather={current_weather}
+                                        set_current_weather={set_current_weather}
+                                        status={props.places_status["weather"]}
+                                        switchStatus={(new_status)=>{switchState("weather", new_status)}}
+                                        set_edited_weather_name={set_edited_weather_name}
+                                        addWeather={()=>{
+                                            let new_weather_name = props.addWeather();
+                                            set_edited_weather_name(new_weather_name);
+                                        }}/>
+                        <div className='p-3 d-flex flex-row flex-wrap justify-content-center align-items-start gap-2'>
+                            {places_badges}
+                        </div>
+                        <div className='d-flex justify-content-center mt-3'>
+                            <button className="btn btn-outline-primary btn-lg"
+                                    onClick={()=>{
+                                        set_edited_place_name(props.addPlace());
+                                    }}>
+                                Add place
+                            </button>
+                            {/* <button className="btn btn-outline-primary btn-lg"
+                                    onClick={()=>{
+                                        AudioManager.playTest();
+                                    }}>
+                                Play test
+                            </button> */}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div className={'card'+(mood_opened?' flex-grow-1':'')}>
-            <div className='card-header small'>
-            <a href='#' onClick={()=>set_mood_opened(!mood_opened)} className="icon-link text-decoration-none text-reset me-2"><i className={"fa-solid fa-chevron-"+(mood_opened?"up":"down")}></i></a>
-                Mood
+            <div className={'card'+(mood_opened?' flex-grow-1':'')}>
+                <div className='card-header small'>
+                <a href='#' onClick={()=>set_mood_opened(!mood_opened)} className="icon-link text-decoration-none text-reset me-2"><i className={"fa-solid fa-chevron-"+(mood_opened?"up":"down")}></i></a>
+                    Mood
+                </div>
+                {mood_opened && <div className='card-body'>
+                    <div className='d-flex flex-row gap-2 align-items-center'>
+                        {mood_buttons}
+                        <button className="btn btn-outline-primary btn-sm" onClick={props.addMood}>+</button>
+                    </div>
+                </div>}
             </div>
-            {mood_opened && <div className='card-body'>
-                Test
-            </div>}
-        </div>
-        {edited_place_name!="" && <PlaceEditor  edited_place_name={edited_place_name}
-                                                set_edited_place_name={set_edited_place_name}
-                                                places={props.places}
-                                                sounds={props.sounds}
-                                                weathers={props.weathers}
-                                                savePlace={props.savePlace}
-                                                deletePlace={props.deletePlace}
-                                                closeEditor={()=>set_edited_place_name("")}
-                                                reloadAudio={reloadAudio}/>}
-        {edited_weather_name!="" && <WeatherEditor  weathers={props.weathers}
-                                                    edited_weather_name={edited_weather_name}
-                                                    changeWeather={props.changeWeather}
-                                                    deleteWeather={()=>console.log("delete")}
+            {edited_place_name!="" && <PlaceEditor  edited_place_name={edited_place_name}
+                                                    set_edited_place_name={set_edited_place_name}
+                                                    places={props.places}
                                                     sounds={props.sounds}
-                                                    closeEditor={()=>set_edited_weather_name("")}/>}
-        </>
+                                                    weathers={props.weathers}
+                                                    savePlace={props.savePlace}
+                                                    deletePlace={props.deletePlace}
+                                                    closeEditor={()=>set_edited_place_name("")}
+                                                    reloadAudio={reloadAudio}/>}
+            {edited_weather_name!="" && <WeatherEditor  weathers={props.weathers}
+                                                        edited_weather_name={edited_weather_name}
+                                                        changeWeather={props.changeWeather}
+                                                        deleteWeather={()=>console.log("delete")}
+                                                        sounds={props.sounds}
+                                                        closeEditor={()=>set_edited_weather_name("")}/>}
+        </div>
     )
 }
 
