@@ -141,13 +141,12 @@ function PlaceEditor({edited_place_name, set_edited_place_name, places, sounds, 
                     <button type="button" className="btn btn-outline-primary btn-sm mt-2" 
                             onClick={()=>PromptEdit("Muffled place name", addMuffled)}>Add muffled place</button>
                 </div>
-                <div className='d-flex flex-column gap-2'>
-                    <button type="button" className="btn btn-outline-danger" onClick={()=>{
+                
+                <button type="button" className="btn btn-outline-danger" onClick={()=>{
                         if(confirm("Are you sure you want to delete the place called: "+edited_place_name)){
                             deletePlace(edited_place_name);
                             closeEditor();
                         }}}>Delete place <i className="fa-solid fa-trash"></i></button>
-                </div>
             </div>
         </div>
     )

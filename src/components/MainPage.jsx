@@ -6,6 +6,7 @@ import PlaceBadge from './PlaceBadge.jsx';
 import PlaceEditor from './PlaceEditor.jsx';
 import WeatherBadge from './WeatherBadge.jsx';
 import WeatherEditor from './WeatherEditor.jsx';
+import MoodEditor from './MoodEditor';
 import RadioButton from './RadioButton';
 
 function MainPage(props) {
@@ -48,6 +49,8 @@ function MainPage(props) {
 
     const [edited_place_name, set_edited_place_name] = useState("");
     const [edited_weather_name, set_edited_weather_name] = useState("");
+    const [edited_mood_name, set_edited_mood_name] = useState("");
+    const [right_editor_mode, set_right_editor_mode] = useState("");
     const [active_biome, set_active_biome] = useState(instantiateActiveBiome);
     const [time_of_day, set_time_of_day] = useState(instantiateTimeOfDay);
     const [current_weather, set_current_weather] = useState(instantiateCurrentWeather);
@@ -150,9 +153,9 @@ function MainPage(props) {
             <a href='#' className='text-decoration-none text-reset text-capitalize' onClick={()=>{localStorage.setItem("current_mood", mood_name);set_current_mood(mood_name)}}>
                 {mood_name}
             </a>
-            <a href='#' className='icon-link text-decoration-none text-reset ms-2' onClick={()=>{}}>
+            {mood_name!="none" && <a href='#' className='icon-link text-decoration-none text-reset ms-2' onClick={()=>{set_edited_mood_name(mood_name);set_right_editor_mode("mood")}}>
                 <i className="fa-solid fa-square-pen"></i>
-            </a>
+            </a>}
         </button>
     );
 
@@ -230,10 +233,11 @@ function MainPage(props) {
                                         set_current_weather={set_current_weather}
                                         status={props.places_status["weather"]}
                                         switchStatus={(new_status)=>{switchState("weather", new_status)}}
-                                        set_edited_weather_name={set_edited_weather_name}
+                                        set_edited_weather_name={(edited_weather_name)=>{set_edited_weather_name(edited_weather_name);set_right_editor_mode("weather")}}
                                         addWeather={()=>{
                                             let new_weather_name = props.addWeather();
                                             set_edited_weather_name(new_weather_name);
+                                            set_right_editor_mode("weather");
                                         }}/>
                         <div className='p-3 d-flex flex-row flex-wrap justify-content-center align-items-start gap-2'>
                             {places_badges}
@@ -263,7 +267,7 @@ function MainPage(props) {
                 {mood_opened && <div className='card-body'>
                     <div className='d-flex flex-row gap-2 align-items-center'>
                         {mood_buttons}
-                        <button className="btn btn-outline-primary btn-sm" onClick={props.addMood}>+</button>
+                        <button className="btn btn-outline-primary btn-sm" onClick={()=>{let new_mood_name = props.addMood(); set_edited_mood_name(new_mood_name);set_right_editor_mode("mood")}}>+</button>
                     </div>
                 </div>}
             </div>
@@ -276,12 +280,20 @@ function MainPage(props) {
                                                     deletePlace={props.deletePlace}
                                                     closeEditor={()=>set_edited_place_name("")}
                                                     reloadAudio={reloadAudio}/>}
-            {edited_weather_name!="" && <WeatherEditor  weathers={props.weathers}
-                                                        edited_weather_name={edited_weather_name}
-                                                        changeWeather={props.changeWeather}
-                                                        deleteWeather={()=>console.log("delete")}
-                                                        sounds={props.sounds}
-                                                        closeEditor={()=>set_edited_weather_name("")}/>}
+            {(edited_weather_name!=""&&right_editor_mode=="weather") && 
+                <WeatherEditor  weathers={props.weathers}
+                                edited_weather_name={edited_weather_name}
+                                changeWeather={props.changeWeather}
+                                deleteWeather={()=>console.log("delete")}
+                                sounds={props.sounds}
+                                closeEditor={()=>set_edited_weather_name("")}/>}
+            {(edited_mood_name!=""&&right_editor_mode=="mood") && 
+                <MoodEditor edited_mood_name={edited_mood_name}
+                            sound_name={props.moods[edited_mood_name].sound}
+                            changeMoodName={props.changeMoodName}
+                            changeMoodSound={props.changeMoodSound}
+                            deleteMood={props.deleteMood}
+                            closeEditor={()=>set_edited_mood_name("")}/>}
         </div>
     )
 }

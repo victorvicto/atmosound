@@ -39,9 +39,9 @@ function WeatherBadge({ weathers, current_weather, set_current_weather, status, 
             <a href='#' className='text-decoration-none text-reset text-capitalize' onClick={()=>{localStorage.setItem("current_weather", weather_name);set_current_weather(weather_name)}}>
                 {weather_name}
             </a>
-            <a href='#' className='icon-link text-decoration-none text-reset ms-2' onClick={()=>set_edited_weather_name(weather_name)}>
+            {weather_name!="none" && <a href='#' className='icon-link text-decoration-none text-reset ms-2' onClick={()=>set_edited_weather_name(weather_name)}>
                 <i className="fa-solid fa-square-pen"></i>
-            </a>
+            </a>}
         </button>
     );
 
@@ -77,7 +77,7 @@ function WeatherBadge({ weathers, current_weather, set_current_weather, status, 
                         <div className="card-body">
                             <div className='d-flex flex-row gap-2 align-items-center'>
                                 {weather_buttons}
-                                <button className="btn btn-outline-primary btn-sm" onClick={addWeather}>+</button>
+                                <button className="btn btn-outline-primary btn-sm" onClick={()=>addWeather()}>+</button>
                             </div>
                         </div>
                     </div>

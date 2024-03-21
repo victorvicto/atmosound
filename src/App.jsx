@@ -303,11 +303,10 @@ function App() {
     }
 
     function addWeather(){
-        let new_weather_name = "new weather";
-        let i = 0;
-        while(new_weather_name in weathers){
-            new_weather_name = "new weather " + i;
-            i++;
+        let new_weather_name = prompt("New weather name: ").toLowerCase();
+        if(new_weather_name in weathers){
+            set_error_message("Tried to create a weather with a name that already exists");
+            return "";
         }
         let new_weathers = {
             ...weathers,
@@ -388,7 +387,7 @@ function App() {
         let new_mood_name = prompt("New mood name: ").toLowerCase();
         if(new_mood_name in moods){
             set_error_message("A mood with the same name already exists");
-            return false;
+            return "";
         }
         let new_moods = {
             ...moods,
@@ -398,7 +397,7 @@ function App() {
         };
         set_moods(new_moods);
         localStorage.setItem("moods", JSON.stringify(new_moods));
-        return true;
+        return new_mood_name;
     }
 
     function changeMoodName(mood_name, new_mood_name){
@@ -428,7 +427,7 @@ function App() {
         set_places(new_places);
         localStorage.setItem("places", JSON.stringify(new_places));
 
-        set_weathers(new_moods);
+        set_moods(new_moods);
         localStorage.setItem("moods", JSON.stringify(new_moods));
         return true;
     }
@@ -440,7 +439,7 @@ function App() {
         }
         let new_moods = {...moods};
         new_moods[mood_name].sound = new_mood_sound;
-        set_weathers(new_moods);
+        set_moods(new_moods);
         localStorage.setItem("moods", JSON.stringify(new_moods));
         return true;
     }
@@ -456,7 +455,7 @@ function App() {
         }
         set_places(new_places);
         localStorage.setItem("places", JSON.stringify(new_places));
-        set_weathers(new_moods);
+        set_moods(new_moods);
         localStorage.setItem("moods", JSON.stringify(new_moods));
     }
 
@@ -487,24 +486,6 @@ function App() {
         localStorage.setItem("biomes", JSON.stringify(setup_content.biomes));
         localStorage.setItem("weathers", JSON.stringify(setup_content.weathers));
         set_places_status(initialisePlacesStatus());
-    }
-
-    function uploadSetup(){
-        if(!confirm("This will overwrite your current setup. Are you sure?")) return;
-        let input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
-        input.onchange = e => { 
-            let file = e.target.files[0]; 
-            let reader = new FileReader();
-            reader.readAsText(file,'UTF-8');
-            reader.onload = readerEvent => {
-                let content = JSON.parse(readerEvent.target.result);
-                bakeInSetup(content);
-            }
-        }
-        input.click();
-        input.remove();
     }
 
     function resetSetup(){
@@ -594,7 +575,10 @@ function App() {
                             addWeather={addWeather}
                             changeWeather={changeWeather}
                             deleteWeather={deleteWeather}
-                            addMood={addMood}/>}
+                            addMood={addMood}
+                            changeMoodName={changeMoodName}
+                            changeMoodSound={changeMoodSound}
+                            deleteMood={deleteMood}/>}
                 {!audio_context_started && 
                     <div className='d-flex justify-content-center p-5'>
                         <button type="button" className='btn btn-primary btn-lg m-5 shadow shadow-md'

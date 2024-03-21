@@ -12,3 +12,4 @@
 - add transition sound (with "transition" button)
 - make audio change when a setting is modified
 - multiply sound volume with sound link gain (10min)
+- clean everything by making classes instead of everything in one big dictionary
