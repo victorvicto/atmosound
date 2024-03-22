@@ -275,6 +275,7 @@ function MainPage(props) {
                                         set_current_weather={set_current_weather}
                                         status={props.places_status["weather"]}
                                         switchStatus={(new_status)=>{switchState("weather", new_status)}}
+                                        modify_status={(e, property)=>modifyPlacesStatus(e, "weather", property)}
                                         set_edited_weather_name={(edited_weather_name)=>{set_edited_weather_name(edited_weather_name);set_right_editor_mode("weather")}}
                                         addWeather={()=>{
                                             let new_weather_name = props.addWeather();

@@ -1,4 +1,3 @@
-- make modify_status work for weathers (10min)
 - use on('end') and getSoundUrls to pick a random sound to play next (if same and urls.length>1 -> get next url)
 - utiliser sound_list pour mood? (avec premier sound qui correspond aux circonstances qui joue)
 - use frontend alternative to ytdl-core (youtube to mp3 api, play api?, avoid it all together?)

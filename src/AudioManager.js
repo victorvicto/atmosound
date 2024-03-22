@@ -4,7 +4,7 @@ export function startAudioContext(){
     Howler.volume(1);
     console.log("starting audio context");
     let first_sound = new Howl({
-        src: ['https://actions.google.com/sounds/v1/cartoon/pop.ogg'],
+        src: ["https://v1.cdnpk.net/videvo_files/audio/premium/audio0130/watermarked/MagicCartoon%20CTE01_92.5_preview.mp3", 'https://actions.google.com/sounds/v1/cartoon/pop.ogg'],
         autoplay: false
     });
     first_sound.on('end', function(){
