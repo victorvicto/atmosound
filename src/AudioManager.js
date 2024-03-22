@@ -84,7 +84,7 @@ export function switch_mood_sound(mood_name, sound_urls, volume){
 
 export function clear_fading_out_places(){
     for(const[place_name, place_info] of Object.entries(fading_out_places)){
-        for(let howl of place_info.howls){
+        for(let howl of Object.values(place_info.howls)){
             howl.unload();
         }
         place_info.gain_node.disconnect();
@@ -103,7 +103,7 @@ export function fade_out_place(place_name){
 
     fading_out_places[place_name] = currently_playing_places[place_name];
     delete currently_playing_places[place_name];
-    for(let howl of fading_out_places[place_name].howls){
+    for(let howl of Object.values(fading_out_places[place_name].howls)){
         howl.fade(howl.volume(), 0, localStorage.getItem("transition_time"));
         setTimeout(()=>howl.unload(), localStorage.getItem("transition_time"));
     }
@@ -133,14 +133,90 @@ function sound_should_be_played(sound_descr){
 //     playing_place.media_stream_audio_sources.push(media_stream_audio_source);
 // }
 
-function createAndAddHowl(url, playing_place, sound_descr){
+// function createHowl(urls, sound_descr, previous_url=null){
+//     let url = urls[Math.floor(Math.random()*urls.length)];
+//     let new_howl = new Howl({
+//         src: [url],
+//         autoplay: false,
+//         volume: sound_descr.volume
+//     });
+//     let time = (Math.random()/2)*sound_descr.average_time*1000;
+//     new_howl.on('load', ()=>{
+//         let howl_duration = new_howl.duration();
+//         if(howl_duration>20){
+//             new_howl.seek(Math.random()*howl_duration);
+//         }
+//         setTimeout(()=>{
+//             new_howl._sounds[0]._node.disconnect();
+//             // TODO, not sure it works without the i as input index, does it override the 0 index input or does it combine all inputs?
+//             //new_howl._sounds[0]._node.connect(playing_place.filter_node, 0, i);
+//             new_howl._sounds[0]._node.connect(playing_place.filter_node);
+//             new_howl.play();
+//         }, time);
+//     });
+//     new_howl.on('end', ()=>{
+//         let time = (Math.random()+0.5)*sound_descr.average_time*1000;
+//         setTimeout(()=>{
+//             new_howl.play();
+//         }, time);
+//     })
+// }
+
+async function finaliseUrl(url){
+    if(url.includes("::")){
+        let [prefix, sound_id] = url.split("::");
+        if(prefix=="fs"){
+            let key = localStorage.getItem("freesound_api_key");
+            if(key!=null && key!=""){
+                const resp = await fetch("https://freesound.org/apiv2/sounds/"+sound_id+"/?fields=previews&token="+key);
+                const previews = await resp.json();
+                console.log(previews);
+                if("previews" in previews){
+                    return previews.previews["preview-hq-mp3"];
+                }
+            }
+        }
+        // I have my own personal ytdl backend
+        // not sure how to make this functionality public without backend
+        // maybe I upload backend and only give access to api codes
+        // I give an api code to patreons
+        else if(prefix=="yt"){
+            return "http://localhost:5000/yt/"+sound_id;
+            // const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
+            // const info = await resp.json();
+            // console.log(info);
+            // if("formats" in info){
+            //     if("audio/webm" in info["formats"]){
+            //         let final_url = info["formats"]["audio/webm"];
+            //         createAndAddStream(final_url, playing_place);
+            //     } else if("audio/mp4" in info["formats"]){
+            //         let final_url = info["formats"]["audio/mp4"];
+            //         createAndAddStream(final_url, playing_place);
+            //     }
+            // }
+        }
+    }
+    
+    return url;
+}
+
+async function createAndAddHowl(urls, playing_place, sound_descr, previous_url=null){
+    let rand_i = Math.floor(Math.random()*urls.length);
+    let url = urls[rand_i];
+    if(urls.length>1 && url==previous_url){
+        url = urls[(rand_i+1)%urls.length];
+    }
+    url = await finaliseUrl(url);
+    console.log(url);
     let new_howl = new Howl({
         src: [url],
         autoplay: false,
         volume: sound_descr.volume
     });
-    playing_place.howls.push(new_howl);
-    let time = (Math.random()/2)*sound_descr.average_time*1000;
+    let time = 0;
+    if(previous_url==null){
+        time = (Math.random()/2)*sound_descr.average_time*1000;
+    }
     new_howl.on('load', ()=>{
         let howl_duration = new_howl.duration();
         if(howl_duration>20){
@@ -157,50 +233,52 @@ function createAndAddHowl(url, playing_place, sound_descr){
     new_howl.on('end', ()=>{
         let time = (Math.random()+0.5)*sound_descr.average_time*1000;
         setTimeout(()=>{
-            new_howl.play();
+            new_howl.unload();
+            createAndAddHowl(urls, playing_place, sound_descr, url);
         }, time);
-    })
+    });
+    playing_place.howls[sound_descr.name] = new_howl;
 }
 
-async function createAudioSource(url, playing_place, sound_descr){
-    // TODO create either Howl or mediastreamaudiosource from url and plug it into output_node
-    if(url.includes("::")){
-        let [prefix, sound_id] = url.split("::");
-        if(prefix=="fs"){
-            let key = localStorage.getItem("freesound_api_key");
-            if(key!=null && key!=""){
-                const resp = await fetch("https://freesound.org/apiv2/sounds/"+sound_id+"/?fields=previews&token="+key);
-                const previews = await resp.json();
-                console.log(previews);
-                if("previews" in previews){
-                    let final_url = previews.previews["preview-hq-mp3"];
-                    createAndAddHowl(final_url, playing_place, sound_descr);
-                }
-            }
-        }
-        // I have my own personal ytdl backend
-        // not sure how to make this functionality public without backend
-        // maybe I upload backend and only give access to api codes
-        // I give an api code to patreons
-        else if(prefix=="yt"){
-            createAndAddHowl("http://localhost:5000/yt/"+sound_id, playing_place, sound_descr);
-            // const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
-            // const info = await resp.json();
-            // console.log(info);
-            // if("formats" in info){
-            //     if("audio/webm" in info["formats"]){
-            //         let final_url = info["formats"]["audio/webm"];
-            //         createAndAddStream(final_url, playing_place);
-            //     } else if("audio/mp4" in info["formats"]){
-            //         let final_url = info["formats"]["audio/mp4"];
-            //         createAndAddStream(final_url, playing_place);
-            //     }
-            // }
-        }
-    } else {
-        createAndAddHowl(url, playing_place, sound_descr);
-    }
-}
+// async function createAudioSource(url, playing_place, sound_descr){
+//     // TODO create either Howl or mediastreamaudiosource from url and plug it into output_node
+//     if(url.includes("::")){
+//         let [prefix, sound_id] = url.split("::");
+//         if(prefix=="fs"){
+//             let key = localStorage.getItem("freesound_api_key");
+//             if(key!=null && key!=""){
+//                 const resp = await fetch("https://freesound.org/apiv2/sounds/"+sound_id+"/?fields=previews&token="+key);
+//                 const previews = await resp.json();
+//                 console.log(previews);
+//                 if("previews" in previews){
+//                     let final_url = previews.previews["preview-hq-mp3"];
+//                     createAndAddHowl(final_url, playing_place, sound_descr);
+//                 }
+//             }
+//         }
+//         // I have my own personal ytdl backend
+//         // not sure how to make this functionality public without backend
+//         // maybe I upload backend and only give access to api codes
+//         // I give an api code to patreons
+//         else if(prefix=="yt"){
+//             createAndAddHowl("http://localhost:5000/yt/"+sound_id, playing_place, sound_descr);
+//             // const resp = await fetch("https://yt-source.nico.dev/"+sound_id);
+//             // const info = await resp.json();
+//             // console.log(info);
+//             // if("formats" in info){
+//             //     if("audio/webm" in info["formats"]){
+//             //         let final_url = info["formats"]["audio/webm"];
+//             //         createAndAddStream(final_url, playing_place);
+//             //     } else if("audio/mp4" in info["formats"]){
+//             //         let final_url = info["formats"]["audio/mp4"];
+//             //         createAndAddStream(final_url, playing_place);
+//             //     }
+//             // }
+//         }
+//     } else {
+//         createAndAddHowl(url, playing_place, sound_descr);
+//     }
+// }
 
 // async function translateUrl(url){
 //     let final_url = url;
@@ -266,7 +344,7 @@ export async function start_place(place_name, sounds_list, muffled_amount, place
     new_filter_node.connect(new_gain_node);
 
     currently_playing_places[place_name] = {
-        howls: [],
+        howls: {},
         //media_stream_audio_sources: [],
         //audio_elements: [],
         filter_node: new_filter_node,
@@ -277,7 +355,6 @@ export async function start_place(place_name, sounds_list, muffled_amount, place
         if(!sound_should_be_played(sound_descr)) continue;
         let sound_urls = getSoundUrls(sound_descr.name);
         if(sound_urls.length==0) continue;
-        let random_url = sound_urls[Math.floor(Math.random()*sound_urls.length)];
-        createAudioSource(random_url, currently_playing_places[place_name], sound_descr);       
+        createAndAddHowl(sound_urls, currently_playing_places[place_name], sound_descr);       
     }
 }
