@@ -48,7 +48,7 @@
                     "volume":"1"
                 }
             ],
-            "override_moods":
+            "mood_overrides":
             {
                 
             }
@@ -105,7 +105,7 @@
                     "volume":"0.05"
                 }
             ],
-            "override_moods":
+            "mood_overrides":
             {
 
             }

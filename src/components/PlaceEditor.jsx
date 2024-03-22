@@ -1,5 +1,6 @@
 import AddedSound from './AddedSound';
 import AddedMuffled from './AddedMuffled';
+import AddedMoodOverride from './AddedMoodOverride';
 
 import { RecursiveReplace, PromptEdit } from '../UtilityFunctions';
 import EditableText from './EditableText';
@@ -83,7 +84,23 @@ function PlaceEditor({edited_place_name, set_edited_place_name, places, sounds, 
             if(parseFloat(event.target.value)<parseFloat(event.target.min)) new_place_info.muffled_list[index][property] = event.target.min;
         }
         return savePlace(edited_place_name, edited_place_name, new_place_info);
-    } 
+    }
+
+    function changeMoodOverride(mood_name, mood_sound){
+        let new_place_info = {...places[edited_place_name]}
+        let new_mood_overrides = {...new_place_info.mood_overrides};
+        new_mood_overrides[mood_name] = mood_sound;
+        new_place_info.mood_overrides = new_mood_overrides;
+        savePlace(edited_place_name, edited_place_name, new_place_info);
+    }
+
+    function deleteMoodOverride(mood_name){
+        let new_place_info = {...places[edited_place_name]}
+        let new_mood_overrides = {...new_place_info.mood_overrides};
+        delete new_mood_overrides[mood_name];
+        new_place_info.mood_overrides = new_mood_overrides;
+        savePlace(edited_place_name, edited_place_name, new_place_info);
+    }
 
     let sounds_list_html = (<p className='text-body-secondary m-0'><small>No sounds added</small></p>);
     if(places[edited_place_name].sounds_list.length>0){
@@ -106,6 +123,20 @@ function PlaceEditor({edited_place_name, set_edited_place_name, places, sounds, 
                         changeMuffled={(event, property) => {changeMuffled(event, i, property)}}
                         deleteMuffled={()=> {deleteMuffled(i)}}/>
         );
+    }
+
+    let mood_overrides = (<p className='text-body-secondary m-0'><small>No mood overrides added</small></p>);
+    if(Object.keys(places[edited_place_name].mood_overrides).length>0){
+        mood_overrides = [];
+        for(let mood_name in places[edited_place_name].mood_overrides){
+            mood_overrides.push(
+                <AddedMoodOverride  key={"added-mood-override-"+mood_name}
+                                    mood_name={mood_name}
+                                    mood_sound={places[edited_place_name].mood_overrides[mood_name]}
+                                    changeMoodOverride={changeMoodOverride}
+                                    deleteMoodOverride={deleteMoodOverride}/>
+            )
+        }
     }
 
     return (
@@ -140,6 +171,14 @@ function PlaceEditor({edited_place_name, set_edited_place_name, places, sounds, 
                     </div>
                     <button type="button" className="btn btn-outline-primary btn-sm mt-2" 
                             onClick={()=>PromptEdit("Muffled place name", addMuffled)}>Add muffled place</button>
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Mood overrides</label>
+                    <div className='d-flex flex-column gap-2'>
+                        {mood_overrides}
+                    </div>
+                    <button type="button" className="btn btn-outline-primary btn-sm mt-2" 
+                            onClick={()=>PromptEdit("Mood to override", (mood_name)=>changeMoodOverride(mood_name, null))}>Add mood override</button>
                 </div>
                 
                 <button type="button" className="btn btn-outline-danger" onClick={()=>{

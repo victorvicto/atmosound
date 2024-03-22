@@ -83,6 +83,15 @@ function MainPage(props) {
     function updateMoodAudio(){
         let mood_name = localStorage.getItem("current_mood");
         let sound_name = props.moods[mood_name].sound;
+        for(const [place_name, place_status] of Object.entries(props.places_status)){
+            if(place_status.state=="on"){
+                if(mood_name in props.places[place_name].mood_overrides){
+                    sound_name = props.places[place_name].mood_overrides[mood_name];
+                    console.log("overriding mood sound");
+                    break;
+                }
+            }
+        }
         if(sound_name!=null){
             AudioManager.switch_mood_sound(mood_name, getSoundUrls(sound_name), localStorage.getItem("mood_volume"));
         }else{
@@ -116,6 +125,7 @@ function MainPage(props) {
                     place_status.muffle_amount, place_status.volume, getSoundUrls);
             }
         }
+        updateMoodAudio();
     }
     
     function turnOffAllPlaces(final_places_status){
@@ -155,7 +165,6 @@ function MainPage(props) {
     // Making sure audio starts playing when loading page to previous setting activation
     if(!has_been_started){
         reloadAudio();
-        updateMoodAudio();
         set_has_been_started(true);
     }
 

@@ -113,7 +113,7 @@ function App() {
                         "volume":"1"
                     }
                 ],
-                "override_moods":{}
+                "mood_overrides":{}
             }
         };
         set_places(new_places);
@@ -163,11 +163,17 @@ function App() {
             }
             muffled_places.push(muffled.name);
         }
-        for(let mood in new_content.override_moods){
+        let overridden_moods = []
+        for(let mood in new_content.mood_overrides){
             if(moods[mood]==undefined){
                 set_error_message("You created a mood that doesn't exist");
                 return false;
             }
+            if(overridden_moods.includes(mood)){
+                set_error_message("Tried to create a mood override that is already present in the list");
+                return false;
+            }
+            overridden_moods.push(mood);
         }
 
         let new_places = {...places};

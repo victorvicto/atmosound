@@ -1,4 +1,4 @@
-- do place mood override
+- make modify_status work for weathers (10min)
 - utiliser sound_list pour mood? (avec premier sound qui correspond aux circonstances qui joue)
 - use frontend alternative to ytdl-core (youtube to mp3 api, play api?, avoid it all together?)
 - Make weather setstate (and make according audiomanager changes/new functions to play weather)
@@ -9,6 +9,7 @@
 - Solve why sound stops if running when switching day time
 - change Icon (10min)
 - make themes (6h)
+- add wind intensity for weather (and minimal wind intensity to sounds in place soundlist)
 - solving glitch problem
 - solve all sounds problem
 - add transition sound (with "transition" button)

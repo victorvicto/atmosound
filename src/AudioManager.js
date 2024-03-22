@@ -57,12 +57,11 @@ let mood = {
 let last_mood_howl = null;
 
 export function switch_mood_sound(mood_name, sound_urls, volume){
-    if(mood.mood_name == mood_name){
-        if(mood.howl!=null)
-            mood.howl.volume(volume);
-        return;
-    }
     if(mood.howl!=null){
+        if(mood.mood_name == mood_name && sound_urls.includes(mood.howl._src[0]) ){
+            mood.howl.volume(volume);
+            return;
+        }
         last_mood_howl = mood.howl;
         last_mood_howl.fade(last_mood_howl.volume(), 0, localStorage.getItem("transition_time"));
         setTimeout(()=>last_mood_howl.unload(), localStorage.getItem("transition_time"));
@@ -116,7 +115,9 @@ export function fade_out_place(place_name){
 
 function sound_should_be_played(sound_descr){
     if(!sound_descr["time_of_day"][localStorage.getItem("time_of_day")]) return false;
-    if(!sound_descr["weathers"][localStorage.getItem("current_weather")]) return false;
+    if(sound_descr["weathers"]!=null){
+        if(!sound_descr["weathers"][localStorage.getItem("current_weather")]) return false;
+    }
     return true;
 }
 
