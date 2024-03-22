@@ -56,20 +56,30 @@ let mood = {
 };
 let last_mood_howl = null;
 
-export function switch_mood_sound(mood_name, sound_urls, sound_descr){
+export function switch_mood_sound(mood_name, sound_urls, volume){
     if(mood.mood_name == mood_name){
-        mood.howl.volume(sound_descr.volume);
+        if(mood.howl!=null)
+            mood.howl.volume(volume);
         return;
     }
-    let random_url = sound_urls[Math.floor(Math.random()*sound_urls.length)];
-    last_mood_howl = mood.howl;
-    last_mood_howl.fade(last_mood_howl.volume(), 0, localStorage.getItem("transition_time"));
-    setTimeout(()=>last_mood_howl.unload(), localStorage.getItem("transition_time"));
-    mood.howl = new Howl({
-        src: [random_url],
-        autoplay: true,
-        volume: sound_descr.volume
-    });
+    if(mood.howl!=null){
+        last_mood_howl = mood.howl;
+        last_mood_howl.fade(last_mood_howl.volume(), 0, localStorage.getItem("transition_time"));
+        setTimeout(()=>last_mood_howl.unload(), localStorage.getItem("transition_time"));
+    }
+    if(sound_urls.length>0){
+        let random_url = sound_urls[Math.floor(Math.random()*sound_urls.length)];
+        mood.howl = new Howl({
+            src: [random_url],
+            autoplay: true,
+            volume: volume
+        });
+        mood.howl.on('end', function(){
+            mood.howl.play();
+        });
+    }else{
+        mood.howl = null;
+    }
     mood.mood_name = mood_name;
 }
 
@@ -264,7 +274,7 @@ export async function start_place(place_name, sounds_list, muffled_amount, place
     let i = 0;
     for(let sound_descr of sounds_list){
         if(!sound_should_be_played(sound_descr)) continue;
-        let sound_urls = await getSoundUrls(sound_descr.name);
+        let sound_urls = getSoundUrls(sound_descr.name);
         if(sound_urls.length==0) continue;
         let random_url = sound_urls[Math.floor(Math.random()*sound_urls.length)];
         createAudioSource(random_url, currently_playing_places[place_name], sound_descr);       

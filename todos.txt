@@ -1,4 +1,4 @@
-- Make mood use added_sound (with descr) instead of just the sound name
+- utiliser sound_list pour mood? (avec premier sound qui correspond aux circonstances qui joue)
 - use frontend alternative to ytdl-core (youtube to mp3 api, play api?, avoid it all together?)
 - Make weather setstate (and make according audiomanager changes/new functions to play weather)
 - Make promptEdit give suggestions and only allow suggestions (10 min)

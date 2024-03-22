@@ -41,10 +41,19 @@ function MainPage(props) {
     function instantiateCurrentMood(){
         let new_current_mood = localStorage.getItem("current_mood");
         if(new_current_mood==null){
-            localStorage.setItem("mood", "none");
+            localStorage.setItem("current_mood", "none");
             new_current_mood = "none";
         }
         return new_current_mood;
+    }
+
+    function instantiateMoodVolume(){
+        let new_mood_volume = localStorage.getItem("mood_volume");
+        if(new_mood_volume==null){
+            localStorage.setItem("mood_volume", 1);
+            new_mood_volume = 1;
+        }
+        return new_mood_volume;
     }
 
     const [edited_place_name, set_edited_place_name] = useState("");
@@ -56,8 +65,10 @@ function MainPage(props) {
     const [current_weather, set_current_weather] = useState(instantiateCurrentWeather);
     const [current_mood, set_current_mood] = useState(instantiateCurrentMood);
     const [mood_opened, set_mood_opened] = useState(false);
+    const [mood_volume, set_mood_volume] = useState(instantiateMoodVolume);
+    const [has_been_started, set_has_been_started] = useState(false);
 
-    async function getSoundUrls(sound_name){
+    function getSoundUrls(sound_name){
         let urls = [];
         for(let sound_pack of props.sounds[sound_name].sound_packs){
             if(sound_pack.biome_presences[localStorage.getItem("active_biome")]){
@@ -66,13 +77,19 @@ function MainPage(props) {
                 }
             }
         }
+        console.log(urls);
         return urls;
     }
 
-    function switchMoodAudio(){
+    function updateMoodAudio(){
         let mood_name = localStorage.getItem("current_mood");
-        let sound_name = moods[mood_name].sound;
-        switch_mood_sound(mood_name, getSoundUrls(sound_name), )
+        let sound_name = props.moods[mood_name].sound;
+        if(sound_name!=null){
+            AudioManager.switch_mood_sound(mood_name, getSoundUrls(sound_name), localStorage.getItem("mood_volume"));
+        }else{
+            AudioManager.switch_mood_sound(mood_name, [], localStorage.getItem("mood_volume"));
+        }
+
     }
 
     function reloadAudio(){
@@ -136,6 +153,13 @@ function MainPage(props) {
         props.set_places_status(new_places_status);
     }
 
+    if(!has_been_started){
+        console.log("NOW!");
+        reloadAudio();
+        updateMoodAudio();
+        set_has_been_started(true);
+    }
+
     const places_badges = Object.entries(props.places).map(([place_name, place_info]) => 
             <PlaceBadge key={place_name}
                         place_name={place_name}
@@ -156,7 +180,11 @@ function MainPage(props) {
         <button key={mood_name+"-btn"}
                 className={'btn btn-'+(current_mood==mood_name?'':'outline-')+'primary btn-sm'}
                 >
-            <a href='#' className='text-decoration-none text-reset text-capitalize' onClick={()=>{localStorage.setItem("current_mood", mood_name);set_current_mood(mood_name)}}>
+            <a href='#' className='text-decoration-none text-reset text-capitalize' onClick={()=>{
+                localStorage.setItem("current_mood", mood_name);
+                set_current_mood(mood_name);
+                updateMoodAudio();
+                }}>
                 {mood_name}
             </a>
             {mood_name!="none" && <a href='#' className='icon-link text-decoration-none text-reset ms-2' onClick={()=>{set_edited_mood_name(mood_name);set_right_editor_mode("mood")}}>
@@ -267,8 +295,22 @@ function MainPage(props) {
             </div>
             <div className={'card'+(mood_opened?' flex-grow-1':'')}>
                 <div className='card-header small'>
-                <a href='#' onClick={()=>set_mood_opened(!mood_opened)} className="icon-link text-decoration-none text-reset me-2"><i className={"fa-solid fa-chevron-"+(mood_opened?"up":"down")}></i></a>
-                    Mood
+                    <div className='d-flex gap-4'>
+                        <a href='#' onClick={()=>set_mood_opened(!mood_opened)} className="icon-link text-decoration-none text-reset"><i className={"fa-solid fa-chevron-"+(mood_opened?"up":"down")}></i></a>
+                        Mood
+                        <div className='d-flex flex-row align-items-center gap-2 flex-grow-1'>
+                            <i className="fa-solid fa-volume-low"></i>
+                            <input type="range" value={mood_volume}
+                                    onChange={(e)=>{
+                                        set_mood_volume(e.target.value);
+                                        localStorage.setItem("mood_volume", e.target.value);
+                                        updateMoodAudio();
+                                    }}
+                                    className="form-range"
+                                    min="0" max="1" step='.05'/>
+                            <i className="fa-solid fa-volume-high"></i>
+                        </div>
+                    </div>
                 </div>
                 {mood_opened && <div className='card-body'>
                     <div className='d-flex flex-row gap-2 align-items-center'>
