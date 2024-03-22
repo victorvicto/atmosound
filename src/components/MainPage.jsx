@@ -77,7 +77,6 @@ function MainPage(props) {
                 }
             }
         }
-        console.log(urls);
         return urls;
     }
 
@@ -153,8 +152,8 @@ function MainPage(props) {
         props.set_places_status(new_places_status);
     }
 
+    // Making sure audio starts playing when loading page to previous setting activation
     if(!has_been_started){
-        console.log("NOW!");
         reloadAudio();
         updateMoodAudio();
         set_has_been_started(true);

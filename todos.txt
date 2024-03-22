@@ -1,3 +1,4 @@
+- do place mood override
 - utiliser sound_list pour mood? (avec premier sound qui correspond aux circonstances qui joue)
 - use frontend alternative to ytdl-core (youtube to mp3 api, play api?, avoid it all together?)
 - Make weather setstate (and make according audiomanager changes/new functions to play weather)
