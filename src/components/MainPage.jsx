@@ -69,6 +69,12 @@ function MainPage(props) {
         return urls;
     }
 
+    function switchMoodAudio(){
+        let mood_name = localStorage.getItem("current_mood");
+        let sound_name = moods[mood_name].sound;
+        switch_mood_sound(mood_name, getSoundUrls(sound_name), )
+    }
+
     function reloadAudio(){
         for(const [place_name, place_status] of Object.entries(props.places_status)){
             AudioManager.fade_out_place(place_name);

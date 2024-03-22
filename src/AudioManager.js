@@ -50,6 +50,28 @@ export function playTest(){
 
 let currently_playing_places = {};
 let fading_out_places = {}; // each place has .howls and .filter
+let mood = {
+    mood_name: null,
+    howl: null
+};
+let last_mood_howl = null;
+
+export function switch_mood_sound(mood_name, sound_urls, sound_descr){
+    if(mood.mood_name == mood_name){
+        mood.howl.volume(sound_descr.volume);
+        return;
+    }
+    let random_url = sound_urls[Math.floor(Math.random()*sound_urls.length)];
+    last_mood_howl = mood.howl;
+    last_mood_howl.fade(last_mood_howl.volume(), 0, localStorage.getItem("transition_time"));
+    setTimeout(()=>last_mood_howl.unload(), localStorage.getItem("transition_time"));
+    mood.howl = new Howl({
+        src: [random_url],
+        autoplay: true,
+        volume: sound_descr.volume
+    });
+    mood.mood_name = mood_name;
+}
 
 export function clear_fading_out_places(){
     for(const[place_name, place_info] of Object.entries(fading_out_places)){
