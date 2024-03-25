@@ -333,6 +333,7 @@ function MainPage(props) {
                                                     places={props.places}
                                                     sounds={props.sounds}
                                                     weathers={props.weathers}
+                                                    moods={props.moods}
                                                     savePlace={props.savePlace}
                                                     deletePlace={props.deletePlace}
                                                     closeEditor={()=>set_edited_place_name("")}

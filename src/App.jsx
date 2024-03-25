@@ -425,9 +425,9 @@ function App() {
 
         let new_places = {...places};
         for(let place_name in new_places){
-            if(mood_name in new_places[place_name].override_moods){
-                new_places[place_name].override_moods[new_mood_name] = new_places[place_name].override_moods[mood_name];
-                delete new_places[place_name].override_moods[mood_name];
+            if(mood_name in new_places[place_name].mood_overrides){
+                new_places[place_name].mood_overrides[new_mood_name] = new_places[place_name].mood_overrides[mood_name];
+                delete new_places[place_name].mood_overrides[mood_name];
             }
         }
         set_places(new_places);
@@ -455,8 +455,8 @@ function App() {
         delete new_moods[mood_name];
         let new_places = {...places};
         for(let place_name in new_places){
-            if(mood_name in new_places[place_name].override_moods){
-                delete new_places[place_name].override_moods[mood_name];
+            if(mood_name in new_places[place_name].mood_overrides){
+                delete new_places[place_name].mood_overrides[mood_name];
             }
         }
         set_places(new_places);

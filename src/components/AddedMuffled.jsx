@@ -11,7 +11,7 @@ function AddedMuffled({muffled, muffled_name_correct, changeMuffled, deleteMuffl
                         <a href='#' onClick={()=>set_is_open(!is_open)} className="icon-link text-decoration-none text-reset">
                             <i className={"fa-solid fa-chevron-"+(is_open?"up":"down")}></i>
                         </a>
-                        <h5 className={"card-title mb-0 text-capitalize"}>{muffled.name}</h5>
+                        <h5 className={"card-title mb-0 text-capitalize"+(muffled_name_correct?"":" text-danger")}>{muffled.name}</h5>
                         {/* <input type='text' className={"form-control form-control-sm "+(muffled_name_correct?"is-valid":"is-invalid")}
                             value={muffled.name} onChange={(e)=>changeMuffled(e, "name")} placeholder="Place name"/> */}
                         <button type="button" className="btn-close" onClick={deleteMuffled}></button>

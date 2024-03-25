@@ -35,7 +35,7 @@ function AddedSound({sound, sound_name_correct, changeSound, deleteSound}) {
                     <a href='#' onClick={()=>set_is_open(!is_open)} className="icon-link text-decoration-none text-reset">
                         <i className={"fa-solid fa-chevron-"+(is_open?"up":"down")}></i>
                     </a>
-                    <h5 className={"card-title mb-0 text-capitalize"+(sound_name_correct?" text-danger":"")}>{sound.name}</h5>
+                    <h5 className={"card-title mb-0 text-capitalize"+(sound_name_correct?"":" text-danger")}>{sound.name}</h5>
                     {/* <input type='text' className={"form-control form-control-sm "+(sound_name_correct?"is-valid":"is-invalid")}
                         value={sound.name} onChange={(e)=>changeSound(e, "name")} placeholder="Sound name"/> */}
                     <button type="button" className="btn-close" onClick={deleteSound}></button>

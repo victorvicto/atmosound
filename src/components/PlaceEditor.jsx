@@ -5,7 +5,7 @@ import AddedMoodOverride from './AddedMoodOverride';
 import { RecursiveReplace, PromptEdit } from '../UtilityFunctions';
 import EditableText from './EditableText';
 
-function PlaceEditor({edited_place_name, set_edited_place_name, places, sounds, weathers, savePlace, deletePlace, closeEditor, reloadAudio}){
+function PlaceEditor({edited_place_name, set_edited_place_name, places, sounds, weathers, moods, savePlace, deletePlace, closeEditor, reloadAudio}){
 
     console.log(edited_place_name);
     
@@ -119,7 +119,7 @@ function PlaceEditor({edited_place_name, set_edited_place_name, places, sounds, 
         muffled_list_html = places[edited_place_name].muffled_list.map((muffled, i) => 
             <AddedMuffled key={"added-muffled-"+i}
                         muffled={muffled}
-                        muffled_name_correct={places[muffled.name]!==undefined && muffled.name!=edited_place_name && muffled.name!=edited_place_name}
+                        muffled_name_correct={(places[muffled.name]!==undefined && muffled.name!=edited_place_name) || muffled.name=="weather"}
                         changeMuffled={(event, property) => {changeMuffled(event, i, property)}}
                         deleteMuffled={()=> {deleteMuffled(i)}}/>
         );
@@ -133,6 +133,7 @@ function PlaceEditor({edited_place_name, set_edited_place_name, places, sounds, 
                 <AddedMoodOverride  key={"added-mood-override-"+mood_name}
                                     mood_name={mood_name}
                                     mood_sound={places[edited_place_name].mood_overrides[mood_name]}
+                                    mood_name_correct={moods[mood_name]!=undefined}
                                     changeMoodOverride={changeMoodOverride}
                                     deleteMoodOverride={deleteMoodOverride}/>
             )
