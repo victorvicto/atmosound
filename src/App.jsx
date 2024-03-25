@@ -8,6 +8,7 @@ import * as AudioManager from "./AudioManager";
 import MainPage from './components/MainPage.jsx';
 import SoundsLibPage from './components/SoundsLibPage.jsx';
 import SettingsPage from './components/SettingsPage.jsx';
+import BiomesPage from './components/BiomesPage.jsx';
 
 import default_setup from "./default_setup.json";
 
@@ -283,6 +284,8 @@ function App() {
                 }
             }
             set_places(new_places);
+            localStorage.setItem("places", JSON.stringify(new_places));
+            // TODO Also adapt weathers and moods
         }
         set_sounds(new_sounds);
         localStorage.setItem("sounds", JSON.stringify(new_sounds));
@@ -306,6 +309,39 @@ function App() {
         }
         set_places(new_places);
         localStorage.setItem("places", JSON.stringify(new_places));
+    }
+
+    function addBiome(){
+        let new_biome_name = prompt("New biome name: ").toLowerCase();
+        if(biomes[new_biome_name]!==undefined){
+            set_error_message("Tried to create a biome with an already existing name");
+            return false;
+        }
+        if(new_biome_name.length==0){
+            set_error_message("Tried to create a biome with no name");
+            return false;
+        }
+        // TODO check if the recursive copy/change is correct
+        let new_sounds = {...sounds}
+        for(let sound_name in new_sounds){
+            let new_sound = {...new_sounds[sound_name]};
+            let new_sound_packs = [];
+            for(let sound_pack of new_sound.sound_packs){
+                let new_sound_pack = {...sound_pack};
+                // TODO check if more than half of the others are true, if so, set to true
+                new_sound_pack.biome_presences[new_biome_name] = false;
+                new_sound_packs.push(new_sound_pack);
+            }
+            new_sound.sound_packs = new_sound_packs;
+            new_sounds[sound_name] = new_sound;
+        }
+        set_sounds(new_sounds);
+        localStorage.setItem('sounds', JSON.stringify(new_sounds));
+
+        let new_biomes = {...biomes};
+        new_biomes[new_biome_name] = {};
+        set_biomes(new_biomes);
+        localStorage.setItem('biomes', JSON.stringify(new_biomes));
     }
 
     function addWeather(){
@@ -542,6 +578,11 @@ function App() {
                             </button>
                         </li>
                         <li className="nav-item" role="presentation">
+                            <button className="nav-link" data-bs-toggle="tab" data-bs-target="#biomes-page" type="button" role="tab" aria-selected="false">
+                                Biomes
+                            </button>
+                        </li>
+                        <li className="nav-item" role="presentation">
                             <button className="nav-link" data-bs-toggle="tab" data-bs-target="#settings-page" type="button" role="tab" aria-selected="false">
                                 Settings
                             </button>
@@ -609,6 +650,9 @@ function App() {
             </div>
             <div className="tab-pane fade p-2 p-md-5" id="sounds-lib-page" role="tabpanel">
                 <SoundsLibPage sounds={sounds} addSound={addSound} changeSound={changeSound} deleteSound={deleteSound}/>
+            </div>
+            <div className="tab-pane fade p-2 p-md-5" id="biomes-page" role="tabpanel">
+                <BiomesPage biomes={biomes} addBiome={addBiome}/>
             </div>
             <div className="tab-pane fade p-2 p-md-5" id="settings-page" role="tabpanel">
                 <SettingsPage/>
