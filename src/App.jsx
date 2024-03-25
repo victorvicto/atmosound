@@ -387,6 +387,9 @@ function App() {
         localStorage.setItem("places", JSON.stringify(new_places));
         set_weathers(new_weathers);
         localStorage.setItem("weathers", JSON.stringify(new_weathers));
+        if(localStorage.getItem("current_weather")==weather_name){
+            localStorage.setItem("current_weather", "none");
+        }
     }
 
     function addMood(){
@@ -463,6 +466,9 @@ function App() {
         localStorage.setItem("places", JSON.stringify(new_places));
         set_moods(new_moods);
         localStorage.setItem("moods", JSON.stringify(new_moods));
+        if(localStorage.getItem("current_mood")==mood_name){
+            localStorage.setItem("current_mood", "none");
+        }
     }
 
     function downloadSetup(){

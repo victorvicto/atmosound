@@ -342,7 +342,12 @@ function MainPage(props) {
                 <WeatherEditor  weathers={props.weathers}
                                 edited_weather_name={edited_weather_name}
                                 changeWeather={props.changeWeather}
-                                deleteWeather={()=>console.log("delete")}
+                                deleteWeather={(weather_name)=>{
+                                    props.deleteWeather(weather_name);
+                                    if(current_weather==weather_name){
+                                        set_current_weather("none");
+                                    }
+                                }}
                                 sounds={props.sounds}
                                 closeEditor={()=>set_edited_weather_name("")}/>}
             {(edited_mood_name!=""&&right_editor_mode=="mood") && 
@@ -350,7 +355,12 @@ function MainPage(props) {
                             sound_name={props.moods[edited_mood_name].sound}
                             changeMoodName={props.changeMoodName}
                             changeMoodSound={props.changeMoodSound}
-                            deleteMood={props.deleteMood}
+                            deleteMood={(mood_name)=>{
+                                props.deleteMood(mood_name);
+                                if(mood_name==current_mood){
+                                    set_current_mood("none");
+                                }
+                            }}
                             closeEditor={()=>set_edited_mood_name("")}/>}
         </div>
     )
