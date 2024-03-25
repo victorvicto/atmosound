@@ -206,7 +206,7 @@ function MainPage(props) {
             <div className='card text-bg-light small'>
                 <div className='card-body py-0'>
                     <div className='row'>
-                        <div className='col-6 d-flex align-items-center gap-3 p-2'>
+                        <div className='col-12 col-md-6 d-flex align-items-center justify-content-between justify-content-md-start gap-md-3 gap-1 p-2 flex-wrap'>
                             <div className='text-nowrap'>Time of day:</div>
                             <RadioButton val="morning" 
                                     onChange={(e)=>{
@@ -249,7 +249,7 @@ function MainPage(props) {
                             <option value="evening">Evening</option>
                             <option value="night">Night</option>
                         </select> */}
-                        <div className='col-6 d-flex align-items-center gap-2 p-2'>
+                        <div className='col-12 col-md-6 d-flex align-items-center gap-2 p-2'>
                             <div>Biome: </div>
                             <select className="form-select form-select-sm text-capitalize"
                                     value={active_biome}

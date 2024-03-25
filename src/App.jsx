@@ -477,6 +477,7 @@ function App() {
             "sounds": sounds,
             "biomes": biomes,
             "weathers": weathers,
+            "moods": moods,
             "free_sound_api_key": localStorage.getItem("freesound_api_key") || ""
         };
         let data_string = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(setup));
@@ -492,11 +493,13 @@ function App() {
         set_sounds(setup_content.sounds);
         set_biomes(setup_content.biomes);
         set_weathers(setup_content.weathers);
+        set_moods(setup_content.moods);
         localStorage.setItem("freesound_api_key", setup_content.free_sound_api_key);
         localStorage.setItem("places", JSON.stringify(setup_content.places));
         localStorage.setItem("sounds", JSON.stringify(setup_content.sounds));
         localStorage.setItem("biomes", JSON.stringify(setup_content.biomes));
         localStorage.setItem("weathers", JSON.stringify(setup_content.weathers));
+        localStorage.setItem("moods", JSON.stringify(setup_content.moods))
         set_places_status(initialisePlacesStatus());
     }
 
@@ -545,9 +548,11 @@ function App() {
                         </li>
                     </ul>
                     {/* remove reset button on final build, it is just for development purpose */}
-                    <button type="button" className="btn btn-outline-danger" onClick={resetSetup}>Reset setup</button>
-                    <button type="button" className="btn btn-outline-success ms-2" onClick={()=>{set_need_upload(true)}}>Upload setup</button>
-                    <button type="button" className="btn btn-outline-success ms-2" onClick={downloadSetup}>Save my setup</button>
+                    <div className='d-flex gap-2'>
+                        <button type="button" className="btn btn-outline-danger" onClick={resetSetup}>Reset setup</button>
+                        <button type="button" className="btn btn-outline-success" onClick={()=>{set_need_upload(true)}}>Upload setup</button>
+                        <button type="button" className="btn btn-outline-success" onClick={downloadSetup}>Save my setup</button>
+                    </div>
                 </div>
             </div>
         </nav>
