@@ -66,7 +66,7 @@ function WeatherEditor({weathers, edited_weather_name, changeWeather,  deleteWea
                             onClick={()=>PromptEdit("New sound name", addSound)}>Add sound</button>
                 </div>
                 <div className="mb-3">
-                    <label className="form-label">Image</label>
+                    <label className="form-label">Image</label><br/>
                     <EditableText   base_text={weathers[edited_weather_name].image_url==null?"no image yet":weathers[edited_weather_name].image_url}
                                     edit_prompt={"new image url:"}
                                     applyChange={changeImageUrl}/>
