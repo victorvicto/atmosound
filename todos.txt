@@ -1,18 +1,19 @@
 - DONE? use on('end') and getSoundUrls to pick a random sound to play next (if same and urls.length>1 -> get next url)
 - make sure every function got adapted to the arrival of weathers and moods (ex: change sound)
 - add image selector for weathers (5min)
-- make the top bar with time of day and biome change to wrap when screen width is scaled down
 - make sure that audio is updated on every click (especially weather change)
 - utiliser sound_list pour mood? (avec premier sound qui correspond aux circonstances qui joue)
 - use frontend alternative to ytdl-core (youtube to mp3 api, play api?, avoid it all together?)
 - Make weather setstate (and make according audiomanager changes/new functions to play weather)
 - Make promptEdit give suggestions and only allow suggestions (10 min)
-- make biomes menu, where biomes can be added (don't forget to update all sounds when that is done)
-- make sounds pick random sound from sound_pack
+- make sure sound management when biome is created is correct
+- create changebiome and deletebiome functions
 - make one sound-pack per biome (automatically remove biome from other soundpack when biome activated on new soundpack)(if a biome is not activated in any soundpack, that biome doesn't play anything for that sound)
 - Solve why sound stops if running when switching day time
+- make sounds trimmable (4h)
+- make biomes weather probability (markhov chain?)
+- make auto weather button that, when activated, changes the weather everytime the timeofday changes (and less likely change when place changes?)
 - change Icon (10min)
-- make themes (6h)
 - add wind intensity for weather (and minimal wind intensity to sounds in place soundlist)
 - solving glitch problem
 - solve all sounds problem
