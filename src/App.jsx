@@ -283,18 +283,31 @@ function App() {
                     if(sound.name==sound_name) sound.name = new_sound_name;
                 }
                 for(let mood_override in new_places[place_name].mood_overrides){
-                    // TODO finish
+                    if(new_places[place_name].mood_overrides[mood_override].sound==sound_name){
+                        new_places[place_name].mood_overrides[mood_override].sound = new_sound_name;
+                    }
                 }
             }
             set_places(new_places);
             localStorage.setItem("places", JSON.stringify(new_places));
-            // TODO Also adapt weathers and moods
+
             let new_weathers = {...weathers};
             for(let weather_name in new_weathers){
                 for(let sound of new_weathers[weather_name].sounds_list){
-                    // TODO finish
+                    if(sound.name==sound_name) sound.name = new_sound_name;
                 }
             }
+            set_weathers(new_weathers);
+            localStorage.setItem("weathers", JSON.stringify(new_weathers));
+
+            let new_moods = {...moods};
+            for(let mood_name in new_moods){
+                if(new_moods[mood_name].sound==sound_name){
+                    new_moods[mood_name].sound = new_sound_name;
+                }
+            }
+            set_moods(new_moods);
+            localStorage.setItem("moods", JSON.stringify(new_moods));
         }
         set_sounds(new_sounds);
         localStorage.setItem("sounds", JSON.stringify(new_sounds));
@@ -304,8 +317,6 @@ function App() {
     function deleteSound(sound_name){
         let new_sounds = {...sounds};
         delete new_sounds[sound_name];
-        set_sounds(new_sounds);
-        localStorage.setItem("sounds", JSON.stringify(new_sounds));
 
         // modifying all places that were using this sound
         let new_places = {...places};
@@ -315,9 +326,39 @@ function App() {
                 if(sound.name!=sound_name) new_sounds_list.push(sound);
             }
             new_places[place_name].sounds_list = new_sounds_list;
+            for(let mood_override in new_places[place_name].mood_overrides){
+                if(new_places[place_name].mood_overrides[mood_override].sound==sound_name){
+                    new_places[place_name].mood_overrides[mood_override].sound = null;
+                }
+            }
         }
         set_places(new_places);
         localStorage.setItem("places", JSON.stringify(new_places));
+
+        let new_weathers = {...weathers};
+            for(let weather_name in new_weathers){
+                let new_sounds_list = [];
+                for(let sound of new_weathers[weather_name].sounds_list){
+                    if(sound.name!=sound_name){
+                        new_sounds_list.push(sound);
+                    }
+                }
+                new_weathers[weather_name].sounds_list = new_sounds_list;
+            }
+            set_weathers(new_weathers);
+            localStorage.setItem("weathers", JSON.stringify(new_weathers));
+
+            let new_moods = {...moods};
+            for(let mood_name in new_moods){
+                if(new_moods[mood_name].sound==sound_name){
+                    new_moods[mood_name].sound = null;
+                }
+            }
+            set_moods(new_moods);
+            localStorage.setItem("moods", JSON.stringify(new_moods));
+
+        set_sounds(new_sounds);
+        localStorage.setItem("sounds", JSON.stringify(new_sounds));
     }
 
     function addBiome(){
