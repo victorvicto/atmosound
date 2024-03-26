@@ -282,10 +282,19 @@ function App() {
                 for(let sound of new_places[place_name].sounds_list){
                     if(sound.name==sound_name) sound.name = new_sound_name;
                 }
+                for(let mood_override in new_places[place_name].mood_overrides){
+                    // TODO finish
+                }
             }
             set_places(new_places);
             localStorage.setItem("places", JSON.stringify(new_places));
             // TODO Also adapt weathers and moods
+            let new_weathers = {...weathers};
+            for(let weather_name in new_weathers){
+                for(let sound of new_weathers[weather_name].sounds_list){
+                    // TODO finish
+                }
+            }
         }
         set_sounds(new_sounds);
         localStorage.setItem("sounds", JSON.stringify(new_sounds));
@@ -298,10 +307,10 @@ function App() {
         set_sounds(new_sounds);
         localStorage.setItem("sounds", JSON.stringify(new_sounds));
 
-        // modifying all places that were using this place
+        // modifying all places that were using this sound
         let new_places = {...places};
         for(let place_name in new_places){
-            let new_sounds_list = []
+            let new_sounds_list = [];
             for(let sound of new_places[place_name].sounds_list){
                 if(sound.name!=sound_name) new_sounds_list.push(sound);
             }
