@@ -252,6 +252,7 @@ function MainPage(props) {
                         <div className='col-12 col-md-6 d-flex align-items-center gap-2 p-2'>
                             <div>Biome: </div>
                             <select className="form-select form-select-sm text-capitalize"
+                                    style={{cursor:"pointer"}}
                                     value={active_biome}
                                     onChange={(e)=>{
                                         localStorage.setItem("active_biome", e.target.value);
