@@ -8,6 +8,7 @@
 - Make promptEdit give suggestions and only allow suggestions (10 min)
 - make sure sound management when biome is created is correct
 - create changebiome and deletebiome functions
+- Give soundpacks names
 - make one sound-pack per biome (automatically remove biome from other soundpack when biome activated on new soundpack)(if a biome is not activated in any soundpack, that biome doesn't play anything for that sound)
 - Solve why sound stops if running when switching day time
 - make sounds trimmable (4h)

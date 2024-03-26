@@ -321,15 +321,21 @@ function App() {
             set_error_message("Tried to create a biome with no name");
             return false;
         }
-        // TODO check if the recursive copy/change is correct
         let new_sounds = {...sounds}
         for(let sound_name in new_sounds){
             let new_sound = {...new_sounds[sound_name]};
             let new_sound_packs = [];
             for(let sound_pack of new_sound.sound_packs){
                 let new_sound_pack = {...sound_pack};
-                // TODO check if more than half of the others are true, if so, set to true
-                new_sound_pack.biome_presences[new_biome_name] = false;
+                let num_activated_biomes = 0;
+                let num_biomes = 0;
+                for(let other_biome in new_sound_pack.biome_presences){
+                    if(new_sound_pack.biome_presences[other_biome])
+                        num_activated_biomes++;
+                    num_biomes++;
+                }
+                // TODO I should check if num_activated biomes is higher for this pack than all the others instead of just checking if it is more than half, but it's maybe overcomplexifying
+                new_sound_pack.biome_presences[new_biome_name] = num_activated_biomes>num_biomes/2;
                 new_sound_packs.push(new_sound_pack);
             }
             new_sound.sound_packs = new_sound_packs;
