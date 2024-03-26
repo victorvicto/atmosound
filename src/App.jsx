@@ -233,7 +233,9 @@ function App() {
         let new_sounds = {
             ...sounds,
             [new_sound_name]:{
-                "sound_packs":[
+                "sound_packs":
+                {
+                    "default":
                     {
                         "sound_files": [
                             {
@@ -243,7 +245,7 @@ function App() {
                         ],
                         "biome_presences": biomes_presence
                     }
-                ]
+                }
             }
         };
         set_sounds(new_sounds);
@@ -261,12 +263,24 @@ function App() {
             set_error_message("Tried to set sound name to empty");
             return false;
         }
+        let sound_pack_names = [];
+        for(let sound_pack_name in sounds[new_sound_name].sound_packs){
+            if(sound_pack_name==""){
+                set_error_message("Tried to give an empty name to a sound pack");
+                return false;
+            }
+            if(sound_pack_names.includes(sound_pack_name)){
+                set_error_message("Tried to have multiple sound packs with the same name");
+                return false;
+            }
+            sound_pack_names.push(sound_pack_name);
+        }
 
         let new_sounds = {...sounds};
         new_sounds[new_sound_name] = new_content;
 
-        for(let sound_pack of new_sounds[new_sound_name].sound_packs){
-            if(Object.keys(sound_pack.biome_presences).length==0){
+        for(let sound_pack_name in new_sounds[new_sound_name].sound_packs){
+            if(Object.keys(new_sounds[new_sound_name].sound_packs[sound_pack_name].biome_presences).length==0){
                 for(let biome in biomes){
                     sound_pack.biome_presences[biome] = false;
                 }
@@ -374,9 +388,9 @@ function App() {
         let new_sounds = {...sounds}
         for(let sound_name in new_sounds){
             let new_sound = {...new_sounds[sound_name]};
-            let new_sound_packs = [];
-            for(let sound_pack of new_sound.sound_packs){
-                let new_sound_pack = {...sound_pack};
+            let new_sound_packs = {};
+            for(let sound_pack_name in new_sound.sound_packs){
+                let new_sound_pack = {...new_sound.sound_packs[sound_pack_name]};
                 let num_activated_biomes = 0;
                 let num_biomes = 0;
                 for(let other_biome in new_sound_pack.biome_presences){
@@ -386,7 +400,7 @@ function App() {
                 }
                 // TODO I should check if num_activated biomes is higher for this pack than all the others instead of just checking if it is more than half, but it's maybe overcomplexifying
                 new_sound_pack.biome_presences[new_biome_name] = num_activated_biomes>num_biomes/2;
-                new_sound_packs.push(new_sound_pack);
+                new_sound_packs[sound_pack_name] = new_sound_pack;
             }
             new_sound.sound_packs = new_sound_packs;
             new_sounds[sound_name] = new_sound;

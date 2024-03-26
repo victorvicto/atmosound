@@ -116,7 +116,8 @@
         "birds":
         {
             "sound_packs":
-            [
+            {
+                "default":
                 {
                     "sound_files":
                     [
@@ -132,12 +133,13 @@
                         "oriental":true
                     }
                 }
-            ]
+            }
         },
         "market crowd":
         {
             "sound_packs":
-            [
+            {
+                "default":
                 {
                     "sound_files":
                     [
@@ -153,12 +155,13 @@
                         "oriental":true
                     }
                 }
-            ]
+            }
         },
         "creaking wood":
         {
             "sound_packs":
-            [
+            {
+                "default":
                 {
                     "sound_files":
                     [
@@ -174,12 +177,13 @@
                         "oriental":true
                     }
                 }
-            ]
+            }
         },
         "boiling":
         {
             "sound_packs":
-            [
+            {
+                "default":
                 {
                     "sound_files":
                     [
@@ -195,7 +199,7 @@
                         "oriental":true
                     }
                 }
-            ]
+            }
         }
     },
     "biomes":

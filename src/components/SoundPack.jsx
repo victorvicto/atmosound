@@ -1,6 +1,7 @@
 import { useState } from "react";
+import EditableText from "./EditableText";
 
-function SoundPack({sound_pack_name, sound_pack, changeSoundPack, deleteSoundPack}){
+function SoundPack({sound_pack_name, sound_pack, changeSoundPack, changeSoundPackName, deleteSoundPack}){
     const [is_open, set_is_open] = useState(false);
 
     function changeSoundFile(sound_file_index, property, new_value){
@@ -51,35 +52,36 @@ function SoundPack({sound_pack_name, sound_pack, changeSoundPack, deleteSoundPac
     
     console.log(sound_pack.sound_files);
     const urls_html = sound_pack.sound_files.map((sound_file, i)=>
-        <li key={sound_pack_name+"-sound-file-"+i} className="list-group-item d-flex flex-row gap-2 p-2">
-            <div className="flex-fill d-flex flex-column gap-2">
-                <input type='text' className={"form-control form-control-sm"} value={sound_file.url}
-                            onClick={(e)=>{
-                                let new_url = prompt("Enter the URL of the sound file");
-                                if(new_url!=null){
-                                    changeSoundFile(i, "url", new_url);
-                                }}}/>
-                <div className="d-flex flex-row justify-content-between align-items-center gap-2">
-                    <audio controls className="w-100">
-                        <source src={sound_file.url} type="audio/mpeg"/>
-                        Your browser does not support the audio element.
-                    </audio>
-                    <div className="d-flex flex-row align-items-center gap-2">
-                        <small>Volume multiplier</small>
-                        <input type='number' className="form-control form-control-sm"
-                                value={sound_file.volume_mul}
-                                onChange={(e)=>changeSoundFile(i, "volume_mul", e.target.value)}
-                                min={0} max={2} step={0.05}/>
+        <li key={sound_pack_name+"-sound-file-"+i} className="list-group-item">
+            <div className="row">
+                <div className="col-11 d-flex flex-column gap-2">
+                    <div className="pe-2 overflow-hidden">
+                        <EditableText   base_text={sound_file.url}
+                                        edit_prompt={"Enter the URL of the sound file"}
+                                        applyChange={(new_url)=>changeSoundFile(i, "url", new_url)}/>
+                    </div>
+                    <div className="d-flex flex-row justify-content-between align-items-center gap-2">
+                        <audio controls className="w-100">
+                            <source src={sound_file.url} type="audio/mpeg"/>
+                            Your browser does not support the audio element.
+                        </audio>
+                        <div className="d-flex flex-row align-items-center gap-2">
+                            <small>Volume multiplier</small>
+                            <input type='number' className="form-control form-control-sm"
+                                    value={sound_file.volume_mul}
+                                    onChange={(e)=>changeSoundFile(i, "volume_mul", e.target.value)}
+                                    min={0} max={2} step={0.05}/>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="d-flex align-items-stretch">
-                <button type="button" className="btn btn-outline-danger"
-                        onClick={()=>{
-                            if(confirm("Are you sure you want to delete this sound file?")){
-                                deleteSoundFile(i);
-                            }
-                        }}><i className="fa-solid fa-trash"></i></button>
+                <div className="col-1">
+                    <button type="button" className="btn btn-outline-danger h-100 w-100"
+                            onClick={()=>{
+                                if(confirm("Are you sure you want to delete this sound file?")){
+                                    deleteSoundFile(i);
+                                }
+                            }}><i className="fa-solid fa-trash"></i></button>
+                </div>
             </div>
         </li>        
     );
@@ -95,7 +97,11 @@ function SoundPack({sound_pack_name, sound_pack, changeSoundPack, deleteSoundPac
         <div className={'card shadow-sm'}>
             <div className="card-header d-flex justify-content-between">
                 <div className="d-flex flex-row align-items-center flew-wrap gap-3">
-                    <h5 className="card-title m-0">{sound_pack_name}</h5>
+                    <h5 className="card-title m-0 text-capitalize">
+                        <EditableText   base_text={sound_pack_name}
+                                        edit_prompt={"New sound pack name"}
+                                        applyChange={(new_pack_name)=>changeSoundPackName(sound_pack_name, new_pack_name)}/>
+                    </h5>
                     <a href="#" className="icon-link text-decoration-none link-danger"
                         onClick={()=>{
                             if(confirm("Are you sure you want to delete the sound pack: "+sound_pack_name+"?")){
