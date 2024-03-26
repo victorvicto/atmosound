@@ -23,6 +23,12 @@ function WeatherEditor({weathers, edited_weather_name, changeWeather,  deleteWea
         new_weather_info.sounds_list = new_sounds_list;
         return changeWeather(edited_weather_name, edited_weather_name, new_weather_info);
     }
+
+    function changeImageUrl(new_url){
+        let new_weather_info = {...weathers[edited_weather_name]};
+        new_weather_info.image_url = new_url;
+        return changeWeather(edited_weather_name, edited_weather_name, new_weather_info);
+    }
     
     let sounds_list_html = (<p className='text-body-secondary m-0'><small>No sounds added</small></p>);
     if(weathers[edited_weather_name].sounds_list.length>0){
@@ -58,6 +64,12 @@ function WeatherEditor({weathers, edited_weather_name, changeWeather,  deleteWea
                     </div>
                     <button type="button" className="btn btn-outline-primary btn-sm mt-2" 
                             onClick={()=>PromptEdit("New sound name", addSound)}>Add sound</button>
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Image</label>
+                    <EditableText   base_text={weathers[edited_weather_name].image_url==null?"no image yet":weathers[edited_weather_name].image_url}
+                                    edit_prompt={"new image url:"}
+                                    applyChange={changeImageUrl}/>
                 </div>
             </div>
         </div>

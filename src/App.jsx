@@ -410,7 +410,7 @@ function App() {
             ...weathers,
             [new_weather_name]:{
                 "sounds_list": [],
-                "image_url": ""
+                "image_url": null
             }
         };
         let new_places = {...places};
