@@ -398,7 +398,7 @@ function App() {
                         num_activated_biomes++;
                     num_biomes++;
                 }
-                // TODO I should check if num_activated biomes is higher for this pack than all the others instead of just checking if it is more than half, but it's maybe overcomplexifying
+                // I should maybe check if num_activated biomes is higher for this pack than all the others instead of just checking if it is more than half, but it's maybe overcomplexifying
                 new_sound_pack.biome_presences[new_biome_name] = num_activated_biomes>num_biomes/2;
                 new_sound_packs[sound_pack_name] = new_sound_pack;
             }
@@ -410,6 +410,52 @@ function App() {
 
         let new_biomes = {...biomes};
         new_biomes[new_biome_name] = {};
+        set_biomes(new_biomes);
+        localStorage.setItem('biomes', JSON.stringify(new_biomes));
+    }
+
+    function changeBiomeName(old_biome_name, new_biome_name){
+        let new_sounds = {...sounds}
+        for(let sound_name in new_sounds){
+            let new_sound = {...new_sounds[sound_name]};
+            let new_sound_packs = {...new_sound.sound_packs};
+            for(let sound_pack_name in new_sound_packs){
+                let new_sound_pack = {...new_sound_packs[sound_pack_name]};
+                new_sound_pack.biome_presences[new_biome_name] = new_sound_pack.biome_presences[old_biome_name];
+                delete new_sound_pack.biome_presences[old_biome_name];
+                new_sound_packs[sound_pack_name] = new_sound_pack;
+            }
+            new_sound.sound_packs = new_sound_packs;
+            new_sounds[sound_name] = new_sound;
+        }
+        set_sounds(new_sounds);
+        localStorage.setItem('sounds', JSON.stringify(new_sounds));
+
+        let new_biomes = {...biomes};
+        new_biomes[new_biome_name] = new_biomes[old_biome_name];
+        delete new_biomes[old_biome_name];
+        set_biomes(new_biomes);
+        localStorage.setItem('biomes', JSON.stringify(new_biomes));
+    }
+
+    function deletBiome(biome_name){
+        let new_sounds = {...sounds}
+        for(let sound_name in new_sounds){
+            let new_sound = {...new_sounds[sound_name]};
+            let new_sound_packs = {...new_sound.sound_packs};
+            for(let sound_pack_name in new_sound_packs){
+                let new_sound_pack = {...new_sound_packs[sound_pack_name]};
+                delete new_sound_pack.biome_presences[biome_name];
+                new_sound_packs[sound_pack_name] = new_sound_pack;
+            }
+            new_sound.sound_packs = new_sound_packs;
+            new_sounds[sound_name] = new_sound;
+        }
+        set_sounds(new_sounds);
+        localStorage.setItem('sounds', JSON.stringify(new_sounds));
+
+        let new_biomes = {...biomes};
+        delete new_biomes[biome_name];
         set_biomes(new_biomes);
         localStorage.setItem('biomes', JSON.stringify(new_biomes));
     }
@@ -722,7 +768,10 @@ function App() {
                 <SoundsLibPage sounds={sounds} addSound={addSound} changeSound={changeSound} deleteSound={deleteSound}/>
             </div>
             <div className="tab-pane fade p-2 p-md-5" id="biomes-page" role="tabpanel">
-                <BiomesPage biomes={biomes} addBiome={addBiome}/>
+                <BiomesPage biomes={biomes}
+                            addBiome={addBiome}
+                            changeBiomeName={changeBiomeName}
+                            deletBiome={deletBiome}/>
             </div>
             <div className="tab-pane fade p-2 p-md-5" id="settings-page" role="tabpanel">
                 <SettingsPage/>
