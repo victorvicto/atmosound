@@ -438,7 +438,7 @@ function App() {
         localStorage.setItem('biomes', JSON.stringify(new_biomes));
     }
 
-    function deletBiome(biome_name){
+    function deleteBiome(biome_name){
         let new_sounds = {...sounds}
         for(let sound_name in new_sounds){
             let new_sound = {...new_sounds[sound_name]};
@@ -771,7 +771,7 @@ function App() {
                 <BiomesPage biomes={biomes}
                             addBiome={addBiome}
                             changeBiomeName={changeBiomeName}
-                            deletBiome={deletBiome}/>
+                            deleteBiome={deleteBiome}/>
             </div>
             <div className="tab-pane fade p-2 p-md-5" id="settings-page" role="tabpanel">
                 <SettingsPage/>

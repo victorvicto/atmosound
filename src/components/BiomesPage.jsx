@@ -1,9 +1,12 @@
 import BiomeCard from "./BiomeCard";
 import { PromptEdit } from "../UtilityFunctions";
 
-function BiomesPage({biomes, addBiome}){
+function BiomesPage({biomes, addBiome, changeBiomeName, deleteBiome}){
     const biome_cards = Object.entries(biomes).map(([biome_name, biome_info]) => 
-            <BiomeCard biome_name={biome_name} key={biome_name+"-biome-card"}/>
+            <BiomeCard  biome_name={biome_name}
+                        changeBiomeName={changeBiomeName}
+                        deleteBiome={deleteBiome}
+                        key={biome_name+"-biome-card"}/>
         );
 
     return (
