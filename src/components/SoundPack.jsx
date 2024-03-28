@@ -49,7 +49,7 @@ function SoundPack({sound_pack_name, sound_pack, changeSoundPack, changeSoundPac
     //     }
     //     changeSoundFile(i, "url", final_url);
     // }
-    
+
     const urls_html = sound_pack.sound_files.map((sound_file, i)=>
         <li key={sound_pack_name+"-sound-file-"+i} className="list-group-item">
             <div className="row">
@@ -64,13 +64,13 @@ function SoundPack({sound_pack_name, sound_pack, changeSoundPack, changeSoundPac
                             <source src={sound_file.url} type="audio/mpeg"/>
                             Your browser does not support the audio element.
                         </audio>
-                        <div className="d-flex flex-row align-items-center gap-2">
+                        {/* <div className="d-flex flex-row align-items-center gap-2">
                             <small>Volume multiplier</small>
                             <input type='number' className="form-control form-control-sm"
                                     value={sound_file.volume_mul}
                                     onChange={(e)=>changeSoundFile(i, "volume_mul", e.target.value)}
                                     min={0} max={2} step={0.05}/>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div className="col-1">

@@ -1,4 +1,5 @@
 - DONE? use on('end') and getSoundUrls to pick a random sound to play next (if same and urls.length>1 -> get next url)
+- Find other way than volume multiplier to normaise all sounds or find a way to make it work
 - make sure every function got adapted to the arrival of weathers and moods (ex: change sound)
 - add image selector for weathers (5min)
 - make sure that audio is updated on every click (especially weather change)
