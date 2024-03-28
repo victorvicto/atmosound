@@ -73,7 +73,7 @@ function MainPage(props) {
         for(let sound_pack_name in props.sounds[sound_name].sound_packs){
             if(props.sounds[sound_name].sound_packs[sound_pack_name].biome_presences[localStorage.getItem("active_biome")]){
                 for(let sound_file of sound_pack.sound_files){
-                    urls.push(sound_file.url);
+                    urls.push({url:sound_file.url, volume_mul:sound_file.volume_mul});
                 }
             }
         }

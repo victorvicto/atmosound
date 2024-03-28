@@ -50,7 +50,6 @@ function SoundPack({sound_pack_name, sound_pack, changeSoundPack, changeSoundPac
     //     changeSoundFile(i, "url", final_url);
     // }
     
-    console.log(sound_pack.sound_files);
     const urls_html = sound_pack.sound_files.map((sound_file, i)=>
         <li key={sound_pack_name+"-sound-file-"+i} className="list-group-item">
             <div className="row">
