@@ -264,7 +264,7 @@ function App() {
             return false;
         }
         let sound_pack_names = [];
-        for(let sound_pack_name in sounds[new_sound_name].sound_packs){
+        for(let sound_pack_name in sounds[sound_name].sound_packs){
             if(sound_pack_name==""){
                 set_error_message("Tried to give an empty name to a sound pack");
                 return false;

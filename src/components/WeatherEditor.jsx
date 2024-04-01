@@ -29,11 +29,12 @@ function WeatherEditor({weathers, edited_weather_name, changeWeather,  deleteWea
         new_weather_info.image_url = new_url;
         return changeWeather(edited_weather_name, edited_weather_name, new_weather_info);
     }
-    
+
+    // TODO finish switching to addedweathersound    
     let sounds_list_html = (<p className='text-body-secondary m-0'><small>No sounds added</small></p>);
     if(weathers[edited_weather_name].sounds_list.length>0){
         sounds_list_html = weathers[edited_weather_name].sounds_list.map((sound, i) => 
-            <AddedSound key={"added-sound-"+i}
+            <AddedSound key={"weather-added-sound-"+i}
                         weathers={weathers}
                         sound={sound}
                         sound_name_correct={sounds[sound.name]!==undefined}
