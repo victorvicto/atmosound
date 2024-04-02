@@ -24,6 +24,30 @@ function WeatherEditor({weathers, edited_weather_name, changeWeather,  deleteWea
         return changeWeather(edited_weather_name, edited_weather_name, new_weather_info);
     }
 
+    function changeSound(event, index, property){
+        let new_weather_info = {...weathers[edited_weather_name]};
+        if(event.target.type=="checkbox")
+            RecursiveReplace(new_weather_info.sounds_list[index], property, event.target.checked);
+        else {
+            RecursiveReplace(new_weather_info.sounds_list[index], property, event.target.value.toLowerCase());
+            if("max" in event.target){
+                if(parseFloat(event.target.value)>parseFloat(event.target.max))
+                    RecursiveReplace(new_weather_info.sounds_list[index], property, event.target.max);
+            }
+            if("min" in event.target){
+                if(parseFloat(event.target.value)<parseFloat(event.target.min))
+                    RecursiveReplace(new_weather_info.sounds_list[index], property, event.target.min);
+            }
+        }
+        return changeWeather(edited_weather_name, edited_weather_name, new_weather_info);
+    }
+
+    function deleteSound(index){
+        let new_weather_info = {...weathers[edited_weather_name]};
+        new_weather_info.sounds_list.splice(index, 1);
+        return changeWeather(edited_weather_name, edited_weather_name, new_weather_info);
+    }
+
     function changeImageUrl(new_url){
         let new_weather_info = {...weathers[edited_weather_name]};
         new_weather_info.image_url = new_url;
