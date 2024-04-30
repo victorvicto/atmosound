@@ -306,7 +306,7 @@ function MainPage(props) {
             <div className={'card'+(mood_opened?' flex-grow-1':'')}>
                 <div className='card-header small'>
                     <div className='d-flex gap-4'>
-                        <a href='#' onClick={()=>set_mood_opened(!mood_opened)} className="icon-link text-decoration-none text-reset"><i className={"fa-solid fa-chevron-"+(mood_opened?"up":"down")}></i></a>
+                        <a href='#' onClick={()=>set_mood_opened(!mood_opened)} className="icon-link text-decoration-none text-reset"><i className={"fa-solid fa-chevron-"+(mood_opened?"down":"up")}></i></a>
                         Mood
                         <div className='d-flex flex-row align-items-center gap-2 flex-grow-1'>
                             <i className="fa-solid fa-volume-low"></i>

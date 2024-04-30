@@ -52,15 +52,31 @@ let currently_playing_places = {};
 let fading_out_places = {}; // each place has .howls and .filter
 let mood = {
     mood_name: null,
-    howl: null
+    howl: null,
+    root_url: null,
+    root_volume_mul: 1
 };
 let last_mood_howl = null;
 
 // TODO change the parameters of the newly changed functions to include volume multiplyer
-export function switch_mood_sound(mood_name, sound_urls, volume, previous_url, force_change=false){
+export async function switch_mood_sound(mood_name, sound_urls, volume, previous_url=null, force_change=false){
+    if(volume==null){
+        if(mood.howl!=null){
+            volume = mood.howl.volume()/mood.root_volume_mul; // Removing the previous volume_mul that had been baked in
+        }else{
+            volume = 1;
+        }
+    }
     if(mood.howl!=null){
-        if(mood.mood_name == mood_name && sound_urls.includes(mood.howl._src[0]) && !force_change){
-            mood.howl.volume(volume);
+        let url_is_in = false;
+        for(let url_info of sound_urls){
+            if(url_info.url==mood.root_url){
+                url_is_in = true;
+                break;
+            }
+        }
+        if(mood.mood_name == mood_name && url_is_in && !force_change){
+            mood.howl.volume(volume * mood.root_volume_mul);
             return;
         }
         last_mood_howl = mood.howl;
@@ -73,17 +89,21 @@ export function switch_mood_sound(mood_name, sound_urls, volume, previous_url, f
         if(random_url_info.url == previous_url && sound_urls.length>1){
             random_url_info = sound_urls[(random_index+1)%sound_urls.length];
         }
+        mood.root_url = random_url_info.url;
+        mood.root_volume_mul = random_url_info.volume_mul;
         mood.howl = new Howl({
-            src: [random_url_info.url],
+            src: [await finaliseUrl(random_url_info.url)],
             autoplay: true,
             volume: volume * random_url_info.volume_mul
         });
         mood.howl.on('end', function(){
-            switch_mood_sound(mood_name, sound_urls, volume, previous_url, true)
+            switch_mood_sound(mood_name, sound_urls, null, random_url_info.url, true)
         });
     }else{
         mood.howl = null;
+        mood.root_url = null;
     }
+    console.log(mood_name)
     mood.mood_name = mood_name;
 }
 

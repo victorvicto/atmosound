@@ -3,7 +3,7 @@
 - setup system for seemless loop for longer sounds (a "bend time" in seconds that says how long the blend should be (0 blend time is no blend))
 - Add info tooltips for everything
 - When a transition happens, try to fade from low lowpass filter to high lowpass filter instead of progressively increasing lowpass (requires a new copy of sound and syncing the copy with original (not sure if possible))
-- Find other way than volume multiplier to normaise all sounds or find a way to make it work (volume multiplier commented for now)
+- secretly divide volume_mul by two (a 1 actually means 0.5, and is the default) that way sounds can be made "louder" 
 - make sure every function got adapted to the arrival of weathers and moods (ex: change sound)
 - make sure that audio is updated on every click (especially weather change)
 - utiliser sound_list pour mood? (avec premier sound qui correspond aux circonstances qui joue)
