@@ -225,6 +225,43 @@ async function finaliseUrl(url){
     return url;
 }
 
+function setupHowl(howl, time_before_start, sound_descr, url_info, urls, playing_place, fade_in){
+    let howl_duration = howl.duration()*1000;// in ms
+    let random_forward = 0;
+    if(howl_duration>20){
+        random_forward = Math.random()*howl_duration/4;
+        howl.seek(random_forward/1000); // we divide by four to make sure it is still in first quarter (/1000 -> in seconds)
+    }
+    let time_before_end = howl_duration-random_forward;
+    let time_before_new_sound = time_before_end;
+    if(sound_descr.average_time>0){
+        time_before_new_sound += (Math.random()+0.5)*sound_descr.average_time*1000;
+    } else {
+        time_before_new_sound += sound_descr.average_time*1000;
+        if(time_before_new_sound<howl_duration/2){
+            time_before_new_sound = howl_duration/2;
+        }
+    }
+    setTimeout(()=>{
+        howl._sounds[0]._node.disconnect();
+        // TODO, not sure it works without the i as input index, does it override the 0 index input or does it combine all inputs?
+        //new_howl._sounds[0]._node.connect(playing_place.filter_node, 0, i);
+        howl._sounds[0]._node.connect(playing_place.filter_node);
+        howl.play();
+        howl.fade(0, sound_descr.volume * url_info.volume_mul, fade_in)
+    }, time_before_start);
+    setTimeout(()=>{
+        if(time_before_new_sound<time_before_end){
+            howl.fade(howl.volume(), 0, time_before_end-time_before_new_sound)
+        }
+        createAndAddHowl(urls, playing_place, sound_descr, url_info.url, time_before_end-time_before_new_sound);
+    }, time_before_new_sound);
+    setTimeout(()=>{
+        console.log("unloading after "+time_before_end+" ms")
+        howl.unload();
+    }, time_before_end);
+}
+
 async function createAndAddHowl(urls, playing_place, sound_descr, previous_url=null, fade_in=0){
     let rand_i = Math.floor(Math.random()*urls.length);
     let url_info = urls[rand_i];
@@ -238,52 +275,18 @@ async function createAndAddHowl(urls, playing_place, sound_descr, previous_url=n
         autoplay: false,
         volume: sound_descr.volume * url_info.volume_mul
     });
+    console.log(new_howl.state())
     let time_before_start = 0;
-    if(previous_url==null){
+    if(previous_url==null && sound_descr.average_time>0){
         time_before_start = (Math.random()/2)*sound_descr.average_time*1000;
     }
-    new_howl.on('load', ()=>{
-        let howl_duration = new_howl.duration();
-        let random_forward = 0;
-        if(howl_duration>20){
-            random_forward = Math.random()*howl_duration/4;
-            new_howl.seek(random_forward); // we divide by four to make sure it is still in first quarter
-        }
-        let time_before_end = howl_duration-random_forward;
-        let time_before_new_sound = time_before_end;
-        if(sound_descr.average_time>0){
-            time_before_new_sound += (Math.random()+0.5)*sound_descr.average_time*1000;
-        } else {
-            time_before_new_sound += sound_descr.average_time*1000;
-            if(time_before_new_sound<howl_duration/2){
-                time_before_new_sound = howl_duration/2;
-            }
-        }
-        setTimeout(()=>{
-            new_howl._sounds[0]._node.disconnect();
-            // TODO, not sure it works without the i as input index, does it override the 0 index input or does it combine all inputs?
-            //new_howl._sounds[0]._node.connect(playing_place.filter_node, 0, i);
-            new_howl._sounds[0]._node.connect(playing_place.filter_node);
-            new_howl.play();
-            new_howl.fade(0, sound_descr.volume * url_info.volume_mul, fade_in)
-        }, time_before_start);
-        setTimeout(()=>{
-            if(time_before_new_sound<time_before_end){
-                new_howl.fade(new_howl.volume(), 0, time_before_end-time_before_new_sound)
-            }
-            createAndAddHowl(urls, playing_place, sound_descr, url_info.url);
-        }, time_before_new_sound);
-        setTimeout(()=>{
-            new_howl.unload();
-        }, time_before_end);
-    });
-    // new_howl.on('end', ()=>{
-    //     let time = (Math.random()+0.5)*sound_descr.average_time*1000;
-    //     setTimeout(()=>{
-    //         new_howl.unload();
-    //         createAndAddHowl(urls, playing_place, sound_descr, url_info.url);
-    //     }, time);
-    // });
+    if(new_howl.state()=="loaded"){
+        setupHowl(new_howl, time_before_start, sound_descr, url_info, urls, playing_place, fade_in);
+    } else {
+        new_howl.on('load', ()=>{
+            setupHowl(new_howl, time_before_start, sound_descr, url_info, urls, playing_place, fade_in);
+        });
+    }
     playing_place.howls[sound_descr.name] = new_howl;
 }
 

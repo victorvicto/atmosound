@@ -1,4 +1,4 @@
-- DONE? use on('end') and getSoundUrls to pick a random sound to play next (if same and urls.length>1 -> get next url)
+- REMOVE APPROPRIATE TIMEOUTS WHEN TRANSITIONING AUDIO (keep track of ids of timeouts that start a new one?)
 - create homemade audio preview in soundlist that allows trimming and that plays api urls as well
 - make sure that starting at a random position for long audio files only starts in first half (quarter?) (only starts random if previous sound was different ?)
 - Add images for places (and moods?) the place images each have checks for each biome (like for sounds)
