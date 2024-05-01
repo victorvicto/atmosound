@@ -225,7 +225,7 @@ async function finaliseUrl(url){
     return url;
 }
 
-async function createAndAddHowl(urls, playing_place, sound_descr, previous_url=null){
+async function createAndAddHowl(urls, playing_place, sound_descr, previous_url=null, fade_in=0){
     let rand_i = Math.floor(Math.random()*urls.length);
     let url_info = urls[rand_i];
     if(urls.length>1 && url_info.url==previous_url){
@@ -238,14 +238,26 @@ async function createAndAddHowl(urls, playing_place, sound_descr, previous_url=n
         autoplay: false,
         volume: sound_descr.volume * url_info.volume_mul
     });
-    let time = 0;
+    let time_before_start = 0;
     if(previous_url==null){
-        time = (Math.random()/2)*sound_descr.average_time*1000;
+        time_before_start = (Math.random()/2)*sound_descr.average_time*1000;
     }
     new_howl.on('load', ()=>{
         let howl_duration = new_howl.duration();
+        let random_forward = 0;
         if(howl_duration>20){
-            new_howl.seek(Math.random()*howl_duration);
+            random_forward = Math.random()*howl_duration/4;
+            new_howl.seek(random_forward); // we divide by four to make sure it is still in first quarter
+        }
+        let time_before_end = howl_duration-random_forward;
+        let time_before_new_sound = time_before_end;
+        if(sound_descr.average_time>0){
+            time_before_new_sound += (Math.random()+0.5)*sound_descr.average_time*1000;
+        } else {
+            time_before_new_sound += sound_descr.average_time*1000;
+            if(time_before_new_sound<howl_duration/2){
+                time_before_new_sound = howl_duration/2;
+            }
         }
         setTimeout(()=>{
             new_howl._sounds[0]._node.disconnect();
@@ -253,15 +265,25 @@ async function createAndAddHowl(urls, playing_place, sound_descr, previous_url=n
             //new_howl._sounds[0]._node.connect(playing_place.filter_node, 0, i);
             new_howl._sounds[0]._node.connect(playing_place.filter_node);
             new_howl.play();
-        }, time);
-    });
-    new_howl.on('end', ()=>{
-        let time = (Math.random()+0.5)*sound_descr.average_time*1000;
+            new_howl.fade(0, sound_descr.volume * url_info.volume_mul, fade_in)
+        }, time_before_start);
+        setTimeout(()=>{
+            if(time_before_new_sound<time_before_end){
+                new_howl.fade(new_howl.volume(), 0, time_before_end-time_before_new_sound)
+            }
+            createAndAddHowl(urls, playing_place, sound_descr, url_info.url);
+        }, time_before_new_sound);
         setTimeout(()=>{
             new_howl.unload();
-            createAndAddHowl(urls, playing_place, sound_descr, url_info.url);
-        }, time);
+        }, time_before_end);
     });
+    // new_howl.on('end', ()=>{
+    //     let time = (Math.random()+0.5)*sound_descr.average_time*1000;
+    //     setTimeout(()=>{
+    //         new_howl.unload();
+    //         createAndAddHowl(urls, playing_place, sound_descr, url_info.url);
+    //     }, time);
+    // });
     playing_place.howls[sound_descr.name] = new_howl;
 }
 

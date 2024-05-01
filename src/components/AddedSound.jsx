@@ -46,7 +46,7 @@ function AddedSound({sound, sound_name_correct, changeSound, deleteSound}) {
                 <li className="list-group-item d-flex flex-column gap-2 p-2">
                     <div className="d-flex flex-row justify-content-between align-items-center gap-2">
                         <small>Average time between triggers</small>
-                        <input type='number' className="form-control form-control-sm w-50" value={sound.average_time} onChange={(e)=>changeSound(e, "average_time")} min={0} max={1200}/>
+                        <input type='number' className="form-control form-control-sm w-50" value={sound.average_time} onChange={(e)=>changeSound(e, "average_time")} min={-10} max={1200}/>
                     </div>
                     <div className="d-flex flex-row justify-content-between align-items-center gap-2">
                         <small>Volume</small>
