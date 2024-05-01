@@ -1,8 +1,5 @@
-- REMOVE APPROPRIATE TIMEOUTS WHEN TRANSITIONING AUDIO (keep track of ids of timeouts that start a new one?)
 - create homemade audio preview in soundlist that allows trimming and that plays api urls as well
-- make sure that starting at a random position for long audio files only starts in first half (quarter?) (only starts random if previous sound was different ?)
 - Add images for places (and moods?) the place images each have checks for each biome (like for sounds)
-- setup system for seemless loop for longer sounds (a "bend time" in seconds that says how long the blend should be (0 blend time is no blend))
 - Add info tooltips for everything
 - When a transition happens, try to fade from low lowpass filter to high lowpass filter instead of progressively increasing lowpass (requires a new copy of sound and syncing the copy with original (not sure if possible))
 - better below (secretly divide volume_mul by two (a 1 actually means 0.5, and is the default) that way sounds can be made "louder")
