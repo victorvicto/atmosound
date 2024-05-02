@@ -267,7 +267,18 @@ function MainPage(props) {
             </div>
             <div className='card flex-grow-1'>
                 <div className='card-header small'>
-                    Environment
+                    <div className='d-flex justify-content-between'>
+                        Environment
+                        <button className="btn btn-outline-danger btn-sm"
+                                onClick={()=>{
+                                    let final_places_status = {...props.places_status};
+                                    turnOffAllPlaces(final_places_status);
+                                    transitionAudio(final_places_status);
+                                    props.set_places_status(final_places_status);
+                                }}>
+                            Silence all <i className="fa-solid fa-volume-high"></i>
+                        </button>
+                    </div>
                 </div>
                 <div className='card-body position-relative'>
                     <div className='position-absolute top-0 start-0 bottom-0 end-0 overflow-auto p-2'>
