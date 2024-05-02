@@ -80,8 +80,8 @@ export async function switch_mood_sound(mood_name, sound_urls, volume, previous_
             return;
         }
         last_mood_howl = mood.howl;
-        last_mood_howl.fade(last_mood_howl.volume(), 0, localStorage.getItem("transition_time"));
-        setTimeout(()=>last_mood_howl.unload(), localStorage.getItem("transition_time"));
+        last_mood_howl.fade(last_mood_howl.volume(), 0, localStorage.getItem("short_transition_time"));
+        setTimeout(()=>last_mood_howl.unload(), localStorage.getItem("short_transition_time"));
     }
     if(sound_urls.length>0){
         let random_index = Math.floor(Math.random()*sound_urls.length);
@@ -132,13 +132,13 @@ export function fade_out_place(place_name){
         clearTimeout(timeout_id);
     }
     for(let howl of Object.values(fading_out_places[place_name].howls)){
-        howl.fade(howl.volume(), 0, localStorage.getItem("transition_time"));
-        setTimeout(()=>howl.unload(), localStorage.getItem("transition_time"));
+        howl.fade(howl.volume(), 0, localStorage.getItem("short_transition_time"));
+        setTimeout(()=>howl.unload(), localStorage.getItem("short_transition_time"));
     }
     setTimeout(()=>{
         fading_out_places[place_name].gain_node.disconnect();
         delete fading_out_places[place_name];
-    }, localStorage.getItem("transition_time"));
+    }, localStorage.getItem("short_transition_time"));
 }
 
 function sound_should_be_played(sound_descr){
@@ -373,22 +373,22 @@ export async function start_place(place_name, sounds_list, muffled_amount, place
         currently_playing_places[place_name].filter_node.frequency.setTargetAtTime(
             muffle_amount_to_frequency(muffled_amount), 
             Howler.ctx.currentTime, 
-            localStorage.getItem("transition_time")/1000);
+            localStorage.getItem("short_transition_time")/1000);
         currently_playing_places[place_name].gain_node.gain.setTargetAtTime(
             place_volume, 
             Howler.ctx.currentTime, 
-            localStorage.getItem("transition_time")/1000);
+            localStorage.getItem("short_transition_time")/1000);
         return;
     }
     console.log("starting place", place_name);
     let new_gain_node = Howler.ctx.createGain();
     new_gain_node.gain.value = place_volume;
     // new_gain_node.gain.value = 0;
-    // console.log(localStorage.getItem("transition_time"));
+    // console.log(localStorage.getItem("short_transition_time"));
     // new_gain_node.gain.setTargetAtTime(
     //     place_volume, 
     //     Howler.ctx.currentTime, 
-    //     localStorage.getItem("transition_time")/1000);
+    //     localStorage.getItem("short_transition_time")/1000);
     new_gain_node.connect(Howler.masterGain);
 
     let new_filter_node = Howler.ctx.createBiquadFilter();
@@ -412,6 +412,6 @@ export async function start_place(place_name, sounds_list, muffled_amount, place
         if(!sound_should_be_played(sound_descr)) continue;
         let sound_urls = getSoundUrls(sound_descr.name);
         if(sound_urls.length==0) continue;
-        createAndAddHowl(sound_urls, currently_playing_places[place_name], sound_descr, null, localStorage.getItem("transition_time"));       
+        createAndAddHowl(sound_urls, currently_playing_places[place_name], sound_descr, null, localStorage.getItem("short_transition_time"));       
     }
 }

@@ -15,8 +15,11 @@ import default_setup from "./default_setup.json";
 function App() {
     const[error_message, set_error_message] = useState("");
 
-    if(localStorage.getItem("transition_time")===null){
-        localStorage.setItem("transition_time", 500);
+    if(localStorage.getItem("short_transition_time")===null){
+        localStorage.setItem("short_transition_time", 500);
+    }
+    if(localStorage.getItem("slow_transition_time")===null){
+        localStorage.setItem("slow_transition_time", 60000);
     }
     if(localStorage.getItem("active_biome")===null){
         localStorage.setItem("active_biome", "default");

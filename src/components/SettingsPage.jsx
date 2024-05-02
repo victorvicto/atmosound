@@ -2,7 +2,8 @@ import { useState } from "react";
 
 function SettingsPage() {
     const [freesound_api_key, set_freesound_api_key] = useState(localStorage.getItem("freesound_api_key") || "");
-    const [transition_time, set_transition_time] = useState(localStorage.getItem("transition_time") || 2000);
+    const [short_transition_time, set_short_transition_time] = useState(localStorage.getItem("short_transition_time") || 500);
+    const [slow_transition_time, set_slow_transition_time] = useState(localStorage.getItem("slow_transition_time") || 60000);
     return (
         <>
             <h3>My API keys</h3>
@@ -17,12 +18,21 @@ function SettingsPage() {
             </div>
             <h3>Main page options</h3>
             <div className="d-flex align-items-center gap-2">
-                <p className="m-0">transition speed (in ms): </p>
+                <p className="m-0">short transition time (in ms): </p>
                 <input type="number" className="form-control w-50"
-                        value={transition_time}
+                        value={short_transition_time}
                         onChange={(e)=>{
-                            localStorage.setItem("transition_time", e.target.value);
-                            set_transition_time(e.target.value)}}
+                            localStorage.setItem("short_transition_time", e.target.value);
+                            set_short_transition_time(e.target.value)}}
+                        min={0} max={120000}/>
+            </div>
+            <div className="d-flex align-items-center gap-2">
+                <p className="m-0">slow transition time (in ms): </p>
+                <input type="number" className="form-control w-50"
+                        value={slow_transition_time}
+                        onChange={(e)=>{
+                            localStorage.setItem("slow_transition_time", e.target.value);
+                            set_slow_transition_time(e.target.value)}}
                         min={0} max={120000}/>
             </div>
         </>
