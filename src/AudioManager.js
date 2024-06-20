@@ -232,7 +232,7 @@ async function finaliseUrl(url){
 function setupHowl(howl, time_before_start, sound_descr, url_info, urls, playing_place, fade_in){
     let howl_duration = howl.duration()*1000;// in ms
     let random_forward = 0;
-    if(howl_duration>20){
+    if(howl_duration>20000){
         random_forward = Math.random()*howl_duration/4;
         howl.seek(random_forward/1000); // we divide by four to make sure it is still in first quarter (/1000 -> in seconds)
     }
