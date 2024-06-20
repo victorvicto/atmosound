@@ -94,7 +94,8 @@ export async function switch_mood_sound(mood_name, sound_urls, volume, previous_
         mood.howl = new Howl({
             src: [await finaliseUrl(random_url_info.url)],
             autoplay: true,
-            volume: volume * random_url_info.volume_mul
+            volume: volume * random_url_info.volume_mul,
+            html5: false // allows volume to be higher than 1, but could cause problems
         });
         mood.howl.on('end', function(){
             switch_mood_sound(mood_name, sound_urls, null, random_url_info.url, true)
@@ -277,7 +278,8 @@ async function createAndAddHowl(urls, playing_place, sound_descr, previous_url=n
     let new_howl = new Howl({
         src: [url],
         autoplay: false,
-        volume: sound_descr.volume * url_info.volume_mul
+        volume: sound_descr.volume * url_info.volume_mul,
+        html5: false // allows volume to be higher than 1, but could cause problems
     });
     console.log(new_howl.state())
     let time_before_start = 0;

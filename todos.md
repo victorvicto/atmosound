@@ -21,9 +21,11 @@
 - solving glitch problem
 - solve all sounds problem
 - add transition sound (with "transition" button):
-    - long transition:  - with sound => footsteps (sounds depending on start place and arrival place)
-                        - without sound
-    - short transition: - with sound => (play arrival transition sound of arrival place (and departure sound of leaving place?))
-                        - without sound
+  - long transition: 
+    - with sound => footsteps (sounds depending on start place and arrival place)
+    - without sound
+  - short transition:
+    - with sound => (play arrival transition sound of arrival place (and departure sound of leaving place?))
+    - without sound
 - for long transitions use stereo to fake things moving?
 - clean everything by making classes instead of everything in one big dictionary
