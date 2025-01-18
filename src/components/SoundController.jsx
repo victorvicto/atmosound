@@ -2,7 +2,7 @@ import { useState } from "react";
 
 function SoundController({sound_file, changeSoundFile}) {
 
-    const [sound_loading, set_sound_loading] = useState(false);
+    const [sound_loading, set_sound_loading] = useState(true);
     const [howl, set_howl] = useState(null);
 
     useEffect(() => {
