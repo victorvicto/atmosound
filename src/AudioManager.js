@@ -94,7 +94,8 @@ export async function switch_mood_sound(mood_name, sound_urls, volume, previous_
         mood.howl = new Howl({
             src: [await finaliseUrl(random_url_info.url)],
             autoplay: true,
-            volume: volume * random_url_info.volume_mul
+            volume: volume * random_url_info.volume_mul,
+            html5: false // allows volume to be higher than 1, but could cause problems
         });
         mood.howl.on('end', function(){
             switch_mood_sound(mood_name, sound_urls, null, random_url_info.url, true)
@@ -234,7 +235,7 @@ async function finaliseUrl(url){
 function setupHowl(howl, time_before_start, sound_descr, url_info, urls, playing_place, fade_in){
     let howl_duration = howl.duration()*1000;// in ms
     let random_forward = 0;
-    if(howl_duration>20){
+    if(howl_duration>20000){
         random_forward = Math.random()*howl_duration/4;
         howl.seek(random_forward/1000); // we divide by four to make sure it is still in first quarter (/1000 -> in seconds)
     }
@@ -280,7 +281,8 @@ async function createAndAddHowl(urls, playing_place, sound_descr, previous_url=n
     let new_howl = new Howl({
         src: [url],
         autoplay: false,
-        volume: sound_descr.volume * url_info.volume_mul
+        volume: sound_descr.volume * url_info.volume_mul,
+        html5: false // allows volume to be higher than 1, but could cause problems
     });
     console.log(new_howl.state())
     let time_before_start = 0;

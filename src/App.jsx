@@ -243,7 +243,8 @@ function App() {
                         "sound_files": [
                             {
                                 "url": "https://your-sound.url/here",
-                                "volume_mul": 1
+                                "volume_mul": 1,
+                                "sliced": false
                             }
                         ],
                         "biome_presences": biomes_presence
