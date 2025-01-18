@@ -102,12 +102,12 @@ function MainPage(props) {
 
     function reloadAudio(){
         for(const [place_name, place_status] of Object.entries(props.places_status)){
-            AudioManager.fade_out_place(place_name);
+            AudioManager.fade_out_place(place_name, false);
         }
-        transitionAudio(props.places_status, false);
+        transitionAudio(props.places_status, false, false);
     }
 
-    function transitionAudio(final_places_status, clear_fading_out=true){
+    function transitionAudio(final_places_status, clear_fading_out, slow_transition){
         if(clear_fading_out) AudioManager.clear_fading_out_places();
         for(const [place_name, place_status] of Object.entries(final_places_status)){
             let sounds_list;
@@ -117,12 +117,12 @@ function MainPage(props) {
                 sounds_list = props.places[place_name].sounds_list;
             }
             if(place_status.state=="off"){
-                if(clear_fading_out) AudioManager.fade_out_place(place_name);
+                if(clear_fading_out) AudioManager.fade_out_place(place_name, slow_transition);
             } else if(place_status.state=="on"){
-                AudioManager.start_place(place_name, sounds_list, 0, 1, getSoundUrls);
+                AudioManager.start_place(place_name, sounds_list, 0, 1, getSoundUrls, slow_transition);
             } else if(place_status.state=="muffled"){
                 AudioManager.start_place(place_name, sounds_list, 
-                    place_status.muffle_amount, place_status.volume, getSoundUrls);
+                    place_status.muffle_amount, place_status.volume, getSoundUrls, slow_transition);
             }
         }
         updateMoodAudio();
@@ -134,7 +134,7 @@ function MainPage(props) {
         }
     }
 
-    function switchState(place_name, new_state){
+    function switchState(place_name, new_state, slow_transition){
         let final_places_status = {...props.places_status};
         if(props.places_status[place_name].state==new_state){
             final_places_status[place_name].state = "off";
@@ -151,14 +151,14 @@ function MainPage(props) {
             }
             final_places_status[place_name].state = new_state;
         }
-        transitionAudio(final_places_status);
+        transitionAudio(final_places_status, true, slow_transition);
         props.set_places_status(final_places_status);
     }
 
     function modifyPlacesStatus(event, place_name, property){
         let new_places_status = {...props.places_status};
         new_places_status[place_name][property] = event.target.value;
-        transitionAudio(new_places_status);
+        transitionAudio(new_places_status, false, false);
         props.set_places_status(new_places_status);
     }
 
@@ -173,7 +173,7 @@ function MainPage(props) {
                         place_name={place_name}
                         place_status={props.places_status[place_name]}
                         modify_status={(e, property)=>modifyPlacesStatus(e, place_name, property)}
-                        switchStatus={(new_status)=>{switchState(place_name, new_status)}}
+                        switchStatus={(new_status, slow_transition)=>{switchState(place_name, new_status, slow_transition)}}
                         open_place_editor={()=>{
                             set_edited_place_name(place_name);
                         }}/>
@@ -286,7 +286,7 @@ function MainPage(props) {
                                         current_weather={current_weather}
                                         set_current_weather={set_current_weather}
                                         status={props.places_status["weather"]}
-                                        switchStatus={(new_status)=>{switchState("weather", new_status)}}
+                                        switchStatus={(new_status, slow_transition)=>{switchState("weather", new_status, slow_transition)}}
                                         modify_status={(e, property)=>modifyPlacesStatus(e, "weather", property)}
                                         set_edited_weather_name={(edited_weather_name)=>{set_edited_weather_name(edited_weather_name);set_right_editor_mode("weather")}}
                                         addWeather={()=>{

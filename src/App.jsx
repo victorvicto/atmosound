@@ -285,7 +285,7 @@ function App() {
         for(let sound_pack_name in new_sounds[new_sound_name].sound_packs){
             if(Object.keys(new_sounds[new_sound_name].sound_packs[sound_pack_name].biome_presences).length==0){
                 for(let biome in biomes){
-                    sound_pack.biome_presences[biome] = false;
+                    new_sounds[new_sound_name].sound_packs[sound_pack_name].biome_presences[biome] = false;
                 }
             }
         }

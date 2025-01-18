@@ -35,11 +35,17 @@ function PlaceBadge({place_name, place_status, modify_status, switchStatus, open
                 <h5 className={"card-title mb-0 text-capitalize text-"+scheme}>
                     <a onClick={open_place_editor} href="#" className='text-reset'>{place_name}</a>
                 </h5>
-                <button onClick={()=>{switchStatus("on")}}
-                    className={'btn btn'+(place_status.state=='on'?'':'-outline')+'-danger btn-sm border-2'}>
-                    <i className="fa-solid fa-volume-high"></i>
-                </button>
-                <button onClick={()=>{switchStatus("muffled")}}
+                <div className='btn-group' role='group'>
+                    <button onClick={()=>{switchStatus("on", false)}}
+                        className={'btn btn'+(place_status.state=='on'?'':'-outline')+'-danger btn-sm border-2'}>
+                        <i class="fa-solid fa-bolt"></i>
+                    </button>
+                    <button onClick={()=>{switchStatus("on", true)}}
+                        className={'btn btn'+(place_status.state=='on'?'':'-outline')+'-danger btn-sm border-2'}>
+                        🐌
+                    </button>
+                </div>
+                <button onClick={()=>{switchStatus("muffled", false)}}
                     className={'btn btn'+(place_status.state=='muffled'?'':'-outline')+'-success btn-sm'}>
                     <i className="fa-solid fa-volume-low"></i>
                 </button>

@@ -123,8 +123,11 @@ function muffle_amount_to_frequency(muffle_amount){
     return max_freq*((1-muffle_amount)**3);
 }
 
-export function fade_out_place(place_name){
+// TODO: what happens if the transition time is longer than the current howl? Will the next howl be unloaded?
+export function fade_out_place(place_name, slow_transition){
     if(!(place_name in currently_playing_places)) return;
+
+    let transition_time = slow_transition?localStorage.getItem("slow_transition_time"):localStorage.getItem("short_transition_time");
 
     fading_out_places[place_name] = currently_playing_places[place_name];
     delete currently_playing_places[place_name];
@@ -132,13 +135,13 @@ export function fade_out_place(place_name){
         clearTimeout(timeout_id);
     }
     for(let howl of Object.values(fading_out_places[place_name].howls)){
-        howl.fade(howl.volume(), 0, localStorage.getItem("short_transition_time"));
-        setTimeout(()=>howl.unload(), localStorage.getItem("short_transition_time"));
+        howl.fade(howl.volume(), 0, transition_time);
+        setTimeout(()=>howl.unload(),  transition_time);
     }
     setTimeout(()=>{
         fading_out_places[place_name].gain_node.disconnect();
         delete fading_out_places[place_name];
-    }, localStorage.getItem("short_transition_time"));
+    }, transition_time);
 }
 
 function sound_should_be_played(sound_descr){
@@ -366,18 +369,21 @@ async function createAndAddHowl(urls, playing_place, sound_descr, previous_url=n
 // }
 
 // TODO, log to see why youtube makes no sound
-export async function start_place(place_name, sounds_list, muffled_amount, place_volume, getSoundUrls){
+export async function start_place(place_name, sounds_list, muffled_amount, place_volume, getSoundUrls, slow_transition){
     if (sounds_list.length==0) return;
+
+    let transition_time = slow_transition?localStorage.getItem("slow_transition_time"):localStorage.getItem("short_transition_time");
+
     if(place_name in currently_playing_places){
         console.log("already playing place", place_name);
         currently_playing_places[place_name].filter_node.frequency.setTargetAtTime(
             muffle_amount_to_frequency(muffled_amount), 
             Howler.ctx.currentTime, 
-            localStorage.getItem("short_transition_time")/1000);
+            transition_time/1000);
         currently_playing_places[place_name].gain_node.gain.setTargetAtTime(
             place_volume, 
             Howler.ctx.currentTime, 
-            localStorage.getItem("short_transition_time")/1000);
+            transition_time/1000);
         return;
     }
     console.log("starting place", place_name);
@@ -412,6 +418,6 @@ export async function start_place(place_name, sounds_list, muffled_amount, place
         if(!sound_should_be_played(sound_descr)) continue;
         let sound_urls = getSoundUrls(sound_descr.name);
         if(sound_urls.length==0) continue;
-        createAndAddHowl(sound_urls, currently_playing_places[place_name], sound_descr, null, localStorage.getItem("short_transition_time"));       
+        createAndAddHowl(sound_urls, currently_playing_places[place_name], sound_descr, null, transition_time);       
     }
 }
