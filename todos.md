@@ -1,3 +1,10 @@
+- BIG CLEANUP:
+
+  - Use context api or redux for state instead of passing it as props for infinity
+  - Use useEffect to automatically update localStorage
+  - Use reduce/redux to add all the security checks on the new state before it is actually saved (solves global state as well!)
+  - Use immer to make dictionary state updates cleaner and more concise (without needing to do deep copies each time)
+
 - Eviter de créer nouveau howl pour un son qui recommence (serait-ce plus optimal?) juste recommencer même howl (ne fonctionne que si le temps entre les sons est positif (negatif=overlap->nécessite 2 howls))
 - Make a single function for creating howls and add a gain node there
 - allow to make sound families (with potential filter to just see some families)
@@ -6,7 +13,7 @@
 - Add images for places (and moods?) the place images each have checks for each biome (like for sounds)
 - Add info tooltips for everything
 - When a transition happens, try to fade from low lowpass filter to high lowpass filter instead of progressively increasing lowpass (requires a new copy of sound and syncing the copy with original (not sure if possible))
-(- better below (secretly divide volume_mul by two (a 1 actually means 0.5, and is the default) that way sounds can be made "louder")
+  (- better below (secretly divide volume_mul by two (a 1 actually means 0.5, and is the default) that way sounds can be made "louder")
 - make all howls go through a gain filter that has a gain equal to the sound's volume_mul) supposedly not necessary since I removed html5
 - make sure every function got adapted to the arrival of weathers and moods (ex: change sound)
 - make sure that audio is updated on every click (especially weather change)
@@ -23,7 +30,7 @@
 - solving glitch problem
 - solve all sounds problem
 - add transition sound (with "transition" button):
-  - long transition: 
+  - long transition:
     - with sound => footsteps (sounds depending on start place and arrival place)
     - without sound
   - short transition:
