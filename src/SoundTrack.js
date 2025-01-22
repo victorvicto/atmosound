@@ -1,5 +1,6 @@
 import SoundPlayer from './SoundPlayer.js';
 
+// TODO: manage negative average delays (overlaps)
 class SoundTrack {
     constructor(soundName, averageDelay, volume, outputNode){
         this.averageDelay = averageDelay;
