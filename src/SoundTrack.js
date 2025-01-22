@@ -49,4 +49,10 @@ class SoundTrack {
         }
         return fileInfo;
     }
+
+    destruct(){
+        clearTimeout(this.nextMission);
+        this.currentlyPlaying.destruct();
+        this.gainNode.disconnect();
+    }
 }
