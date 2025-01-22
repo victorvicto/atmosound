@@ -15,10 +15,19 @@ class SoundPlayer {
         });
         howl._sounds[0]._node.disconnect();
         howl._sounds[0]._node.connect(this.gainNode);
+        
+        this.howl.on('end', function(){
+            this.destruct();
+        });
     }
 
     play(){
         this.howl.play();
+    }
+
+    destruct(){
+        this.howl.unload();
+        this.gainNode.disconnect();
     }
 
     async finaliseUrl(url){
