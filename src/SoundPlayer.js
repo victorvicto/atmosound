@@ -1,10 +1,10 @@
 import {Howl, Howler} from 'howler';
 
-class SoundPlayer {
+export default class SoundPlayer {
     constructor(url, volume, outputNode){
         
         this.gainNode = Howler.ctx.createGain();
-        gainNode.gain.value = volume;
+        this.gainNode.gain.value = volume;
         this.gainNode.connect(outputNode);
 
         this.final_url = this.finaliseUrl(url);
@@ -13,8 +13,8 @@ class SoundPlayer {
             autoplay: false,
             volume: 1,
         });
-        howl._sounds[0]._node.disconnect();
-        howl._sounds[0]._node.connect(this.gainNode);
+        this.howl._sounds[0]._node.disconnect();
+        this.howl._sounds[0]._node.connect(this.gainNode);
         
         this.howl.on('end', function(){
             this.destruct();

@@ -1,23 +1,29 @@
 import SoundPlayer from './SoundPlayer.js';
 
 // TODO: manage negative average delays (overlaps)
-class SoundTrack {
+export default class SoundTrack {
     constructor(soundName, averageDelay, volume, outputNode){
+        this.soundName = soundName;
         this.averageDelay = averageDelay;
         this.gainNode = Howler.ctx.createGain();
-        gainNode.gain.value = volume;
+        this.gainNode.gain.value = volume;
         this.gainNode.connect(outputNode);
         this.currentlyPlaying = null;
         this.nextMission = null;
-        this.soundInfo = JSON.parse(localStorage.getItem('sounds'))[soundName]; //TODO change this to context manager once ready
-        this.fileInfos = this.getFileInfos();
+        if(soundName==null){
+            this.soundInfo = null;
+            this.fileInfos = [];
+        }else{
+            this.soundInfo = JSON.parse(localStorage.getItem('sounds'))[soundName]; //TODO change this to context manager once ready
+            this.fileInfos = this.getFileInfos();
+        }
     }
 
     getFileInfos(){
         let fileInfos = [];
         for(let sound_pack_name in this.soundInfo.sound_packs){
-            if(soundInfo.sound_packs[sound_pack_name].biome_presences[localStorage.getItem("active_biome")]){
-                for(let sound_file of soundInfo.sound_packs[sound_pack_name].sound_files){
+            if(this.soundInfo.sound_packs[sound_pack_name].biome_presences[localStorage.getItem("active_biome")]){
+                for(let sound_file of this.soundInfo.sound_packs[sound_pack_name].sound_files){
                     fileInfos.push({url:sound_file.url, volume_mul:sound_file.volume_mul});
                 }
             }
@@ -26,9 +32,13 @@ class SoundTrack {
     }
 
     start(){
+        if(this.fileInfos.length==0){
+            console.log("No sound files available for this sound track");
+            return;
+        }
         let firstDelay = Math.random()*this.averageDelay*1000/2;
         this.nextMission = setTimeout(()=>{
-            doMission(null);
+            this.doMission(null);
         }, firstDelay);
     }
 
@@ -51,9 +61,21 @@ class SoundTrack {
         return fileInfo;
     }
 
+    changeVolume(newVolume, time){
+        this.gainNode.gain.setTargetAtTime(newVolume, Howler.ctx.currentTime, time);
+    }
+
+    slowKill(time){
+        this.gainNode.gain.setTargetAtTime(0, Howler.ctx.currentTime, time);
+        setTimeout(()=>{
+            this.destruct();
+        }, time);
+    }
+
     destruct(){
         clearTimeout(this.nextMission);
-        this.currentlyPlaying.destruct();
+        if(this.currentlyPlaying!=null)
+            this.currentlyPlaying.destruct();
         this.gainNode.disconnect();
     }
 }

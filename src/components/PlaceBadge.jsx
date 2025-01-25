@@ -36,16 +36,16 @@ function PlaceBadge({place_name, place_status, modify_status, switchStatus, open
                     <a onClick={open_place_editor} href="#" className='text-reset'>{place_name}</a>
                 </h5>
                 <div className='btn-group' role='group'>
-                    <button onClick={()=>{switchStatus("on", false)}}
+                    <button onClick={()=>{switchStatus("on", localStorage.getItem('short_transition_time'))}}
                         className={'btn btn'+(place_status.state=='on'?'':'-outline')+'-danger btn-sm border-2'}>
-                        <i class="fa-solid fa-bolt"></i>
+                        <i className="fa-solid fa-bolt"></i>
                     </button>
-                    <button onClick={()=>{switchStatus("on", true)}}
+                    <button onClick={()=>{switchStatus("on", localStorage.getItem('slow_transition_time'))}}
                         className={'btn btn'+(place_status.state=='on'?'':'-outline')+'-danger btn-sm border-2'}>
                         🐌
                     </button>
                 </div>
-                <button onClick={()=>{switchStatus("muffled", false)}}
+                <button onClick={()=>{switchStatus("muffled", localStorage.getItem('short_transition_time'))}}
                     className={'btn btn'+(place_status.state=='muffled'?'':'-outline')+'-success btn-sm'}>
                     <i className="fa-solid fa-volume-low"></i>
                 </button>

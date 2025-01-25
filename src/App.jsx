@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'jquery/dist/jquery.min.js'
 import 'bootstrap/dist/js/bootstrap.min.js'
 
-import * as AudioManager from "./AudioManager";
+import AudioManager from './AudioManager.js';
 
 import MainPage from './components/MainPage.jsx';
 import SoundsLibPage from './components/SoundsLibPage.jsx';
@@ -98,6 +98,8 @@ function App() {
     const [moods, set_moods] = useState(initialiseMoods);
     const [audio_context_started, set_audio_context_started] = useState(false);
     const [need_upload, set_need_upload] = useState(false);
+
+    const audioManager = new AudioManager();
 
     function addPlace(){
         let new_place_name = "new";
@@ -740,7 +742,9 @@ function App() {
             </div>
         <div className="tab-content flex-grow-1">
             <div className="tab-pane fade show active p-2 p-md-3 h-100" id="main-page" role="tabpanel">
-                {audio_context_started && <MainPage places={places}
+                {audio_context_started && <MainPage 
+                            audioManager={audioManager}
+                            places={places}
                             sounds={sounds} 
                             biomes={biomes}
                             weathers={weathers}
@@ -762,7 +766,7 @@ function App() {
                         <button type="button" className='btn btn-primary btn-lg m-5 shadow shadow-md'
                                 onClick={()=>{
                                     set_audio_context_started(true);
-                                    AudioManager.startAudioContext();
+                                    audioManager.startAudioContext();
                                     }}>
                                     Activate audio context
                         </button>

@@ -1,26 +1,30 @@
-import {SoundTrack} from './SoundTrack.js';
+import SoundTrack from './SoundTrack.js';
 import {Howler} from 'howler';
 
 // Place SoundTrack Manager
-class PlaceSTM {
+export default class PlaceSTM {
     constructor(placeName, lowpassFreq, outputNode){
+        this.placeName = placeName;
         this.gainNode = Howler.ctx.createGain();
         this.gainNode.gain.value = 0;
         this.gainNode.connect(outputNode);
         this.lowpassNode = Howler.ctx.createBiquadFilter();
         this.lowpassNode.type = "lowpass";
         this.lowpassNode.frequency.value = lowpassFreq;
-        new_filter_node.Q.value = 0.707;
+        this.lowpassNode.Q.value = 0.707;
         this.lowpassNode.connect(this.gainNode);
 
         this.placeInfo = JSON.parse(localStorage.getItem('places'))[placeName]; //TODO change this to context manager once
+        if(this.placeInfo==null){
+            this.placeInfo = JSON.parse(localStorage.getItem('weathers'))[placeName];
+        }
 
         this.soundTracks = {};
-        setupSoundTracks();
+        this.setupSoundTracks();
     }
 
     setupSoundTracks(){
-        let soundTracksInfo = this.placeInfo['sound_list'];
+        let soundTracksInfo = this.placeInfo['sounds_list'];
         for(let soundTrackInfo of soundTracksInfo){
             this.soundTracks[soundTrackInfo.name] = new SoundTrack( soundTrackInfo.name,
                                                                     soundTrackInfo.average_time,
@@ -30,14 +34,14 @@ class PlaceSTM {
     }
 
     start(){
-        for(let soundTrack of this.soundTracks){
+        for(let [soundName, soundTrack] of Object.entries(this.soundTracks)){
             soundTrack.start();
         }
     }
 
     cleanUp(time){
         setTimeout(()=>{
-            for(let soundTrack of this.soundTracks){
+            for(let [soundName, soundTrack] of Object.entries(this.soundTracks)){
                 soundTrack.destruct();
             }
             this.lowpassNode.disconnect();

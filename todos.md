@@ -1,5 +1,12 @@
 - BIG CLEANUP:
 
+  -check if with new setup audio is not cut too fast without the fading out places
+
+  - EVERYTHING CHANGES:
+    - Adjacent places instead of muffled places
+    - Just one activePlace in global status context
+    - no audio manager, places and moods are components in place badges
+    - the state of each badge is stored in the main context so functions that modify state like switchState, changeSound, etc does not have to be transmitted through props
   - Use context api or redux for state instead of passing it as props for infinity
   - Use useEffect to automatically update localStorage
   - Use reduce/redux to add all the security checks on the new state before it is actually saved (solves global state as well!)

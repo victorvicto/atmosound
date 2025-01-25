@@ -1,7 +1,5 @@
 import { useState } from 'react'
 
-import * as AudioManager from "../AudioManager";
-
 import PlaceBadge from './PlaceBadge.jsx';
 import PlaceEditor from './PlaceEditor.jsx';
 import WeatherBadge from './WeatherBadge.jsx';
@@ -68,64 +66,36 @@ function MainPage(props) {
     const [mood_volume, set_mood_volume] = useState(instantiateMoodVolume);
     const [has_been_started, set_has_been_started] = useState(false);
 
-    function getSoundUrls(sound_name){
-        let urls = [];
-        for(let sound_pack_name in props.sounds[sound_name].sound_packs){
-            if(props.sounds[sound_name].sound_packs[sound_pack_name].biome_presences[localStorage.getItem("active_biome")]){
-                for(let sound_file of props.sounds[sound_name].sound_packs[sound_pack_name].sound_files){
-                    urls.push({url:sound_file.url, volume_mul:sound_file.volume_mul});
-                }
-            }
-        }
-        return urls;
-    }
+    // function getSoundUrls(sound_name){
+    //     let urls = [];
+    //     for(let sound_pack_name in props.sounds[sound_name].sound_packs){
+    //         if(props.sounds[sound_name].sound_packs[sound_pack_name].biome_presences[localStorage.getItem("active_biome")]){
+    //             for(let sound_file of props.sounds[sound_name].sound_packs[sound_pack_name].sound_files){
+    //                 urls.push({url:sound_file.url, volume_mul:sound_file.volume_mul});
+    //             }
+    //         }
+    //     }
+    //     return urls;
+    // }
 
     function updateMoodAudio(){
-        let mood_name = localStorage.getItem("current_mood");
-        let sound_name = props.moods[mood_name].sound;
-        for(const [place_name, place_status] of Object.entries(props.places_status)){
-            if(place_status.state=="on"){
-                if(mood_name in props.places[place_name].mood_overrides){
-                    sound_name = props.places[place_name].mood_overrides[mood_name];
-                    console.log("overriding mood sound");
-                    break;
-                }
-            }
-        }
-        if(sound_name!=null){
-            AudioManager.switch_mood_sound(mood_name, getSoundUrls(sound_name), localStorage.getItem("mood_volume"));
-        }else{
-            AudioManager.switch_mood_sound(mood_name, [], localStorage.getItem("mood_volume"));
-        }
-
+        props.audioManager.startMood(mood_name, localStorage.getItem("mood_volume"));
     }
 
     function reloadAudio(){
-        for(const [place_name, place_status] of Object.entries(props.places_status)){
-            AudioManager.fade_out_place(place_name, false);
-        }
-        transitionAudio(props.places_status, false, false);
+        props.audioManager.refresh(localStorage.getItem('short_transition_time'));
     }
 
-    function transitionAudio(final_places_status, clear_fading_out, slow_transition){
-        if(clear_fading_out) AudioManager.clear_fading_out_places();
+    function transitionAudio(final_places_status, transitionTime){
         for(const [place_name, place_status] of Object.entries(final_places_status)){
-            let sounds_list;
-            if(place_name=="weather"){
-                sounds_list = props.weathers[current_weather].sounds_list;
-            } else {
-                sounds_list = props.places[place_name].sounds_list;
-            }
             if(place_status.state=="off"){
-                if(clear_fading_out) AudioManager.fade_out_place(place_name, slow_transition);
+                props.audioManager.stopPlace(place_name, transitionTime);
             } else if(place_status.state=="on"){
-                AudioManager.start_place(place_name, sounds_list, 0, 1, getSoundUrls, slow_transition);
+                props.audioManager.startPlace(place_name, 1, 0, transitionTime);
             } else if(place_status.state=="muffled"){
-                AudioManager.start_place(place_name, sounds_list, 
-                    place_status.muffle_amount, place_status.volume, getSoundUrls, slow_transition);
+                props.audioManager.startPlace(place_name, place_status.volume, place_status.muffle_amount, transitionTime);
             }
         }
-        updateMoodAudio();
     }
     
     function turnOffAllPlaces(final_places_status){
@@ -134,7 +104,7 @@ function MainPage(props) {
         }
     }
 
-    function switchState(place_name, new_state, slow_transition){
+    function switchState(place_name, new_state, transitionTime){
         let final_places_status = {...props.places_status};
         if(props.places_status[place_name].state==new_state){
             final_places_status[place_name].state = "off";
@@ -151,14 +121,14 @@ function MainPage(props) {
             }
             final_places_status[place_name].state = new_state;
         }
-        transitionAudio(final_places_status, true, slow_transition);
+        transitionAudio(final_places_status, transitionTime);
         props.set_places_status(final_places_status);
     }
 
     function modifyPlacesStatus(event, place_name, property){
         let new_places_status = {...props.places_status};
         new_places_status[place_name][property] = event.target.value;
-        transitionAudio(new_places_status, false, false);
+        transitionAudio(new_places_status, localStorage.getItem('short_transition_time'));
         props.set_places_status(new_places_status);
     }
 
@@ -173,7 +143,7 @@ function MainPage(props) {
                         place_name={place_name}
                         place_status={props.places_status[place_name]}
                         modify_status={(e, property)=>modifyPlacesStatus(e, place_name, property)}
-                        switchStatus={(new_status, slow_transition)=>{switchState(place_name, new_status, slow_transition)}}
+                        switchStatus={(new_status, transitionTime)=>{switchState(place_name, new_status, transitionTime)}}
                         open_place_editor={()=>{
                             set_edited_place_name(place_name);
                         }}/>
@@ -286,7 +256,7 @@ function MainPage(props) {
                                         current_weather={current_weather}
                                         set_current_weather={set_current_weather}
                                         status={props.places_status["weather"]}
-                                        switchStatus={(new_status, slow_transition)=>{switchState("weather", new_status, slow_transition)}}
+                                        switchStatus={(new_status, transitionTime)=>{switchState("weather", new_status, transitionTime)}}
                                         modify_status={(e, property)=>modifyPlacesStatus(e, "weather", property)}
                                         set_edited_weather_name={(edited_weather_name)=>{set_edited_weather_name(edited_weather_name);set_right_editor_mode("weather")}}
                                         addWeather={()=>{

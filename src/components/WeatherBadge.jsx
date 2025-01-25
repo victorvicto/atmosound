@@ -69,7 +69,7 @@ function WeatherBadge({ weathers, current_weather, set_current_weather, status, 
                         <small className="fs-5 ms-3">(selected: {current_weather})</small>
                     </h2>
                     <div className="d-flex gap-2">
-                        <button onClick={()=>{switchStatus("muffled")}}
+                        <button onClick={()=>{switchStatus("muffled", localStorage.getItem('short_transition_time'))}}
                             className={'btn btn'+(status.state=='muffled'?'-success':'-outline-success bg-light')+' btn-sm'}>
                             <i className="fa-solid fa-volume-high"></i>
                         </button>
