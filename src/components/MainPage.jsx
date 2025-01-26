@@ -328,6 +328,7 @@ function MainPage(props) {
                                     props.deleteWeather(weather_name);
                                     if(current_weather==weather_name){
                                         set_current_weather("none");
+                                        localStorage.setItem("current_weather", "none");
                                     }
                                 }}
                                 sounds={props.sounds}

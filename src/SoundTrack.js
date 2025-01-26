@@ -3,6 +3,7 @@ import SoundPlayer from './SoundPlayer.js';
 // TODO: manage negative average delays (overlaps)
 export default class SoundTrack {
     constructor(soundName, averageDelay, volume, outputNode){
+        console.log("SoundTrack created for "+soundName);
         this.soundName = soundName;
         this.averageDelay = averageDelay;
         this.gainNode = Howler.ctx.createGain();
@@ -44,12 +45,14 @@ export default class SoundTrack {
 
     doMission(prevUrl){
         let fileInfo = this.pickFileInfo(prevUrl);
-        this.currentlyPlaying = new SoundPlayer(fileInfo.url, fileInfo.volume, this.gainNode);
+        this.currentlyPlaying = new SoundPlayer(fileInfo.url, fileInfo.volume_mul, this.gainNode);
+        this.currentlyPlaying.doSomethingOnceLoeaded(()=>{
+            let nextDelay = 1000 * (this.currentlyPlaying.howl.duration() + (Math.random()+0.5) * this.averageDelay);
+            this.nextMission = setTimeout(()=>{
+                this.doMission(fileInfo.url);
+            }, nextDelay);
+        });
         this.currentlyPlaying.play();
-        let nextDelay = 1000 * (this.currentlyPlaying.howl.duration() + (Math.random()+0.5) * this.averageDelay);
-        this.nextMission = setTimeout(()=>{
-            this.doMission(fileInfo.url);
-        }, nextDelay);
     }
 
     pickFileInfo(prevUrl){
@@ -62,11 +65,11 @@ export default class SoundTrack {
     }
 
     changeVolume(newVolume, time){
-        this.gainNode.gain.setTargetAtTime(newVolume, Howler.ctx.currentTime, time);
+        this.gainNode.gain.setTargetAtTime(newVolume, Howler.ctx.currentTime, time/1000);
     }
 
     slowKill(time){
-        this.gainNode.gain.setTargetAtTime(0, Howler.ctx.currentTime, time);
+        this.gainNode.gain.setTargetAtTime(0, Howler.ctx.currentTime, time/1000);
         setTimeout(()=>{
             this.destruct();
         }, time);

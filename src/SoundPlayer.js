@@ -2,7 +2,7 @@ import {Howl, Howler} from 'howler';
 
 export default class SoundPlayer {
     constructor(url, volume, outputNode){
-        
+        console.log("SoundPlayer created for "+url);
         this.gainNode = Howler.ctx.createGain();
         this.gainNode.gain.value = volume;
         this.gainNode.connect(outputNode);
@@ -16,13 +16,25 @@ export default class SoundPlayer {
         this.howl._sounds[0]._node.disconnect();
         this.howl._sounds[0]._node.connect(this.gainNode);
         
-        this.howl.on('end', function(){
+        this.howl.on('end', ()=>{
+            console.log("Destructing "+this.final_url);
             this.destruct();
         });
     }
 
     play(){
+        console.log("Playing "+this.final_url);
         this.howl.play();
+    }
+
+    doSomethingOnceLoeaded(something){
+        if(this.howl.state()=="loaded"){
+            something();
+        } else {
+            this.howl.on('load', ()=>{
+                something();
+            });
+        }
     }
 
     destruct(){

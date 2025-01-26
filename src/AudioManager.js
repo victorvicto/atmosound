@@ -27,6 +27,9 @@ export default class AudioManager {
     }
 
     getPlaceMoodOverride(placeName){
+        if(placeName=="weather"){
+            return null;
+        }
         let moodName = localStorage.getItem('current_mood');
         let places = JSON.parse(localStorage.getItem('places'));
         if(moodName in places[placeName].mood_overrides){
@@ -49,6 +52,8 @@ export default class AudioManager {
         this.places[placeName].transitionVolume(volume, transitionTime);
         this.places[placeName].transitionLowpass(lowpassFreq, transitionTime);
 
+        console.log(this.places);
+
         // Switching mood if override doesn't match current mood
         let moodOverride = this.getPlaceMoodOverride(placeName);
         if(moodOverride!=null && moodOverride!=this.moodSoundTrack.soundName){
@@ -57,14 +62,18 @@ export default class AudioManager {
     }
 
     stopPlace(placeName, transitionTime){
+        console.log("stopping "+placeName);
+        console.log(this.places); // TODO: WHY IS THIS EMPTY WHEN TRYING TO TURN OFF A PLACE??
         if(this.places[placeName]==null){
             return;
         }
+
         this.places[placeName].cleanUp(transitionTime);
         delete this.places[placeName];
     }
 
     stopAllPlaces(transitionTime){
+        console.log("stopping all places");
         for(let placeName in this.places){
             this.stopPlace(placeName, transitionTime);
         }

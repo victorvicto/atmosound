@@ -4,6 +4,7 @@ import {Howler} from 'howler';
 // Place SoundTrack Manager
 export default class PlaceSTM {
     constructor(placeName, lowpassFreq, outputNode){
+        console.log("PlaceSTM created for "+placeName);
         this.placeName = placeName;
         this.gainNode = Howler.ctx.createGain();
         this.gainNode.gain.value = 0;
@@ -14,9 +15,10 @@ export default class PlaceSTM {
         this.lowpassNode.Q.value = 0.707;
         this.lowpassNode.connect(this.gainNode);
 
-        this.placeInfo = JSON.parse(localStorage.getItem('places'))[placeName]; //TODO change this to context manager once
-        if(this.placeInfo==null){
-            this.placeInfo = JSON.parse(localStorage.getItem('weathers'))[placeName];
+        if(placeName=="weather"){
+            this.placeInfo = JSON.parse(localStorage.getItem('weathers'))[localStorage.getItem('current_weather')];
+        }else{
+            this.placeInfo = JSON.parse(localStorage.getItem('places'))[placeName]; //TODO change this to context manager once
         }
 
         this.soundTracks = {};
@@ -40,21 +42,23 @@ export default class PlaceSTM {
     }
 
     cleanUp(time){
+        console.log("starting cleaning up "+this.placeName);
         setTimeout(()=>{
             for(let [soundName, soundTrack] of Object.entries(this.soundTracks)){
                 soundTrack.destruct();
             }
             this.lowpassNode.disconnect();
             this.gainNode.disconnect();
+            console.log("clean up over, destroyed "+this.placeName);
         }, time);
         this.transitionVolume(0, time);
     }
 
     transitionVolume(newVolume, time){
-        this.gainNode.gain.setTargetAtTime(newVolume, Howler.ctx.currentTime, time);
+        this.gainNode.gain.setTargetAtTime(newVolume, Howler.ctx.currentTime, time/1000);
     }
 
     transitionLowpass(newFreq, time){
-        this.lowpassNode.frequency.setTargetAtTime(newFreq, Howler.ctx.currentTime, time);
+        this.lowpassNode.frequency.setTargetAtTime(newFreq, Howler.ctx.currentTime, time/1000);
     }
 }
