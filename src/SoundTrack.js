@@ -46,13 +46,13 @@ export default class SoundTrack {
     doMission(prevUrl){
         let fileInfo = this.pickFileInfo(prevUrl);
         this.currentlyPlaying = new SoundPlayer(fileInfo.url, fileInfo.volume_mul, this.gainNode);
-        this.currentlyPlaying.doSomethingOnceLoeaded(()=>{
+        this.currentlyPlaying.doSomethingOnceLoaded(()=>{
             let nextDelay = 1000 * (this.currentlyPlaying.howl.duration() + (Math.random()+0.5) * this.averageDelay);
             this.nextMission = setTimeout(()=>{
                 this.doMission(fileInfo.url);
             }, nextDelay);
+            this.currentlyPlaying.play();
         });
-        this.currentlyPlaying.play();
     }
 
     pickFileInfo(prevUrl){

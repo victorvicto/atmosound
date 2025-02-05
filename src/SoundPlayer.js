@@ -6,10 +6,15 @@ export default class SoundPlayer {
         this.gainNode = Howler.ctx.createGain();
         this.gainNode.gain.value = volume;
         this.gainNode.connect(outputNode);
+        this.wasPrepped = false;
+        this.todoOnceLoaded = null;
+        this.prep(url);
+    }
 
-        this.final_url = this.finaliseUrl(url);
+    async prep(url){
+        this.final_url = await this.finaliseUrl(url);
         this.howl = new Howl({
-            src: [url],
+            src: [this.final_url],
             autoplay: false,
             volume: 1,
         });
@@ -20,6 +25,10 @@ export default class SoundPlayer {
             console.log("Destructing "+this.final_url);
             this.destruct();
         });
+        this.wasPrepped = true;
+        this.howl.on('load', ()=>{
+            this.todoOnceLoaded();
+        });
     }
 
     play(){
@@ -27,13 +36,17 @@ export default class SoundPlayer {
         this.howl.play();
     }
 
-    doSomethingOnceLoeaded(something){
-        if(this.howl.state()=="loaded"){
-            something();
-        } else {
-            this.howl.on('load', ()=>{
+    doSomethingOnceLoaded(something){
+        if(this.wasPrepped){
+            if(this.howl.state()=="loaded"){
                 something();
-            });
+            } else {
+                this.howl.on('load', ()=>{
+                    something();
+                });
+            }
+        }else{
+            this.todoOnceLoaded = something;
         }
     }
 
@@ -50,7 +63,6 @@ export default class SoundPlayer {
                 if(key!=null && key!=""){
                     const resp = await fetch("https://freesound.org/apiv2/sounds/"+sound_id+"/?fields=previews&token="+key);
                     const previews = await resp.json();
-                    console.log(previews);
                     if("previews" in previews){
                         return previews.previews["preview-hq-mp3"];
                     }

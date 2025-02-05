@@ -6,6 +6,7 @@ import WeatherBadge from './WeatherBadge.jsx';
 import WeatherEditor from './WeatherEditor.jsx';
 import MoodEditor from './MoodEditor';
 import RadioButton from './RadioButton';
+import audioManager from '../AudioManager';
 
 function MainPage(props) {
 
@@ -79,21 +80,21 @@ function MainPage(props) {
     // }
 
     function updateMoodAudio(){
-        props.audioManager.startMood(mood_name, localStorage.getItem("mood_volume"));
+        audioManager.startMood(current_mood, localStorage.getItem("mood_volume"));
     }
 
     function reloadAudio(){
-        props.audioManager.refresh(localStorage.getItem('short_transition_time'));
+        audioManager.refresh(localStorage.getItem('short_transition_time'));
     }
 
     function transitionAudio(final_places_status, transitionTime){
         for(const [place_name, place_status] of Object.entries(final_places_status)){
             if(place_status.state=="off"){
-                props.audioManager.stopPlace(place_name, transitionTime);
+                audioManager.stopPlace(place_name, transitionTime);
             } else if(place_status.state=="on"){
-                props.audioManager.startPlace(place_name, 1, 0, transitionTime);
+                audioManager.startPlace(place_name, 1, 0, transitionTime);
             } else if(place_status.state=="muffled"){
-                props.audioManager.startPlace(place_name, place_status.volume, place_status.muffle_amount, transitionTime);
+                audioManager.startPlace(place_name, place_status.volume, place_status.muffle_amount, transitionTime);
             }
         }
     }
@@ -243,7 +244,7 @@ function MainPage(props) {
                                 onClick={()=>{
                                     let final_places_status = {...props.places_status};
                                     turnOffAllPlaces(final_places_status);
-                                    transitionAudio(final_places_status);
+                                    transitionAudio(final_places_status, localStorage.getItem('short_transition_time'));
                                     props.set_places_status(final_places_status);
                                 }}>
                             Silence all <i className="fa-solid fa-volume-high"></i>

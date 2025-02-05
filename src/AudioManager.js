@@ -2,7 +2,7 @@ import {Howl, Howler} from 'howler';
 import SoundTrack from './SoundTrack.js';
 import PlaceSTM from './PlaceSTM.js';
 
-export default class AudioManager {
+class AudioManager {
     constructor(){
         this.places = {};
         this.moodSoundTrack = null;
@@ -14,7 +14,7 @@ export default class AudioManager {
         }
         let soundName = JSON.parse(localStorage.getItem('moods'))[moodName].sound;
         for(const [placeName, place] of Object.entries(this.places)){
-            if(place.gainNode.gain.value==1 && place.filterNode.frequency.value==this.muffleAmountToFreq(0)){
+            if(place.gainNode.gain.value==1 && place.lowpassNode.frequency.value==this.muffleAmountToFreq(0)){
                 let moodOverride = this.getPlaceMoodOverride(placeName);
                 if(moodOverride!=null){
                     soundName = moodOverride;
@@ -55,15 +55,15 @@ export default class AudioManager {
         console.log(this.places);
 
         // Switching mood if override doesn't match current mood
+        // TODO: should make sure that the mood is not silenced on purpose and that the place is actually the main place
         let moodOverride = this.getPlaceMoodOverride(placeName);
-        if(moodOverride!=null && moodOverride!=this.moodSoundTrack.soundName){
+        if(moodOverride!=null && (this.moodSoundTrack == null || moodOverride!=this.moodSoundTrack.soundName)){
             this.startMood(localStorage.getItem('current_mood'), localStorage.getItem('mood_volume'));
         }
     }
 
     stopPlace(placeName, transitionTime){
         console.log("stopping "+placeName);
-        console.log(this.places); // TODO: WHY IS THIS EMPTY WHEN TRYING TO TURN OFF A PLACE??
         if(this.places[placeName]==null){
             return;
         }
@@ -111,3 +111,6 @@ export default class AudioManager {
         return maxFreq*((1-muffleAmount)**3);
     }
 }
+
+const audioManager = new AudioManager();
+export default audioManager;

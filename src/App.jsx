@@ -3,14 +3,13 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'jquery/dist/jquery.min.js'
 import 'bootstrap/dist/js/bootstrap.min.js'
 
-import AudioManager from './AudioManager.js';
-
 import MainPage from './components/MainPage.jsx';
 import SoundsLibPage from './components/SoundsLibPage.jsx';
 import SettingsPage from './components/SettingsPage.jsx';
 import BiomesPage from './components/BiomesPage.jsx';
 
 import default_setup from "./default_setup.json";
+import audioManager from './AudioManager.js';
 
 function App() {
     const[error_message, set_error_message] = useState("");
@@ -98,8 +97,6 @@ function App() {
     const [moods, set_moods] = useState(initialiseMoods);
     const [audio_context_started, set_audio_context_started] = useState(false);
     const [need_upload, set_need_upload] = useState(false);
-
-    const audioManager = new AudioManager();
 
     function addPlace(){
         let new_place_name = "new";
@@ -742,8 +739,7 @@ function App() {
             </div>
         <div className="tab-content flex-grow-1">
             <div className="tab-pane fade show active p-2 p-md-3 h-100" id="main-page" role="tabpanel">
-                {audio_context_started && <MainPage 
-                            audioManager={audioManager}
+                {audio_context_started && <MainPage
                             places={places}
                             sounds={sounds} 
                             biomes={biomes}
