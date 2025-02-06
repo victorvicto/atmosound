@@ -6,7 +6,7 @@ import WeatherBadge from './WeatherBadge.jsx';
 import WeatherEditor from './WeatherEditor.jsx';
 import MoodEditor from './MoodEditor';
 import RadioButton from './RadioButton';
-import audioManager from '../AudioManager';
+import audioManager from '../audioManagement/AudioManager';
 
 function MainPage(props) {
 
