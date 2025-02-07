@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import default_setup from "./default_setup.json";
 
 const DataTreeContext = createContext();
@@ -6,49 +6,83 @@ const DataTreeContext = createContext();
 export const useDataTree = () => useContext(DataTreeContext);
 
 const DataTreeProvider = ({ children }) => {
-    const [dataTree, setDataTree] = useState(initialiseDataTree);
+    const [places, setPlaces] = useState(() => JSON.parse(localStorage.getItem('places')) || default_setup.places);
+    const [sounds, setSounds] = useState(() => JSON.parse(localStorage.getItem('sounds')) || default_setup.sounds);
+    const [biomes, setBiomes] = useState(() => JSON.parse(localStorage.getItem('biomes')) || default_setup.biomes);
+    const [weathers, setWeathers] = useState(() => JSON.parse(localStorage.getItem('weathers')) || default_setup.weathers);
+    const [moods, setMoods] = useState(() => JSON.parse(localStorage.getItem('moods')) || default_setup.moods);
 
-    function initialiseDataTree() {
-        const storedDataTree = JSON.parse(localStorage.getItem("dataTree"));
-        return storedDataTree || default_setup;
-    }
+    useEffect(() => {
+        localStorage.setItem('places', JSON.stringify(places));
+    }, [places]);
 
-    function validateDataTree(newDataTree) {
+    useEffect(() => {
+        localStorage.setItem('sounds', JSON.stringify(sounds));
+    }, [sounds]);
+
+    useEffect(() => {
+        localStorage.setItem('biomes', JSON.stringify(biomes));
+    }, [biomes]);
+
+    useEffect(() => {
+        localStorage.setItem('weathers', JSON.stringify(weathers));
+    }, [weathers]);
+
+    useEffect(() => {
+        localStorage.setItem('moods', JSON.stringify(moods));
+    }, [moods]);
+
+    function updatePlaces(newPlaces) {
         // Add validation logic here
-        // Return true if valid, false otherwise
-        return true;
+        // if no errors occured
+        setPlaces(newPlaces);
+        localStorage.setItem('places', JSON.stringify(newPlaces));
     }
 
-    function updateDataTree(newDataTree) {
-        if (validateDataTree(newDataTree)) {
-            setDataTree(newDataTree);
-            localStorage.setItem("dataTree", JSON.stringify(newDataTree));
-        } else {
-            console.error("Invalid data tree");
-        }
+    function updateSounds(newSounds) {
+        // Add validation logic here
+        // if no errors occured
+        setSounds(newSounds);
+        localStorage.setItem('sounds', JSON.stringify(newSounds));
+    }
+
+    function updateBiomes(newBiomes) {
+        // Add validation logic here
+        // if no errors occured
+        setBiomes(newBiomes);
+        localStorage.setItem('biomes', JSON.stringify(newBiomes));
+    }
+
+    function updateWeathers(newWeathers) {
+        // Add validation logic here
+        // if no errors occured
+        setWeathers(newWeathers);
+        localStorage.setItem('weathers', JSON.stringify(newWeathers));
+    }
+
+    function updateMoods(newMoods) {
+        // Add validation logic here
+        // if no errors occured
+        setMoods(newMoods);
+        localStorage.setItem('moods', JSON.stringify(newMoods));
     }
 
     function addPlace() {
         let newPlaceName = "new";
         let i = 0;
-        while (newPlaceName in dataTree.places) {
+        while (newPlaceName in places) {
             newPlaceName = "new" + i;
             i++;
         }
-        const newDataTree = { ...dataTree };
-        newDataTree.places[newPlaceName] = {
-            sounds_list: [],
-            muffled_list: [{ name: "weather", muffle_amount: "0", volume: "1" }],
-            mood_overrides: {}
-        };
-        updateDataTree(newDataTree);
+        const newPlaces = { ...places, [newPlaceName]: { sounds_list: [], muffled_list: [{ name: "weather", muffle_amount: "0", volume: "1" }], mood_overrides: {} } };
+        updatePlaces(newPlaces);
         return newPlaceName;
     }
 
     function savePlace(placeName, newPlaceName, newContent) {
-        const newDataTree = { ...dataTree };
+        const newPlaces = { ...places };
         if (newPlaceName !== placeName) {
-            if (newDataTree.places[newPlaceName] !== undefined) {
+            if (newPlaces[newPlaceName] !== undefined) {
                 console.error("Place name already taken");
                 return false;
             }
@@ -57,60 +91,49 @@ const DataTreeProvider = ({ children }) => {
             console.error("Place name cannot be empty");
             return false;
         }
-        newDataTree.places[newPlaceName] = newContent;
+        newPlaces[newPlaceName] = newContent;
         if (newPlaceName !== placeName) {
-            delete newDataTree.places[placeName];
+            delete newPlaces[placeName];
         }
-        updateDataTree(newDataTree);
+        updatePlaces(newPlaces);
         return true;
     }
 
     function deletePlace(placeName) {
-        const newDataTree = { ...dataTree };
-        delete newDataTree.places[placeName];
-        updateDataTree(newDataTree);
+        const newPlaces = { ...places };
+        delete newPlaces[placeName];
+        updatePlaces(newPlaces);
     }
 
     function addSound() {
         let newSoundName = "new sound";
         let i = 0;
-        while (newSoundName in dataTree.sounds) {
+        while (newSoundName in sounds) {
             newSoundName = "new sound " + i;
             i++;
         }
-        const newDataTree = { ...dataTree };
-        newDataTree.sounds[newSoundName] = {
-            sound_packs: {
-                default: {
-                    sound_files: [{ url: "https://your-sound.url/here", volume_mul: 1, sliced: false }],
-                    biome_presences: Object.keys(dataTree.biomes).reduce((acc, biome) => {
-                        acc[biome] = true;
-                        return acc;
-                    }, {})
-                }
-            }
-        };
-        updateDataTree(newDataTree);
+        const newSounds = { ...sounds, [newSoundName]: { sound_packs: { default: { sound_files: [{ url: "https://your-sound.url/here", volume_mul: 1, sliced: false }], biome_presences: Object.keys(biomes).reduce((acc, biome) => { acc[biome] = true; return acc; }, {}) } } } };
+        updateSounds(newSounds);
     }
 
     function changeSound(soundName, newSoundName, newContent) {
-        const newDataTree = { ...dataTree };
+        const newSounds = { ...sounds };
         if (newSoundName !== soundName) {
-            delete newDataTree.sounds[soundName];
+            delete newSounds[soundName];
         }
-        newDataTree.sounds[newSoundName] = newContent;
-        updateDataTree(newDataTree);
+        newSounds[newSoundName] = newContent;
+        updateSounds(newSounds);
     }
 
     function deleteSound(soundName) {
-        const newDataTree = { ...dataTree };
-        delete newDataTree.sounds[soundName];
-        updateDataTree(newDataTree);
+        const newSounds = { ...sounds };
+        delete newSounds[soundName];
+        updateSounds(newSounds);
     }
 
     function addBiome() {
         let newBiomeName = prompt("New biome name: ").toLowerCase();
-        if (newBiomeName in dataTree.biomes) {
+        if (newBiomeName in biomes) {
             console.error("Biome name already exists");
             return false;
         }
@@ -118,101 +141,142 @@ const DataTreeProvider = ({ children }) => {
             console.error("Biome name cannot be empty");
             return false;
         }
-        const newDataTree = { ...dataTree };
-        newDataTree.biomes[newBiomeName] = {};
-        updateDataTree(newDataTree);
+        const newBiomes = { ...biomes, [newBiomeName]: {} };
+        updateBiomes(newBiomes);
     }
 
     function changeBiomeName(oldBiomeName, newBiomeName) {
-        const newDataTree = { ...dataTree };
-        newDataTree.biomes[newBiomeName] = newDataTree.biomes[oldBiomeName];
-        delete newDataTree.biomes[oldBiomeName];
-        updateDataTree(newDataTree);
+        const newBiomes = { ...biomes };
+        newBiomes[newBiomeName] = newBiomes[oldBiomeName];
+        delete newBiomes[oldBiomeName];
+        updateBiomes(newBiomes);
     }
 
     function deleteBiome(biomeName) {
-        const newDataTree = { ...dataTree };
-        delete newDataTree.biomes[biomeName];
-        updateDataTree(newDataTree);
+        const newBiomes = { ...biomes };
+        delete newBiomes[biomeName];
+        updateBiomes(newBiomes);
     }
 
     function addWeather() {
         let newWeatherName = prompt("New weather name: ").toLowerCase();
-        if (newWeatherName in dataTree.weathers) {
+        if (newWeatherName in weathers) {
             console.error("Weather name already exists");
             return "";
         }
-        const newDataTree = { ...dataTree };
-        newDataTree.weathers[newWeatherName] = { sounds_list: [], image_url: null };
-        updateDataTree(newDataTree);
+        const newWeathers = { ...weathers, [newWeatherName]: { sounds_list: [], image_url: null } };
+        updateWeathers(newWeathers);
         return newWeatherName;
     }
 
     function changeWeather(weatherName, newWeatherName, newContent) {
-        const newDataTree = { ...dataTree };
+        const newWeathers = { ...weathers };
         if (newWeatherName !== weatherName) {
-            delete newDataTree.weathers[weatherName];
+            delete newWeathers[weatherName];
         }
-        newDataTree.weathers[newWeatherName] = newContent;
-        updateDataTree(newDataTree);
+        newWeathers[newWeatherName] = newContent;
+        updateWeathers(newWeathers);
     }
 
     function deleteWeather(weatherName) {
-        const newDataTree = { ...dataTree };
-        delete newDataTree.weathers[weatherName];
-        updateDataTree(newDataTree);
+        const newWeathers = { ...weathers };
+        delete newWeathers[weatherName];
+        updateWeathers(newWeathers);
     }
 
     function addMood() {
         let newMoodName = prompt("New mood name: ").toLowerCase();
-        if (newMoodName in dataTree.moods) {
+        if (newMoodName in moods) {
             console.error("Mood name already exists");
             return "";
         }
-        const newDataTree = { ...dataTree };
-        newDataTree.moods[newMoodName] = { sound: null };
-        updateDataTree(newDataTree);
+        const newMoods = { ...moods, [newMoodName]: { sound: null } };
+        updateMoods(newMoods);
         return newMoodName;
     }
 
     function changeMoodName(moodName, newMoodName) {
-        const newDataTree = { ...dataTree };
-        newDataTree.moods[newMoodName] = newDataTree.moods[moodName];
-        delete newDataTree.moods[moodName];
-        updateDataTree(newDataTree);
+        const newMoods = { ...moods };
+        newMoods[newMoodName] = newMoods[moodName];
+        delete newMoods[moodName];
+        updateMoods(newMoods);
     }
 
     function changeMoodSound(moodName, newMoodSound) {
-        const newDataTree = { ...dataTree };
-        newDataTree.moods[moodName].sound = newMoodSound;
-        updateDataTree(newDataTree);
+        const newMoods = { ...moods };
+        newMoods[moodName].sound = newMoodSound;
+        updateMoods(newMoods);
     }
 
     function deleteMood(moodName) {
-        const newDataTree = { ...dataTree };
-        delete newDataTree.moods[moodName];
-        updateDataTree(newDataTree);
+        const newMoods = { ...moods };
+        delete newMoods[moodName];
+        updateMoods(newMoods);
     }
+
+    const dispatchDataTree = (action) => {
+        switch (action.type) {
+            case 'ADD_PLACE':
+                addPlace();
+                break;
+            case 'SAVE_PLACE':
+                savePlace(action.payload.placeName, action.payload.newPlaceName, action.payload.newContent);
+                break;
+            case 'DELETE_PLACE':
+                deletePlace(action.payload.placeName);
+                break;
+            case 'ADD_SOUND':
+                addSound();
+                break;
+            case 'CHANGE_SOUND':
+                changeSound(action.payload.soundName, action.payload.newSoundName, action.payload.newContent);
+                break;
+            case 'DELETE_SOUND':
+                deleteSound(action.payload.soundName);
+                break;
+            case 'ADD_BIOME':
+                addBiome();
+                break;
+            case 'CHANGE_BIOME_NAME':
+                changeBiomeName(action.payload.oldBiomeName, action.payload.newBiomeName);
+                break;
+            case 'DELETE_BIOME':
+                deleteBiome(action.payload.biomeName);
+                break;
+            case 'ADD_WEATHER':
+                addWeather();
+                break;
+            case 'CHANGE_WEATHER':
+                changeWeather(action.payload.weatherName, action.payload.newWeatherName, action.payload.newContent);
+                break;
+            case 'DELETE_WEATHER':
+                deleteWeather(action.payload.weatherName);
+                break;
+            case 'ADD_MOOD':
+                addMood();
+                break;
+            case 'CHANGE_MOOD_NAME':
+                changeMoodName(action.payload.moodName, action.payload.newMoodName);
+                break;
+            case 'CHANGE_MOOD_SOUND':
+                changeMoodSound(action.payload.moodName, action.payload.newMoodSound);
+                break;
+            case 'DELETE_MOOD':
+                deleteMood(action.payload.moodName);
+                break;
+            default:
+                console.error(`Unknown action type: ${action.type}`);
+        }
+    };
 
     return (
         <DataTreeContext.Provider value={{
-            dataTree,
-            addPlace,
-            savePlace,
-            deletePlace,
-            addSound,
-            changeSound,
-            deleteSound,
-            addBiome,
-            changeBiomeName,
-            deleteBiome,
-            addWeather,
-            changeWeather,
-            deleteWeather,
-            addMood,
-            changeMoodName,
-            changeMoodSound,
-            deleteMood
+            places,
+            sounds,
+            biomes,
+            weathers,
+            moods,
+            dispatchDataTree
         }}>
             {children}
         </DataTreeContext.Provider>

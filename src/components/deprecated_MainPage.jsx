@@ -10,12 +10,61 @@ import audioManager from '../audioManagement/AudioManager';
 
 function MainPage(props) {
 
+    function instantiateActiveBiome(){
+        let new_active_biome = localStorage.getItem("active_biome");
+        if(new_active_biome==null){
+            localStorage.setItem("active_biome", "default");
+            new_active_biome = "default";
+        }
+        return new_active_biome;
+    }
+
+    function instantiateTimeOfDay(){
+        let new_time_of_day = localStorage.getItem("time_of_day");
+        if(new_time_of_day==null){
+            localStorage.setItem("time_of_day", "day");
+            new_time_of_day = "day";
+        }
+        return new_time_of_day;
+    }
+
+    function instantiateCurrentWeather(){
+        let new_current_weather = localStorage.getItem("current_weather");
+        if(new_current_weather==null){
+            localStorage.setItem("current_weather", "none");
+            new_current_weather = "none";
+        }
+        return new_current_weather;
+    }
+
+    function instantiateCurrentMood(){
+        let new_current_mood = localStorage.getItem("current_mood");
+        if(new_current_mood==null){
+            localStorage.setItem("current_mood", "none");
+            new_current_mood = "none";
+        }
+        return new_current_mood;
+    }
+
+    function instantiateMoodVolume(){
+        let new_mood_volume = localStorage.getItem("mood_volume");
+        if(new_mood_volume==null){
+            localStorage.setItem("mood_volume", 1);
+            new_mood_volume = 1;
+        }
+        return new_mood_volume;
+    }
+
     const [edited_place_name, set_edited_place_name] = useState("");
     const [edited_weather_name, set_edited_weather_name] = useState("");
     const [edited_mood_name, set_edited_mood_name] = useState("");
     const [right_editor_mode, set_right_editor_mode] = useState("");
+    const [active_biome, set_active_biome] = useState(instantiateActiveBiome);
+    const [time_of_day, set_time_of_day] = useState(instantiateTimeOfDay);
+    const [current_weather, set_current_weather] = useState(instantiateCurrentWeather);
+    const [current_mood, set_current_mood] = useState(instantiateCurrentMood);
     const [mood_opened, set_mood_opened] = useState(false);
-    const [mood_volume, set_mood_volume] = useState(localStorage.getItem("mood_volume") || 1);
+    const [mood_volume, set_mood_volume] = useState(instantiateMoodVolume);
     const [has_been_started, set_has_been_started] = useState(false);
 
     // function getSoundUrls(sound_name){
