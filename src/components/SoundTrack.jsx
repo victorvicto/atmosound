@@ -18,6 +18,7 @@ const SoundTrack = ({ soundName, averageDelay, volume, outputNode }) => {
             }
         }
     }
+    const url = pickFileInfo(null).url;
 
     function pickFileInfo(prevUrl){
         let randIndex = Math.floor(Math.random()*this.fileInfos.length);
@@ -33,7 +34,7 @@ const SoundTrack = ({ soundName, averageDelay, volume, outputNode }) => {
         <div className='card'>
             <div className='card-body'>
                 <h2>{soundName}</h2>
-                <SoundPlayer url={} volume={volume} outputNode={outputNode} />
+                <SoundPlayer url={url} volume={volume} outputNode={outputNode} />
             </div>
         </div>
     );
