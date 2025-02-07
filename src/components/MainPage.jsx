@@ -18,18 +18,6 @@ function MainPage(props) {
     const [mood_volume, set_mood_volume] = useState(localStorage.getItem("mood_volume") || 1);
     const [has_been_started, set_has_been_started] = useState(false);
 
-    // function getSoundUrls(sound_name){
-    //     let urls = [];
-    //     for(let sound_pack_name in props.sounds[sound_name].sound_packs){
-    //         if(props.sounds[sound_name].sound_packs[sound_pack_name].biome_presences[localStorage.getItem("active_biome")]){
-    //             for(let sound_file of props.sounds[sound_name].sound_packs[sound_pack_name].sound_files){
-    //                 urls.push({url:sound_file.url, volume_mul:sound_file.volume_mul});
-    //             }
-    //         }
-    //     }
-    //     return urls;
-    // }
-
     function updateMoodAudio(){
         audioManager.startMood(current_mood, localStorage.getItem("mood_volume"));
     }

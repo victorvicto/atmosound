@@ -1,8 +1,11 @@
 import React, { createContext, useState } from 'react';
+import { useContext } from 'react';
 
 const StateContext = createContext();
 
-export const StateProvider = ({ children }) => {
+export const useStateContext = () => useContext(StateContext);
+
+export const StateContextProvider = ({ children }) => {
 
     // No need to make sure to add the default values to localStorage since those are the default anyway
     const [activePlace, setActivePlace] = useState(localStorage.getItem("active_place") || "default");
@@ -60,4 +63,4 @@ export const StateProvider = ({ children }) => {
     );
 };
 
-export default StateContext;
+export default StateContextProvider;

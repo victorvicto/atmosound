@@ -12,26 +12,6 @@ const DataTreeProvider = ({ children }) => {
     const [weathers, setWeathers] = useState(() => JSON.parse(localStorage.getItem('weathers')) || default_setup.weathers);
     const [moods, setMoods] = useState(() => JSON.parse(localStorage.getItem('moods')) || default_setup.moods);
 
-    useEffect(() => {
-        localStorage.setItem('places', JSON.stringify(places));
-    }, [places]);
-
-    useEffect(() => {
-        localStorage.setItem('sounds', JSON.stringify(sounds));
-    }, [sounds]);
-
-    useEffect(() => {
-        localStorage.setItem('biomes', JSON.stringify(biomes));
-    }, [biomes]);
-
-    useEffect(() => {
-        localStorage.setItem('weathers', JSON.stringify(weathers));
-    }, [weathers]);
-
-    useEffect(() => {
-        localStorage.setItem('moods', JSON.stringify(moods));
-    }, [moods]);
-
     function updatePlaces(newPlaces) {
         // Add validation logic here
         // if no errors occured
@@ -214,61 +194,6 @@ const DataTreeProvider = ({ children }) => {
         updateMoods(newMoods);
     }
 
-    const dispatchDataTree = (action) => {
-        switch (action.type) {
-            case 'ADD_PLACE':
-                addPlace();
-                break;
-            case 'SAVE_PLACE':
-                savePlace(action.payload.placeName, action.payload.newPlaceName, action.payload.newContent);
-                break;
-            case 'DELETE_PLACE':
-                deletePlace(action.payload.placeName);
-                break;
-            case 'ADD_SOUND':
-                addSound();
-                break;
-            case 'CHANGE_SOUND':
-                changeSound(action.payload.soundName, action.payload.newSoundName, action.payload.newContent);
-                break;
-            case 'DELETE_SOUND':
-                deleteSound(action.payload.soundName);
-                break;
-            case 'ADD_BIOME':
-                addBiome();
-                break;
-            case 'CHANGE_BIOME_NAME':
-                changeBiomeName(action.payload.oldBiomeName, action.payload.newBiomeName);
-                break;
-            case 'DELETE_BIOME':
-                deleteBiome(action.payload.biomeName);
-                break;
-            case 'ADD_WEATHER':
-                addWeather();
-                break;
-            case 'CHANGE_WEATHER':
-                changeWeather(action.payload.weatherName, action.payload.newWeatherName, action.payload.newContent);
-                break;
-            case 'DELETE_WEATHER':
-                deleteWeather(action.payload.weatherName);
-                break;
-            case 'ADD_MOOD':
-                addMood();
-                break;
-            case 'CHANGE_MOOD_NAME':
-                changeMoodName(action.payload.moodName, action.payload.newMoodName);
-                break;
-            case 'CHANGE_MOOD_SOUND':
-                changeMoodSound(action.payload.moodName, action.payload.newMoodSound);
-                break;
-            case 'DELETE_MOOD':
-                deleteMood(action.payload.moodName);
-                break;
-            default:
-                console.error(`Unknown action type: ${action.type}`);
-        }
-    };
-
     return (
         <DataTreeContext.Provider value={{
             places,
@@ -276,7 +201,22 @@ const DataTreeProvider = ({ children }) => {
             biomes,
             weathers,
             moods,
-            dispatchDataTree
+            addPlace,
+            savePlace,
+            deletePlace,
+            addSound,
+            changeSound,
+            deleteSound,
+            addBiome,
+            changeBiomeName,
+            deleteBiome,
+            addWeather,
+            changeWeather,
+            deleteWeather,
+            addMood,
+            changeMoodName,
+            changeMoodSound,
+            deleteMood
         }}>
             {children}
         </DataTreeContext.Provider>
