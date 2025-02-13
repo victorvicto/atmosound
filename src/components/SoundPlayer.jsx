@@ -66,4 +66,4 @@ const SoundPlayer = ({ url, volume, outputNode }) => {
     );
 };
 
-export default SoundPlayerComponent;
+export default SoundPlayer;

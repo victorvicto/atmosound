@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import SoundPlayer from './SoundPlayer';
-import { useDataTree } from '../dataTreeContext';
-import { useStateContext } from '../stateContext';
+import { useDataTree } from '../DataTreeContext';
+import { useStateContext } from '../StateContext';
 
 const SoundTrack = ({ soundName, averageDelay, volume, outputNode }) => {
     const { sounds } = useDataTree();
@@ -40,4 +40,4 @@ const SoundTrack = ({ soundName, averageDelay, volume, outputNode }) => {
     );
 };
 
-export default SoundTrackComponent;
+export default SoundTrack;
