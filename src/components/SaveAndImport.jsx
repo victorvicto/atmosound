@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from 'react';
 
 const SaveAndImport = () => {
     const [needUpload, setNeedUpload] = useState(false);
@@ -49,7 +50,7 @@ const SaveAndImport = () => {
                 <button type="button" className="btn btn-outline-success" onClick={()=>{setNeedUpload(true)}}>Upload setup</button>
                 <button type="button" className="btn btn-outline-success" onClick={downloadSetup}>Save my setup</button>
             </div>
-            <div className={"modal fade"+(need_upload?" show":"")} style={{display:(need_upload?"block":"none")}}>
+            <div className={"modal fade"+(needUpload?" show":"")} style={{display:(needUpload?"block":"none")}}>
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">

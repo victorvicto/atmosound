@@ -10,8 +10,11 @@ import BiomesPage from './components/BiomesPage.jsx';
 
 import audioManager from './audioManagement/AudioManager.js';
 import SaveAndImport from './components/SaveAndImport.jsx';
+import { useStateContext } from './StateContext.jsx';
 
 function App() {
+
+    const { errorMessage, setErrorMessage } = useStateContext();
 
     if(localStorage.getItem("short_transition_time")===null){
         localStorage.setItem("short_transition_time", 500);
@@ -20,15 +23,13 @@ function App() {
         localStorage.setItem("slow_transition_time", 60000);
     }
 
-    const [audio_context_started, set_audio_context_started] = useState(false);
-
     let error_toast = null;
-    if(error_message.length>0){
+    if(errorMessage.length>0){
         error_toast = (
             <div className="position-fixed bottom-0 w-100 p-4" style={{"zIndex": 1056}}>
                 <div className="alert alert-danger d-flex justify-content-between mb-0">
-                    {error_message}
-                    <button type="button" className="btn-close" onClick={()=>set_error_message("")}></button>
+                    {errorMessage}
+                    <button type="button" className="btn-close" onClick={()=>setErrorMessage("")}></button>
                 </div>
             </div>
         );
@@ -71,7 +72,7 @@ function App() {
         </nav>
         <div className="tab-content flex-grow-1">
             <div className="tab-pane fade show active p-2 p-md-3 h-100" id="main-page" role="tabpanel">
-                {audio_context_started && <MainPage set_places_status={set_places_status}/>}
+                {audio_context_started && <MainPage/>}
                 {!audio_context_started && 
                     <div className='d-flex justify-content-center p-5'>
                         <button type="button" className='btn btn-primary btn-lg m-5 shadow shadow-md'

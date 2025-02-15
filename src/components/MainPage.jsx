@@ -5,10 +5,12 @@ import PlaceEditor from './PlaceEditor.jsx';
 import WeatherBadge from './WeatherBadge.jsx';
 import WeatherEditor from './WeatherEditor.jsx';
 import MoodEditor from './MoodEditor';
-import RadioButton from './RadioButton';
-import audioManager from '../audioManagement/AudioManager';
+import TODRadioButton from './TODRadioButton.jsx';
+import { useDataTree } from '../DataTreeContext.jsx';
 
 function MainPage(props) {
+
+    const { places, biomes, moods } = useDataTree();
 
     const [edited_place_name, set_edited_place_name] = useState("");
     const [edited_weather_name, set_edited_weather_name] = useState("");
@@ -16,26 +18,35 @@ function MainPage(props) {
     const [right_editor_mode, set_right_editor_mode] = useState("");
     const [mood_opened, set_mood_opened] = useState(false);
     const [mood_volume, set_mood_volume] = useState(localStorage.getItem("mood_volume") || 1);
+
     const [has_been_started, set_has_been_started] = useState(false);
 
-    function updateMoodAudio(){
-        audioManager.startMood(current_mood, localStorage.getItem("mood_volume"));
+    function startAudioContext(){
+        Howler.volume(1);
+        console.log("starting audio context");
+        let first_sound = new Howl({
+            src: ["https://v1.cdnpk.net/videvo_files/audio/premium/audio0130/watermarked/MagicCartoon%20CTE01_92.5_preview.mp3", 'https://actions.google.com/sounds/v1/cartoon/pop.ogg'],
+            autoplay: false
+        });
+        first_sound.on('end', function(){
+            first_sound.unload();
+        });
+        first_sound.play();
     }
 
-    function reloadAudio(){
-        audioManager.refresh(localStorage.getItem('short_transition_time'));
-    }
-
-    function transitionAudio(final_places_status, transitionTime){
-        for(const [place_name, place_status] of Object.entries(final_places_status)){
-            if(place_status.state=="off"){
-                audioManager.stopPlace(place_name, transitionTime);
-            } else if(place_status.state=="on"){
-                audioManager.startPlace(place_name, 1, 0, transitionTime);
-            } else if(place_status.state=="muffled"){
-                audioManager.startPlace(place_name, place_status.volume, place_status.muffle_amount, transitionTime);
-            }
-        }
+    // Making sure audio starts playing when loading page to previous setting activation
+    if(!has_been_started){
+        return (
+            <div className='d-flex justify-content-center p-5'>
+                <button type="button" className='btn btn-primary btn-lg m-5 shadow shadow-md'
+                        onClick={()=>{
+                                startAudioContext();
+                                set_has_been_started(true);
+                            }}>
+                    Start audio context
+                </button>
+            </div>
+        );
     }
     
     function turnOffAllPlaces(final_places_status){
@@ -44,71 +55,22 @@ function MainPage(props) {
         }
     }
 
-    function switchState(place_name, new_state, transitionTime){
-        let final_places_status = {...props.places_status};
-        if(props.places_status[place_name].state==new_state){
-            final_places_status[place_name].state = "off";
-        } else {
-            if(new_state=="on"){
-                turnOffAllPlaces(final_places_status);
-                if("muffled_list" in props.places[place_name]){
-                    for(let muffled of props.places[place_name].muffled_list){
-                        final_places_status[muffled.name].state = "muffled";
-                        final_places_status[muffled.name].muffle_amount = muffled.muffle_amount;
-                        final_places_status[muffled.name].volume = muffled.volume;
-                    }
-                }
-            }
-            final_places_status[place_name].state = new_state;
-        }
-        transitionAudio(final_places_status, transitionTime);
-        props.set_places_status(final_places_status);
-    }
-
-    function modifyPlacesStatus(event, place_name, property){
-        let new_places_status = {...props.places_status};
-        new_places_status[place_name][property] = event.target.value;
-        transitionAudio(new_places_status, localStorage.getItem('short_transition_time'));
-        props.set_places_status(new_places_status);
-    }
-
-    // Making sure audio starts playing when loading page to previous setting activation
-    if(!has_been_started){
-        reloadAudio();
-        set_has_been_started(true);
-    }
-
-    const places_badges = Object.entries(props.places).map(([place_name, place_info]) => 
-            <PlaceBadge key={place_name}
+    const places_badges = Object.entries(places).map(([place_name, place_info]) => 
+            <PlaceBadge key={place_name+"-badge"}
                         place_name={place_name}
-                        place_status={props.places_status[place_name]}
-                        modify_status={(e, property)=>modifyPlacesStatus(e, place_name, property)}
-                        switchStatus={(new_status, transitionTime)=>{switchState(place_name, new_status, transitionTime)}}
                         open_place_editor={()=>{
                             set_edited_place_name(place_name);
                         }}/>
         );
 
     let biome_options_html = [];
-    for(let biome_name in props.biomes){
+    for(let biome_name in biomes){
         biome_options_html.push(<option key={biome_name+"-option"} value={biome_name}>{biome_name}</option>);
     }
 
-    let mood_buttons = Object.keys(props.moods).map((mood_name) =>
-        <button key={mood_name+"-btn"}
-                className={'btn btn-'+(current_mood==mood_name?'':'outline-')+'primary btn-sm'}
-                >
-            <a href='#' className='text-decoration-none text-reset text-capitalize' onClick={()=>{
-                localStorage.setItem("current_mood", mood_name);
-                set_current_mood(mood_name);
-                updateMoodAudio();
-                }}>
-                {mood_name}
-            </a>
-            {mood_name!="none" && <a href='#' className='icon-link text-decoration-none text-reset ms-2' onClick={()=>{set_edited_mood_name(mood_name);set_right_editor_mode("mood")}}>
-                <i className="fa-solid fa-square-pen"></i>
-            </a>}
-        </button>
+    let mood_buttons = Object.keys(moods).map((mood_name) =>
+        <MoodBadge key={mood_name+"-badge"}
+                    moodName={mood_name}/>
     );
 
     return (
@@ -118,47 +80,11 @@ function MainPage(props) {
                     <div className='row'>
                         <div className='col-12 col-md-6 d-flex align-items-center justify-content-between justify-content-md-start gap-md-3 gap-1 p-2 flex-wrap'>
                             <div className='text-nowrap'>Time of day:</div>
-                            <RadioButton val="morning" 
-                                    onChange={(e)=>{
-                                        localStorage.setItem("time_of_day", e.target.value);
-                                        set_time_of_day(e.target.value);
-                                        reloadAudio();
-                                    }}
-                                    checked={time_of_day=="morning"}/>
-                            <RadioButton val="day" 
-                                    onChange={(e)=>{
-                                        localStorage.setItem("time_of_day", e.target.value);
-                                        set_time_of_day(e.target.value);
-                                        reloadAudio();
-                                    }}
-                                    checked={time_of_day=="day"}/>
-                            <RadioButton val="evening" 
-                                    onChange={(e)=>{
-                                        localStorage.setItem("time_of_day", e.target.value);
-                                        set_time_of_day(e.target.value);
-                                        reloadAudio();
-                                    }}
-                                    checked={time_of_day=="evening"}/>
-                            <RadioButton val="night" 
-                                    onChange={(e)=>{
-                                        localStorage.setItem("time_of_day", e.target.value);
-                                        set_time_of_day(e.target.value);
-                                        reloadAudio();
-                                    }}
-                                    checked={time_of_day=="night"}/>
+                            <TODRadioButton val="morning"/>
+                            <TODRadioButton val="day"/>
+                            <TODRadioButton val="evening"/>
+                            <TODRadioButton val="night"/>
                         </div>
-                        {/* <select className="form-select form-select-sm"
-                                value={time_of_day}
-                                onChange={(e)=>{
-                                    localStorage.setItem("time_of_day", e.target.value);
-                                    set_time_of_day(e.target.value);
-                                    reloadAudio();
-                                }}>
-                            <option value="morning">Morning</option>
-                            <option value="day">Day</option>
-                            <option value="evening">Evening</option>
-                            <option value="night">Night</option>
-                        </select> */}
                         <div className='col-12 col-md-6 d-flex align-items-center gap-2 p-2'>
                             <div>Biome: </div>
                             <select className="form-select form-select-sm text-capitalize"
