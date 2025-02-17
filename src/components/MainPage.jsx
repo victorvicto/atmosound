@@ -4,13 +4,16 @@ import PlaceBadge from './PlaceBadge.jsx';
 import PlaceEditor from './PlaceEditor.jsx';
 import WeatherBadge from './WeatherBadge.jsx';
 import WeatherEditor from './WeatherEditor.jsx';
+import MoodBadge from './MoodBadge.jsx';
 import MoodEditor from './MoodEditor';
-import TODRadioButton from './TODRadioButton.jsx';
+import TODSelector from './TODSelector.jsx';
+import BiomeSelector from './BiomeSelector.jsx';
 import { useDataTree } from '../DataTreeContext.jsx';
 
 function MainPage(props) {
 
     const { places, biomes, moods } = useDataTree();
+    const { activePlace, shutPlace, updateAdjacentPlaces } = useStateContext();
 
     const [edited_place_name, set_edited_place_name] = useState("");
     const [edited_weather_name, set_edited_weather_name] = useState("");
@@ -48,12 +51,6 @@ function MainPage(props) {
             </div>
         );
     }
-    
-    function turnOffAllPlaces(final_places_status){
-        for(let place_name in final_places_status){
-            final_places_status[place_name].state = "off";
-        }
-    }
 
     const places_badges = Object.entries(places).map(([place_name, place_info]) => 
             <PlaceBadge key={place_name+"-badge"}
@@ -63,12 +60,7 @@ function MainPage(props) {
                         }}/>
         );
 
-    let biome_options_html = [];
-    for(let biome_name in biomes){
-        biome_options_html.push(<option key={biome_name+"-option"} value={biome_name}>{biome_name}</option>);
-    }
-
-    let mood_buttons = Object.keys(moods).map((mood_name) =>
+    let moodBadges = Object.keys(moods).map((mood_name) =>
         <MoodBadge key={mood_name+"-badge"}
                     moodName={mood_name}/>
     );
@@ -78,25 +70,11 @@ function MainPage(props) {
             <div className='card text-bg-light small'>
                 <div className='card-body py-0'>
                     <div className='row'>
-                        <div className='col-12 col-md-6 d-flex align-items-center justify-content-between justify-content-md-start gap-md-3 gap-1 p-2 flex-wrap'>
-                            <div className='text-nowrap'>Time of day:</div>
-                            <TODRadioButton val="morning"/>
-                            <TODRadioButton val="day"/>
-                            <TODRadioButton val="evening"/>
-                            <TODRadioButton val="night"/>
+                        <div className='col-12 col-md-6'>
+                            <TODSelector/>
                         </div>
-                        <div className='col-12 col-md-6 d-flex align-items-center gap-2 p-2'>
-                            <div>Biome: </div>
-                            <select className="form-select form-select-sm text-capitalize"
-                                    style={{cursor:"pointer"}}
-                                    value={active_biome}
-                                    onChange={(e)=>{
-                                        localStorage.setItem("active_biome", e.target.value);
-                                        set_active_biome(e.target.value);
-                                        reloadAudio();
-                                    }}>
-                                {biome_options_html}
-                            </select>
+                        <div className='col-12 col-md-6'>
+                            <BiomeSelector/>
                         </div>
                     </div>
                 </div>
@@ -107,10 +85,8 @@ function MainPage(props) {
                         Environment
                         <button className="btn btn-outline-danger btn-sm"
                                 onClick={()=>{
-                                    let final_places_status = {...props.places_status};
-                                    turnOffAllPlaces(final_places_status);
-                                    transitionAudio(final_places_status, localStorage.getItem('short_transition_time'));
-                                    props.set_places_status(final_places_status);
+                                    shutPlace(activePlace);
+                                    updateAdjacentPlaces({});
                                 }}>
                             Silence all <i className="fa-solid fa-volume-high"></i>
                         </button>
@@ -118,18 +94,10 @@ function MainPage(props) {
                 </div>
                 <div className='card-body position-relative'>
                     <div className='position-absolute top-0 start-0 bottom-0 end-0 overflow-auto p-2'>
-                        <WeatherBadge   weathers={props.weathers}
-                                        current_weather={current_weather}
-                                        set_current_weather={set_current_weather}
-                                        status={props.places_status["weather"]}
-                                        switchStatus={(new_status, transitionTime)=>{switchState("weather", new_status, transitionTime)}}
-                                        modify_status={(e, property)=>modifyPlacesStatus(e, "weather", property)}
-                                        set_edited_weather_name={(edited_weather_name)=>{set_edited_weather_name(edited_weather_name);set_right_editor_mode("weather")}}
-                                        addWeather={()=>{
-                                            let new_weather_name = props.addWeather();
-                                            set_edited_weather_name(new_weather_name);
-                                            set_right_editor_mode("weather");
-                                        }}/>
+                        <WeatherBadge set_edited_weather_name={(edited_weather_name)=>{
+                                set_edited_weather_name(edited_weather_name);
+                                set_right_editor_mode("weather");
+                            }}/>
                         <div className='p-3 d-flex flex-row flex-wrap justify-content-center align-items-start gap-2'>
                             {places_badges}
                         </div>
@@ -171,7 +139,7 @@ function MainPage(props) {
                 </div>
                 {mood_opened && <div className='card-body'>
                     <div className='d-flex flex-row gap-2 align-items-center'>
-                        {mood_buttons}
+                        {moodBadges}
                         <button className="btn btn-outline-primary btn-sm" onClick={()=>{let new_mood_name = props.addMood(); set_edited_mood_name(new_mood_name);set_right_editor_mode("mood")}}>+</button>
                     </div>
                 </div>}
