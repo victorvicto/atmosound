@@ -9,8 +9,10 @@ import MoodEditor from './MoodEditor';
 import TODSelector from './TODSelector.jsx';
 import BiomeSelector from './BiomeSelector.jsx';
 import { useDataTree } from '../DataTreeContext.jsx';
+import EnvironmentPanel from './EnvironmentPanel.jsx';
+import MoodPanel from './MoodPanel.jsx';
 
-function MainPage(props) {
+function MainPage() {
 
     const { places, biomes, moods } = useDataTree();
     const { activePlace, shutPlace, updateAdjacentPlaces } = useStateContext();
@@ -52,19 +54,6 @@ function MainPage(props) {
         );
     }
 
-    const places_badges = Object.entries(places).map(([place_name, place_info]) => 
-            <PlaceBadge key={place_name+"-badge"}
-                        place_name={place_name}
-                        open_place_editor={()=>{
-                            set_edited_place_name(place_name);
-                        }}/>
-        );
-
-    let moodBadges = Object.keys(moods).map((mood_name) =>
-        <MoodBadge key={mood_name+"-badge"}
-                    moodName={mood_name}/>
-    );
-
     return (
         <div className='h-100 d-flex flex-column gap-2'>
             <div className='card text-bg-light small'>
@@ -79,105 +68,23 @@ function MainPage(props) {
                     </div>
                 </div>
             </div>
-            <div className='card flex-grow-1'>
-                <div className='card-header small'>
-                    <div className='d-flex justify-content-between'>
-                        Environment
-                        <button className="btn btn-outline-danger btn-sm"
-                                onClick={()=>{
-                                    shutPlace(activePlace);
-                                    updateAdjacentPlaces({});
-                                }}>
-                            Silence all <i className="fa-solid fa-volume-high"></i>
-                        </button>
-                    </div>
-                </div>
-                <div className='card-body position-relative'>
-                    <div className='position-absolute top-0 start-0 bottom-0 end-0 overflow-auto p-2'>
-                        <WeatherBadge set_edited_weather_name={(edited_weather_name)=>{
-                                set_edited_weather_name(edited_weather_name);
-                                set_right_editor_mode("weather");
-                            }}/>
-                        <div className='p-3 d-flex flex-row flex-wrap justify-content-center align-items-start gap-2'>
-                            {places_badges}
-                        </div>
-                        <div className='d-flex justify-content-center mt-3'>
-                            <button className="btn btn-outline-primary btn-lg"
-                                    onClick={()=>{
-                                        set_edited_place_name(props.addPlace());
-                                    }}>
-                                Add place
-                            </button>
-                            {/* <button className="btn btn-outline-primary btn-lg"
-                                    onClick={()=>{
-                                        AudioManager.playTest();
-                                    }}>
-                                Play test
-                            </button> */}
-                        </div>
-                    </div>
-                </div>
+            <div className='flex-grow-1'>
+                <EnvironmentPanel set_edited_place_name={set_edited_place_name}
+                                    set_edited_weather_name={set_edited_weather_name}
+                                    set_right_editor_mode={set_right_editor_mode}/>
             </div>
-            <div className={'card'+(mood_opened?' flex-grow-1':'')}>
-                <div className='card-header small'>
-                    <div className='d-flex gap-4'>
-                        <a href='#' onClick={()=>set_mood_opened(!mood_opened)} className="icon-link text-decoration-none text-reset"><i className={"fa-solid fa-chevron-"+(mood_opened?"down":"up")}></i></a>
-                        Mood
-                        <div className='d-flex flex-row align-items-center gap-2 flex-grow-1'>
-                            <i className="fa-solid fa-volume-low"></i>
-                            <input type="range" value={mood_volume}
-                                    onChange={(e)=>{
-                                        set_mood_volume(e.target.value);
-                                        localStorage.setItem("mood_volume", e.target.value);
-                                        updateMoodAudio();
-                                    }}
-                                    className="form-range"
-                                    min="0" max="1" step='.05'/>
-                            <i className="fa-solid fa-volume-high"></i>
-                        </div>
-                    </div>
-                </div>
-                {mood_opened && <div className='card-body'>
-                    <div className='d-flex flex-row gap-2 align-items-center'>
-                        {moodBadges}
-                        <button className="btn btn-outline-primary btn-sm" onClick={()=>{let new_mood_name = props.addMood(); set_edited_mood_name(new_mood_name);set_right_editor_mode("mood")}}>+</button>
-                    </div>
-                </div>}
+            <div className={mood_opened?' flex-grow-1':''}>
+                <MoodPanel set_edited_mood_name={set_edited_mood_name}
+                            set_right_editor_mode={set_right_editor_mode}/>
             </div>
             {edited_place_name!="" && <PlaceEditor  edited_place_name={edited_place_name}
                                                     set_edited_place_name={set_edited_place_name}
-                                                    places={props.places}
-                                                    sounds={props.sounds}
-                                                    weathers={props.weathers}
-                                                    moods={props.moods}
-                                                    savePlace={props.savePlace}
-                                                    deletePlace={props.deletePlace}
-                                                    closeEditor={()=>set_edited_place_name("")}
-                                                    reloadAudio={reloadAudio}/>}
+                                                    closeEditor={()=>set_edited_place_name("")}/>}
             {(edited_weather_name!=""&&right_editor_mode=="weather") && 
-                <WeatherEditor  weathers={props.weathers}
-                                edited_weather_name={edited_weather_name}
-                                changeWeather={props.changeWeather}
-                                deleteWeather={(weather_name)=>{
-                                    props.deleteWeather(weather_name);
-                                    if(current_weather==weather_name){
-                                        set_current_weather("none");
-                                        localStorage.setItem("current_weather", "none");
-                                    }
-                                }}
-                                sounds={props.sounds}
+                <WeatherEditor  edited_weather_name={edited_weather_name}
                                 closeEditor={()=>set_edited_weather_name("")}/>}
             {(edited_mood_name!=""&&right_editor_mode=="mood") && 
                 <MoodEditor edited_mood_name={edited_mood_name}
-                            sound_name={props.moods[edited_mood_name].sound}
-                            changeMoodName={props.changeMoodName}
-                            changeMoodSound={props.changeMoodSound}
-                            deleteMood={(mood_name)=>{
-                                props.deleteMood(mood_name);
-                                if(mood_name==current_mood){
-                                    set_current_mood("none");
-                                }
-                            }}
                             closeEditor={()=>set_edited_mood_name("")}/>}
         </div>
     )

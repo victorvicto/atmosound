@@ -5,9 +5,9 @@ import AddedMoodOverride from './AddedMoodOverride';
 import { RecursiveReplace, PromptEdit } from '../UtilityFunctions';
 import EditableText from './EditableText';
 
-function PlaceEditor({edited_place_name, set_edited_place_name, places, sounds, weathers, moods, savePlace, deletePlace, closeEditor, reloadAudio}){
+function PlaceEditor({edited_place_name, set_edited_place_name, closeEditor }){
 
-    console.log(edited_place_name);
+    const { places, savePlace, deletePlace, weathers, sounds, moods } = useDataTree();
     
     function addSound(sound_name){
         let new_place_info = {...places[edited_place_name]};

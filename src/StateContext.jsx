@@ -14,6 +14,7 @@ export const StateContextProvider = ({ children }) => {
     const [activePlace, setActivePlace] = useState(localStorage.getItem("active_place") || "none");
     const [adjacentPlaces, setAdjacentPlaces] = useState(JSON.parse(localStorage.getItem("adjacent_places")) || {});
     const [currentMood, setCurrentMood] = useState(localStorage.getItem("current_mood") || "none");
+    const [moodVolume, setMoodVolume] = useState(localStorage.getItem("mood_volume") || 0.5);
     const [timeOfDay, setTimeOfDay] = useState(localStorage.getItem("time_of_day") || "day");
     const [currentBiome, setCurrentBiome] = useState(localStorage.getItem("current_biome") || "default");
     const [currentWeather, setCurrentWeather] = useState(localStorage.getItem("current_weather") || "default");
@@ -65,6 +66,11 @@ export const StateContextProvider = ({ children }) => {
         localStorage.setItem("current_mood", mood);
     };
 
+    const updateMoodVolume = (volume) => {
+        setMoodVolume(volume);
+        localStorage.setItem("mood_volume", volume);
+    };
+
     const updateTimeOfDay = (time) => {
         setTimeOfDay(time);
         localStorage.setItem("time_of_day", time);
@@ -85,6 +91,8 @@ export const StateContextProvider = ({ children }) => {
             shutPlace,
             currentMood,
             updateCurrentMood,
+            moodVolume,
+            updateMoodVolume,
             timeOfDay,
             updateTimeOfDay,
             currentBiome,

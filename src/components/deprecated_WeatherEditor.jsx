@@ -2,18 +2,8 @@ import EditableText from "./EditableText";
 import AddedSound from './AddedSound';
 
 import { RecursiveReplace, PromptEdit } from '../UtilityFunctions';
-import { useDataTree } from "../DataTreeContext";
-import { useStateContext } from "../StateContext";
 
-function WeatherEditor({edited_weather_name, closeEditor}) {
-
-    const { sounds, weathers } = useDataTree();
-    const { changeWeather, deleteWeather } = useStateContext();
-
-    function deleteThisWeather(){
-        deleteWeather(edited_weather_name);
-        set_current_weather("none");
-    }
+function WeatherEditor({weathers, edited_weather_name, changeWeather,  deleteWeather, sounds, closeEditor}) {
 
     function addSound(sound_name){
         let new_weather_info = {...weathers[edited_weather_name]};

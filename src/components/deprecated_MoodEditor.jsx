@@ -1,17 +1,7 @@
 import EditableText from "./EditableText";
-import { useDataTree } from "../DataTreeContext";
+import AddedSound from "./AddedSound";
 
-function MoodEditor({edited_mood_name, closeEditor}){
-
-    const { moods, changeMoodName, changeMoodSound, deleteMood } = useDataTree();
-    const { updateCurrentMood } = useStateContext();
-
-    const sound_name = moods[edited_mood_name].sound;
-
-    function deleteThisMood(){
-        deleteMood(edited_mood_name);
-        updateCurrentMood("none");
-    }
+function MoodEditor({edited_mood_name, sound_name, changeMoodName, changeMoodSound, deleteMood, closeEditor}){
    
     return (
         <div className="offcanvas offcanvas-end show"
