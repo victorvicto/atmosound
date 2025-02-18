@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import MoodBadge from './MoodBadge';
+import { useDataTree } from '../DataTreeContext';
+import { useStateContext } from '../StateContext';
 
 const MoodPanel = ({ set_edited_mood_name, set_right_editor_mode }) => {
     const [moodOpened, setMoodOpened] = useState(false);

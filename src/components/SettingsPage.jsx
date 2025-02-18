@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useGlobalContext } from "../GlobalContext";
 
 function SettingsPage() {
     
-    const { freesoundApiKey, setFreesoundApiKey, short_transition_time, set_short_transition_time, slow_transition_time, set_slow_transition_time } = useGlobalContext();
+    const { freesoundApiKey, setFreesoundApiKey, shortTransitionTime, setShortTransitionTime, slowTransitionTime, setSlowTransitionTime } = useGlobalContext();
 
     return (
         <>
@@ -20,19 +20,19 @@ function SettingsPage() {
             <div className="d-flex align-items-center gap-2">
                 <p className="m-0">short transition time (in ms): </p>
                 <input type="number" className="form-control w-50"
-                        value={short_transition_time}
+                        value={shortTransitionTime}
                         onChange={(e)=>{
                             localStorage.setItem("short_transition_time", e.target.value);
-                            set_short_transition_time(e.target.value)}}
+                            setShortTransitionTime(e.target.value)}}
                         min={0} max={120000}/>
             </div>
             <div className="d-flex align-items-center gap-2">
                 <p className="m-0">slow transition time (in ms): </p>
                 <input type="number" className="form-control w-50"
-                        value={slow_transition_time}
+                        value={slowTransitionTime}
                         onChange={(e)=>{
                             localStorage.setItem("slow_transition_time", e.target.value);
-                            set_slow_transition_time(e.target.value)}}
+                            setSlowTransitionTime(e.target.value)}}
                         min={0} max={120000}/>
             </div>
         </>

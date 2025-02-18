@@ -3,7 +3,7 @@ import PlaceSTM from './PlaceSTM';
 import { useStateContext } from '../StateContext';
 
 function PlaceBadge({placeName, open_place_editor}){
-    const { activePlace, adjacentPlaces, updateActivePlace, addAdjacentPlace, shutPlace } = useStateContext();
+    const { activePlace, adjacentPlaces, updateActivePlace, updateAdjacentVolume, updateAdjacentMuffleAmount, addAdjacentPlace, shutPlace } = useStateContext();
 
     let scheme = "secondary";
     let placeSTM = "";
@@ -20,7 +20,7 @@ function PlaceBadge({placeName, open_place_editor}){
             <div className='d-flex flex-row align-items-center gap-2'>
                 <i className="fa-solid fa-volume-low"></i>
                 <input type="range" value={adjacentPlaces[placeName].volume}
-                        onChange={(e)=>modify_status(e, "volume")}
+                        onChange={(e)=>updateAdjacentVolume(placeName, e.target.value)}
                         className="form-range"
                         min="0" max="1" step='.05'/>
                 <i className="fa-solid fa-volume-high"></i>
@@ -28,7 +28,7 @@ function PlaceBadge({placeName, open_place_editor}){
             <div className='d-flex flex-row align-items-center gap-2'>
                 <i className="fa-solid fa-volume-high"></i>
                 <input type="range" value={adjacentPlaces[placeName].muffle_amount}
-                        onChange={(e)=>modify_status(e, "muffle_amount")}
+                        onChange={(e)=>updateAdjacentMuffleAmount(placeName, e.target.value)}
                         className="form-range"
                         min="0" max="1" step='.05'/>
                 <i className="fa-solid fa-volume-high opacity-25"></i>
@@ -37,18 +37,18 @@ function PlaceBadge({placeName, open_place_editor}){
     }
 
     return (
-        <div className={'card border-'+scheme+(place_status.state=="off"?' shadow-sm':' border-3 shadow')}>
+        <div className={'card border-'+scheme+(scheme=="secondary"?' shadow-sm':' border-3 shadow')}>
             <div className='card-body d-flex flex-row gap-2 align-items-center'>
                 <h5 className={"card-title mb-0 text-capitalize text-"+scheme}>
-                    <a onClick={open_place_editor} href="#" className='text-reset'>{place_name}</a>
+                    <a onClick={open_place_editor} href="#" className='text-reset'>{placeName}</a>
                 </h5>
                 <div className='btn-group' role='group'>
                     <button onClick={()=>{updateActivePlace(placeName)}}
-                        className={'btn btn'+(place_status.state=='on'?'':'-outline')+'-danger btn-sm border-2'}>
+                        className={'btn btn'+(activePlace==placeName?'':'-outline')+'-danger btn-sm border-2'}>
                         <i className="fa-solid fa-bolt"></i>
                     </button>
                     <button onClick={()=>{updateActivePlace(placeName)}}
-                        className={'btn btn'+(place_status.state=='on'?'':'-outline')+'-danger btn-sm border-2'}>
+                        className={'btn btn'+(activePlace==placeName?'':'-outline')+'-danger btn-sm border-2'}>
                         🐌
                     </button>
                 </div>
@@ -58,9 +58,8 @@ function PlaceBadge({placeName, open_place_editor}){
                     }else{
                         addAdjacentPlace(placeName);
                     }
-                    switchStatus("muffled", localStorage.getItem('short_transition_time'))
                 }}
-                    className={'btn btn'+(place_status.state=='muffled'?'':'-outline')+'-success btn-sm'}>
+                    className={'btn btn'+(placeName in Object.keys(adjacentPlaces)?'':'-outline')+'-success btn-sm'}>
                     <i className="fa-solid fa-volume-low"></i>
                 </button>
             </div>

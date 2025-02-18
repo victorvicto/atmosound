@@ -12,6 +12,8 @@
   - Use reduce/redux to add all the security checks on the new state before it is actually saved (solves global state as well!)
   - Use immer to make dictionary state updates cleaner and more concise (without needing to do deep copies each time)
 
+- add activePlace volume
+
 - Eviter de créer nouveau howl pour un son qui recommence (serait-ce plus optimal?) juste recommencer même howl (ne fonctionne que si le temps entre les sons est positif (negatif=overlap->nécessite 2 howls))
 - Make a single function for creating howls and add a gain node there
 - allow to make sound families (with potential filter to just see some families)

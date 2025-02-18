@@ -52,6 +52,18 @@ export const StateContextProvider = ({ children }) => {
         let newAdjacentPlaces = { ...adjacentPlaces, [placeName]: { volume: 1, muffle_amount: 0 } };
         updateAdjacentPlaces(newAdjacentPlaces);
     };
+
+    const updateAdjacentVolume = (placeName, volume) => {
+        let newAdjacentPlaces = { ...adjacentPlaces };
+        newAdjacentPlaces[placeName].volume = volume;
+        updateAdjacentPlaces(newAdjacentPlaces);
+    };
+
+    const updateAdjacentMuffleAmount = (placeName, muffleAmount) => {
+        let newAdjacentPlaces = { ...adjacentPlaces };
+        newAdjacentPlaces[placeName].muffle_amount = muffleAmount;
+        updateAdjacentPlaces(newAdjacentPlaces);
+    };
      
     const shutPlace = (place) => {
         if (place === activePlace) {
@@ -88,6 +100,8 @@ export const StateContextProvider = ({ children }) => {
             adjacentPlaces,
             updateAdjacentPlaces,
             addAdjacentPlace,
+            updateAdjacentVolume,
+            updateAdjacentMuffleAmount,
             shutPlace,
             currentMood,
             updateCurrentMood,

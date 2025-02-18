@@ -1,4 +1,5 @@
 import EditableText from "./EditableText";
+import { useDataTree } from "../DataTreeContext";
 
 function BiomeCard({ biome_name }){
 

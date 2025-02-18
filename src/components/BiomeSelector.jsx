@@ -1,4 +1,6 @@
 import React from 'react';
+import { useDataTree } from '../DataTreeContext';
+import { useStateContext } from '../StateContext';
 
 const BiomeSelector = () => {
     const { biomes } = useDataTree();
