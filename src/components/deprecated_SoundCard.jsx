@@ -2,14 +2,26 @@ import { useState } from "react";
 
 import SoundPack from './SoundPack';
 import EditableText from "./EditableText";
-import { useDataTree } from '../DataTreeContext';
 
-function SoundCard({sound_name}){
-
-    const { sounds, changeSound, deleteSound  } = useDataTree();
-    const sound_info = sounds[sound_name];
-
+function SoundCard({sound_name, sound_info, changeSound, deleteSound}){
     const [is_open, set_is_open] = useState(false);
+
+    function changeSoundPack(sound_pack_name, new_sound_pack){
+        let new_sound_info = {...sound_info};
+        let new_sound_packs = {...new_sound_info.sound_packs};
+        new_sound_packs[sound_pack_name] = new_sound_pack;
+        new_sound_info.sound_packs = new_sound_packs;
+        changeSound(sound_name, sound_name, new_sound_info);
+    }
+
+    function changeSoundPackName(old_pack_name, new_pack_name){
+        let new_sound_info = {...sound_info};
+        let new_sound_packs = {...new_sound_info.sound_packs};
+        new_sound_packs[new_pack_name] = new_sound_packs[old_pack_name];
+        delete new_sound_packs[old_pack_name];
+        new_sound_info.sound_packs = new_sound_packs;
+        changeSound(sound_name, sound_name, new_sound_info);
+    }
 
     function addSoundPack(){
         let new_sound_pack_name = prompt("New sound pack name:").toLowerCase();
@@ -23,11 +35,32 @@ function SoundCard({sound_name}){
         changeSound(sound_name, sound_name, new_sound_info);
     }
 
+    function deleteSoundPack(sound_pack_name){
+        let new_sound_info = {...sound_info};
+        let new_sound_packs = {...new_sound_info.sound_packs};
+        delete new_sound_packs[sound_pack_name];
+        new_sound_info.sound_packs = new_sound_packs;
+        changeSound(sound_name, sound_name, new_sound_info);
+    }
+
+    // const sound_packs_html = sound_info.sound_packs.map((sound_pack, i) => 
+    //         <li key={sound_name+"-sound-pack-"+i} className="list-group-item d-flex flex-column gap-2 p-2">
+    //             <SoundPack sound_pack_name={"Sound pack "+i}
+    //                         sound_pack={sound_pack}
+    //                         changeSoundPack={changeSoundPack}
+    //                         deleteSoundPack={deleteSoundPack}/>     
+    //         </li>
+    //     );
+
     let sound_packs_html = [];
     for(let sound_pack_name in sound_info.sound_packs){
         sound_packs_html.push(
             <li key={sound_name+"-sound-pack-"+sound_pack_name} className="list-group-item d-flex flex-column gap-2 p-2">
-                <SoundPack sound_pack_name={sound_pack_name}/>     
+                <SoundPack sound_pack_name={sound_pack_name}
+                            sound_pack={sound_info.sound_packs[sound_pack_name]}
+                            changeSoundPack={changeSoundPack}
+                            changeSoundPackName={changeSoundPackName}
+                            deleteSoundPack={deleteSoundPack}/>     
             </li>
         )
     }

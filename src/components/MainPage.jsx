@@ -1,16 +1,14 @@
 import { useState } from 'react'
 
-import PlaceBadge from './PlaceBadge.jsx';
 import PlaceEditor from './PlaceEditor.jsx';
-import WeatherBadge from './WeatherBadge.jsx';
 import WeatherEditor from './WeatherEditor.jsx';
-import MoodBadge from './MoodBadge.jsx';
 import MoodEditor from './MoodEditor';
 import TODSelector from './TODSelector.jsx';
 import BiomeSelector from './BiomeSelector.jsx';
 import { useDataTree } from '../DataTreeContext.jsx';
 import EnvironmentPanel from './EnvironmentPanel.jsx';
 import MoodPanel from './MoodPanel.jsx';
+import { useStateContext } from '../StateContext.jsx';
 
 function MainPage() {
 

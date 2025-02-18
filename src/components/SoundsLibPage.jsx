@@ -1,12 +1,13 @@
+import { useDataTree } from '../DataTreeContext';
 import SoundCard from './SoundCard'
 
-function SoundsLibPage({sounds, addSound, changeSound, deleteSound}){
-    const sound_cards = Object.entries(sounds).map(([sound_name, sound_info]) => 
+function SoundsLibPage(){
+
+    const {sounds, addSound } = useDataTree();
+    
+    const sound_cards = Object.entries(sounds).map(([sound_name]) => 
             <SoundCard key={sound_name+'-soundcard'}
-                        sound_name={sound_name}
-                        sound_info={sound_info}
-                        changeSound={changeSound}
-                        deleteSound={deleteSound}/>
+                        sound_name={sound_name}/>
         );
 
     return (

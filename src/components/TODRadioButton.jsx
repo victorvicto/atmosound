@@ -1,5 +1,5 @@
 import { useStateContext } from "../StateContext";
-import { RadioButton } from "./RadioButton";
+import RadioButton from "./RadioButton";
 
 function TODRadioButton({ TOD }) {
     const { timeOfDay, updateTimeOfDay } = useStateContext();

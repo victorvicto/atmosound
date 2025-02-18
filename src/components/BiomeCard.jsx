@@ -1,6 +1,9 @@
 import EditableText from "./EditableText";
 
-function BiomeCard({biome_name, changeBiomeName, deleteBiome}){
+function BiomeCard({ biome_name }){
+
+    const { deleteBiome, changeBiomeName } = useDataTree();
+    
     return (
         <div className="card">
             <div className="card-body">

@@ -72,17 +72,7 @@ function App() {
         </nav>
         <div className="tab-content flex-grow-1">
             <div className="tab-pane fade show active p-2 p-md-3 h-100" id="main-page" role="tabpanel">
-                {audio_context_started && <MainPage/>}
-                {!audio_context_started && 
-                    <div className='d-flex justify-content-center p-5'>
-                        <button type="button" className='btn btn-primary btn-lg m-5 shadow shadow-md'
-                                onClick={()=>{
-                                        audioManager.startAudioContext();
-                                        set_audio_context_started(true);
-                                    }}>
-                                    Activate audio context
-                        </button>
-                    </div>}
+                <MainPage/>
             </div>
             <div className="tab-pane fade p-2 p-md-5" id="sounds-lib-page" role="tabpanel">
                 <SoundsLibPage/>

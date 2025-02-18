@@ -1,11 +1,13 @@
 import BiomeCard from "./BiomeCard";
 import { PromptEdit } from "../UtilityFunctions";
+import { useDataTree } from "../DataTreeContext";
 
-function BiomesPage({biomes, addBiome, changeBiomeName, deleteBiome}){
+function BiomesPage(){
+
+    const {biomes, addBiome } = useDataTree();
+
     const biome_cards = Object.entries(biomes).map(([biome_name, biome_info]) => 
             <BiomeCard  biome_name={biome_name}
-                        changeBiomeName={changeBiomeName}
-                        deleteBiome={deleteBiome}
                         key={biome_name+"-biome-card"}/>
         );
 

@@ -20,3 +20,5 @@ function MoodBadge({ moodName }) {
         </button>
     );
 }
+
+export default MoodBadge;
