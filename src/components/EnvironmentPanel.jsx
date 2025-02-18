@@ -8,14 +8,14 @@ const EnvironmentPanel = ({ set_edited_place_name, set_edited_weather_name, set_
     const { places, addPlace } = useDataTree();
     const { activePlace, shutPlace, updateAdjacentPlaces } = useStateContext();
     
-    const placeBadges = Object.entries(places).map(([place_name, place_info]) => 
-        <PlaceBadge key={place_name+"-badge"}
-                    place_name={place_name}
-                    open_place_editor={() => set_edited_place_name(place_name)} />
+    const placeBadges = Object.entries(places).map(([placeName, place_info]) => 
+        <PlaceBadge key={placeName+"-badge"}
+                    placeName={placeName}
+                    open_place_editor={() => set_edited_place_name(placeName)} />
     );
 
     return (
-        <div className='card'>
+        <div className='card h-100'>
             <div className='card-header small'>
                 <div className='d-flex justify-content-between'>
                     Environment

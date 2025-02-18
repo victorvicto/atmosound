@@ -6,8 +6,8 @@ import { useStateContext } from '../StateContext';
 const SoundTrack = ({ soundName, averageDelay, volume, outputNode }) => {
     const { sounds } = useDataTree();
     const { currentBiome } = useStateContext();
-    const soundInfo = null;
-    const fileInfos = [];
+    let soundInfo = null;
+    let fileInfos = [];
     if (soundName != null) {
         soundInfo = sounds[soundName];
         for(let soundPackName in soundInfo.sound_packs){
@@ -18,17 +18,17 @@ const SoundTrack = ({ soundName, averageDelay, volume, outputNode }) => {
             }
         }
     }
-    const url = pickFileInfo(null).url;
 
     function pickFileInfo(prevUrl){
-        let randIndex = Math.floor(Math.random()*this.fileInfos.length);
-        let fileInfo = this.fileInfos[randIndex];
-        if(this.fileInfos.length>1 && fileInfo.url==prevUrl){
-            fileInfo = this.fileInfos[(randIndex+1) % this.fileInfos.length];
+        let randIndex = Math.floor(Math.random()*fileInfos.length);
+        let fileInfo = fileInfos[randIndex];
+        if(fileInfos.length>1 && fileInfo.url==prevUrl){
+            fileInfo = fileInfos[(randIndex+1) % fileInfos.length];
         }
         return fileInfo;
     }
 
+    const url = pickFileInfo(null).url;
 
     return (
         <div className='card'>

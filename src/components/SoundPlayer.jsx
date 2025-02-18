@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Howl, Howler } from 'howler';
 const SoundPlayer = ({ url, volume, outputNode }) => {
     
@@ -23,8 +23,14 @@ const SoundPlayer = ({ url, volume, outputNode }) => {
         return url;
     }
 
-    const howlTestUrl = useRef(finaliseUrl(url));
+    const [ howlTestUrl, setHowlTestUrl ] = useState(null);
     const gain = useRef({volume: volume});
+
+    useEffect(() => {
+        finaliseUrl(url).then((finalUrl) => {
+            setHowlTestUrl(finalUrl);
+        });
+    }, [url]);
 
     // useEffect(() => {
     //     const gainNode = Howler.ctx.createGain();
@@ -60,7 +66,7 @@ const SoundPlayer = ({ url, volume, outputNode }) => {
         <div className='card'>
             <div className='card-body'>
                 <div>Url: {howlTestUrl}</div>
-                <div>Gain volume: {gain.volume}</div>
+                <div>Gain volume: {gain.current.volume}</div>
             </div>
         </div>
     );

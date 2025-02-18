@@ -4,12 +4,12 @@ import SoundTrack from './SoundTrack';
 import { useDataTree } from '../DataTreeContext.jsx';
 import { useStateContext } from '../StateContext.jsx';
 
-const PlaceSTM = ({ placeName, volume, muffleAmount, outputNode }) => {
+const PlaceSTM = ({ placeName, volume, muffleAmount }) => {
     const { places, sounds } = useDataTree();
     const { currentBiome } = useStateContext();
     const gainNode = useRef(Howler.ctx.createGain());
     gainNode.current.gain.value = 0;
-    gainNode.current.connect(outputNode);
+    gainNode.current.connect(Howler.ctx.destination);
 
     useEffect(() => {
         gainNode.current.gain.setTargetAtTime(volume, Howler.ctx.currentTime, 2);
@@ -22,10 +22,12 @@ const PlaceSTM = ({ placeName, volume, muffleAmount, outputNode }) => {
     const placeInfo = places[placeName];
     let soundTracks = [];
     for(let soundInfo of placeInfo.sounds_list){
-        soundTracks.push(<SoundTrack soundName={soundInfo.name}
-                                    averageDelay={soundInfo.average_time}
-                                    volume={soundInfo.volume}
-                                    outputNode={gainNode} />);
+        console.log("soundtrack key: ", placeName+"-"+soundInfo.name+"-soundtrack");
+        soundTracks.push(<SoundTrack    key={placeName+"-"+soundInfo.name+"-soundtrack"}
+                                        soundName={soundInfo.name}
+                                        averageDelay={soundInfo.average_time}
+                                        volume={soundInfo.volume}
+                                        outputNode={gainNode} />);
     }
 
     return (

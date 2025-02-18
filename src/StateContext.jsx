@@ -21,6 +21,7 @@ export const StateContextProvider = ({ children }) => {
     const [errorMessage, setErrorMessage] = useState("");
 
     const updateActivePlace = (placeName) => {
+        console.log("updateActivePlace", placeName);
         if(placeName == activePlace){
             setActivePlace("none");
             localStorage.setItem("active_place", "none");
