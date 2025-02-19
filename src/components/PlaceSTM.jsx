@@ -17,12 +17,18 @@ const PlaceSTM = ({ placeName, volume, muffleAmount }) => {
         setTimeout(() => {
             console.log("finished transition of "+placeName+" to volume "+volume);
         }, 2000);
+        return () => {
+            gainNode.current.gain.setTargetAtTime(0, Howler.ctx.currentTime, 2);
+            console.log("starting transition of "+placeName+" to volume 0");
+            setTimeout(() => {
+                console.log("finished transition of "+placeName+" to volume 0");
+            }, 2000);
+        };
     }, [volume]);
 
     const placeInfo = places[placeName];
     let soundTracks = [];
     for(let soundInfo of placeInfo.sounds_list){
-        console.log("soundtrack key: ", placeName+"-"+soundInfo.name+"-soundtrack");
         soundTracks.push(<SoundTrack    key={placeName+"-"+soundInfo.name+"-soundtrack"}
                                         soundName={soundInfo.name}
                                         averageDelay={soundInfo.average_time}
