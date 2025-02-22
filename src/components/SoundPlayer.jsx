@@ -23,12 +23,27 @@ const SoundPlayer = ({ url, volume, outputNode }) => {
         return url;
     }
 
-    const [ howlTestUrl, setHowlTestUrl ] = useState(null);
-    const gain = useRef({volume: volume});
+    const [ howlUrl, setHowlUrl ] = useState(null);
+    let howl = null;
 
     useEffect(() => {
         finaliseUrl(url).then((finalUrl) => {
-            setHowlTestUrl(finalUrl);
+            setHowlUrl(finalUrl);
+            howl = new Howl({
+                src: [finalUrl],
+                volume: volume,
+                onend: () => {
+                    console.log("Destructing " + finalUrl);
+                    howl.unload();
+                },
+                onload: () => {
+                    console.log("Loaded " + finalUrl);
+                    howl.play();
+                }
+            });
+            howl._sounds[0]._node.disconnect();
+            console.log(outputNode);
+            howl._sounds[0]._node.connect(outputNode.current);
         });
     }, [url]);
 
@@ -65,8 +80,8 @@ const SoundPlayer = ({ url, volume, outputNode }) => {
     return (
         <div className='card'>
             <div className='card-body'>
-                <div>Url: {howlTestUrl}</div>
-                <div>Gain volume: {gain.current.volume}</div>
+                <div>Url: {howlUrl}</div>
+                {howl!=null && <div>Gain volume: {howl.volume}</div>}
             </div>
         </div>
     );
